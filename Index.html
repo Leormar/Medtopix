@@ -255,7 +255,91 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:16px 28px;text
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.error{border-color:#ef5350;background:#3d1515;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:768px){.header-top{padding:0 16px;}.next-banner{margin:14px 16px 0;}main{padding:18px 14px 50px;}.stats-row{grid-template-columns:1fr 1fr;}.form-grid{grid-template-columns:1fr;}.cards-grid{grid-template-columns:1fr;}.tab-btn{font-size:9px;padding:10px 3px;}.adh-summary{grid-template-columns:1fr;}}
+
+/* ── RESPONSIVE MÓVIL ── */
+@media(max-width:768px){
+  /* Header */
+  .header-top{padding:0 14px;height:58px;}
+  .logo-name{font-size:1.1rem;}
+  .logo-sub{display:none;}
+  .logo-icon{width:36px;height:36px;font-size:18px;}
+  #clock{display:none;}
+
+  /* Tabs — scroll horizontal en móvil */
+  .tabs{overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{flex:0 0 auto;font-size:10px;padding:11px 12px;white-space:nowrap;letter-spacing:0;}
+
+  /* Next banner */
+  .next-banner{margin:12px 14px 0;padding:14px 16px;flex-wrap:wrap;gap:10px;}
+  .next-cd{font-size:1.4rem;}
+
+  /* Main */
+  main{padding:16px 12px 50px;}
+
+  /* Stats */
+  .stats-row{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+  .stat-card{padding:14px 14px;}
+  .stat-val{font-size:1.8rem;}
+  .stat-icon{font-size:1.2rem;margin-bottom:6px;}
+
+  /* Alerts */
+  .alert-row{padding:12px 14px;gap:8px;}
+  .alert-t{font-size:1rem;}
+  .adh-btns{gap:4px;}
+  .adh-btn{padding:5px 9px;font-size:10px;}
+
+  /* Forms */
+  .form-card{padding:18px 14px;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-hdr{gap:10px;}
+  .form-hdr-icon{width:36px;height:36px;font-size:18px;}
+
+  /* Patient cards */
+  .pt-card{padding:12px 14px;gap:10px;}
+  .pt-avatar{width:38px;height:38px;font-size:14px;}
+
+  /* Med cards */
+  .cards-grid{grid-template-columns:1fr;gap:10px;}
+  .card-top{padding:14px 16px 12px;}
+  .card-body{padding:14px 16px;}
+  .card-name{font-size:1rem;}
+
+  /* Adherence */
+  .adh-summary{grid-template-columns:1fr;gap:8px;}
+  .adh-chart-wrap{padding:12px;}
+
+  /* Team */
+  .tm-grid{grid-template-columns:1fr;}
+  .team-hdr{flex-direction:column;align-items:flex-start;}
+
+  /* Alarm overlay */
+  .alarm-box{padding:28px 20px;margin:16px;}
+  .alarm-time{font-size:2.2rem;}
+  .alarm-ring{font-size:2.5rem;}
+
+  /* Spec filter */
+  .spec-filter{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;scrollbar-width:none;}
+  .spec-filter::-webkit-scrollbar{display:none;}
+  .sf-chip{flex:0 0 auto;white-space:nowrap;}
+}
+
+/* ── RESPONSIVE TABLET ── */
+@media(min-width:769px) and (max-width:1024px){
+  main{padding:20px 20px 50px;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .cards-grid{grid-template-columns:repeat(2,1fr);}
+  .tm-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ── TOUCH IMPROVEMENTS ── */
+@media(hover:none){
+  .tab-btn,.adh-btn,.btn-add,.btn-done-c,.btn-del-c,.btn-edit-c{
+    min-height:44px;
+  }
+  .adh-btn{padding:10px 14px;font-size:12px;}
+  .btn-chk{min-height:36px;}
+}
 </style>
 </head>
 <body>
