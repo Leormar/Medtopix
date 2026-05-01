@@ -236,6 +236,20 @@ canvas{width:100%!important;max-height:200px;}
 .prompt-box{background:var(--g900);border-radius:9px;padding:14px 16px;margin:10px 0;font-family:monospace;font-size:12px;color:var(--g300);line-height:1.6;white-space:pre-wrap;}
 .iter-badge{display:inline-block;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border-radius:6px;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
 
+
+/* EDIT INLINE */
+.edit-inline{background:#f0f7f2;border:1.5px solid var(--g300);border-radius:9px;padding:12px;margin-top:10px;display:none;}
+.edit-inline.open{display:block;}
+.edit-inline-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g700);margin-bottom:10px;}
+.edit-inline-row{display:flex;gap:8px;margin-bottom:8px;}
+.edit-inline input{background:#fff;border:1.5px solid var(--g300);border-radius:7px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;padding:8px 11px;outline:none;flex:1;}
+.edit-inline input:focus{border-color:var(--g500);box-shadow:0 0 0 3px rgba(58,170,99,0.15);}
+.edit-inline-actions{display:flex;gap:7px;}
+.btn-save-edit{padding:8px 16px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-cancel-edit{padding:8px 14px;background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
+.btn-edit-c{padding:8px 12px;border-radius:7px;border:1.5px solid var(--g300);background:var(--g100);color:var(--g700);font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.btn-edit-c:hover{background:var(--g200);}
+
 footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:16px 28px;text-align:center;font-size:11px;margin-top:50px;}
 .toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--g800);border:1.5px solid var(--g600);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;color:#fff;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px;box-shadow:var(--shadow-lg);}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -923,11 +937,46 @@ function renderCards(){
         ${rec&&st==='late'?`<div style="font-size:11px;color:#2563eb;background:#eff6ff;border-radius:6px;padding:6px 10px;margin-bottom:10px;">🕐 Aplicado a las ${rec.actualTime} (programado: ${med.time})</div>`:''}
         ${med.notes?`<div class="card-notes">📌 ${med.notes}</div>`:''}
         <div class="card-actions">
+          <button class="btn-edit-c" onclick="toggleEditInline(${med.id})">✏️ Editar</button>
           <button class="btn-del-c" onclick="deleteMed(${med.id})">✕ Eliminar</button>
+        </div>
+        <div class="edit-inline" id="edit-inline-${med.id}">
+          <div class="edit-inline-title">✏️ Editar medicamento</div>
+          <div class="edit-inline-row">
+            <input type="text" id="edit-name-${med.id}" value="${med.name.replace(/"/g,'&quot;')}" placeholder="Nombre del medicamento"/>
+          </div>
+          <div class="edit-inline-row">
+            <input type="text" id="edit-dose-${med.id}" value="${med.dose||''}" placeholder="Dosis (ej: 1 gota, 500mg)"/>
+          </div>
+          <div class="edit-inline-actions">
+            <button class="btn-save-edit" onclick="saveEdit(${med.id})">✅ Guardar</button>
+            <button class="btn-cancel-edit" onclick="toggleEditInline(${med.id})">Cancelar</button>
+          </div>
         </div>
       </div>
     </div>`;
   }).join('');
+}
+
+
+// ── EDIT ──────────────────────────────────────────────────────
+function toggleEditInline(id){
+  const el=document.getElementById('edit-inline-'+id);
+  el.classList.toggle('open');
+}
+function saveEdit(id){
+  const med=meds.find(m=>m.id===id);if(!med)return;
+  const newName=document.getElementById('edit-name-'+id).value.trim();
+  const newDose=document.getElementById('edit-dose-'+id).value.trim();
+  if(!newName){showToast('El nombre no puede estar vacío.',true);return;}
+  const oldName=med.name;
+  med.name=newName;
+  med.dose=newDose;
+  // update adherence records too
+  adherence.forEach(a=>{if(a.medId===id)a.medName=newName;});
+  saveMeds();saveAdh();
+  renderCards();renderAlerts();
+  showToast('✅ '+oldName+' actualizado correctamente.');
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
