@@ -1279,9 +1279,10 @@ function drawChart(canvasId,dayData){
 }
 
 function refreshPtSel(){
-  const sel=document.getElementById('f-patient');if(!sel) return;
-  sel.innerHTML='<option value="">— Sin asignar —</option>'+patients.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  const rsel=document.getElementById('rp-patient');if(rsel) rsel.innerHTML='<option value="">Todos los pacientes</option>'+patients.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const sel=document.getElementById('f-patient');
+  if(sel) sel.innerHTML='<option value="">— Sin asignar —</option>'+patients.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+  const rsel=document.getElementById('rp-patient');
+  if(rsel) rsel.innerHTML='<option value="">Todos los pacientes</option>'+patients.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
 }
 
 // ── MEDICATIONS ────────────────────────────────────────────────
