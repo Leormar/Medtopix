@@ -352,6 +352,19 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .pt-bar-close{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.6);font-size:11px;cursor:pointer;font-family:"Plus Jakarta Sans",sans-serif;}
 .pt-bar-close:hover{color:#fff;border-color:rgba(255,255,255,0.5);}
 
+/* EXPORT/IMPORT */
+.sync-panel{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px;box-shadow:var(--sh);}
+.sync-title{font-family:Fraunces,serif;font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:6px;}
+.sync-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.sync-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-exp{padding:9px 18px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-imp{padding:9px 18px;background:var(--g100);border:1.5px solid var(--g300);color:var(--g700);border-radius:8px;font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.sync-code{background:var(--g900);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:var(--g300);word-break:break-all;margin-top:12px;display:none;max-height:120px;overflow-y:auto;}
+.sync-code.show{display:block;}
+.sync-import-area{margin-top:12px;display:none;}
+.sync-import-area.show{display:block;}
+.sync-import-area textarea{font-family:monospace;font-size:11px;min-height:80px;}
+
 /* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--g800);border:1.5px solid var(--g600);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;color:#fff;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px;box-shadow:0 8px 24px rgba(13,40,24,0.3);}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -536,6 +549,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <button class="tb" onclick="goTab('report')">📋 Reporte</button>
     <button class="tb" onclick="goTab('process')">🤖 Proceso IA</button>
     <button class="tb" onclick="goTab('team')">👥 Equipo</button>
+    <button class="tb" onclick="goTab('sync')">🔄 Sync</button>
   </div>
   <div class="pt-bar" id="pt-bar">
     <div class="pt-bar-av" id="pt-bar-av">?</div>
@@ -695,6 +709,50 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     </div>
     <div style="margin-top:18px;padding:14px;background:var(--g100);border-radius:9px;border:1.5px solid var(--g200);font-size:12px;color:var(--muted);line-height:1.7">
       MedTopix fue desarrollada íntegramente mediante prompts iterativos a Claude (Anthropic). El agente de Telegram funciona en <strong>@medtopix_bot</strong> con OpenClaw 2026. Publicada en <strong>medtopix.netlify.app</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- SYNC -->
+<div class="tp" id="tp-sync">
+  <div class="st"><div class="si">🔄</div>Sincronizar entre dispositivos</div>
+
+  <div class="sync-panel">
+    <div class="sync-title">📤 Exportar mis datos</div>
+    <div class="sync-sub">Genera un código con tus datos (cuenta, pacientes, medicamentos) para usarlo en otro dispositivo. <strong>No compartas este código con nadie.</strong></div>
+    <div class="sync-btns">
+      <button class="btn-exp" onclick="exportData()">📤 Generar código de exportación</button>
+      <button class="btn-exp" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="copyCode()">📋 Copiar código</button>
+    </div>
+    <div class="sync-code" id="sync-code"></div>
+  </div>
+
+  <div class="sync-panel">
+    <div class="sync-title">📥 Importar datos en este dispositivo</div>
+    <div class="sync-sub">Pega el código que exportaste desde el otro dispositivo para sincronizar tu cuenta y datos.</div>
+    <div class="sync-btns">
+      <button class="btn-imp" onclick="toggleImport()">📥 Pegar código de importación</button>
+    </div>
+    <div class="sync-import-area" id="sync-import-area">
+      <textarea id="sync-import-txt" placeholder="Pega aquí el código exportado desde el otro dispositivo..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn-exp" onclick="importData()">✅ Importar y sincronizar</button>
+        <button class="btn-imp" onclick="toggleImport()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sync-panel" style="background:var(--g100);border-color:var(--g200)">
+    <div class="sync-title" style="color:var(--g700)">📱 ¿Cómo sincronizar con tu celular?</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8">
+      <strong>En el Mac:</strong><br>
+      1. Haz clic en "Generar código de exportación"<br>
+      2. Copia el código<br><br>
+      <strong>En el celular:</strong><br>
+      3. Abre medtopix.netlify.app<br>
+      4. Ve a 🔄 Sync → "Importar datos"<br>
+      5. Pega el código y haz clic en "Importar"<br><br>
+      <strong>⚠️ Nota:</strong> Los datos quedan guardados localmente en cada dispositivo. Para mantenerlos sincronizados repite el proceso cuando hagas cambios importantes.
     </div>
   </div>
 </div>
@@ -947,7 +1005,7 @@ setInterval(function(){
 }, 1000);
 
 // ── TABS ──────────────────────────────────────────────────────
-var TABS = ['alerts','patients','meds','report','process','team'];
+var TABS = ['alerts','patients','meds','report','process','team','sync'];
 function goTab(t){
   curTab = t;
   document.querySelectorAll('.tp').forEach(function(p){p.classList.remove('active');});
@@ -1633,6 +1691,67 @@ function clearPtContext(){
   var fpt=document.getElementById('f-pt'); if(fpt) fpt.selectedIndex=0;
   var rpt=document.getElementById('rp-pt'); if(rpt) rpt.selectedIndex=0;
   renderRep(); renderCards(); renderAlerts();
+}
+
+// ── SYNC / EXPORT / IMPORT ───────────────────────────────────
+function exportData(){
+  var data={
+    users:users,
+    patients:patients,
+    meds:meds,
+    adherence:adherence,
+    exportedAt:new Date().toISOString(),
+    version:'mt6'
+  };
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var el=document.getElementById('sync-code');
+  el.textContent=encoded;
+  el.classList.add('show');
+  toast('✅ Código generado. Cópialo y pégalo en el otro dispositivo.');
+}
+
+function copyCode(){
+  var el=document.getElementById('sync-code');
+  if(!el.textContent){exportData();}
+  if(navigator.clipboard && el.textContent){
+    navigator.clipboard.writeText(el.textContent).then(function(){
+      toast('📋 Código copiado al portapapeles.');
+    });
+  } else {
+    toast('Selecciona el código manualmente y cópialo.',true);
+  }
+}
+
+function toggleImport(){
+  var el=document.getElementById('sync-import-area');
+  el.classList.toggle('show');
+}
+
+function importData(){
+  var txt=document.getElementById('sync-import-txt').value.trim();
+  if(!txt){toast('Pega el código primero.',true);return;}
+  try{
+    var decoded=JSON.parse(decodeURIComponent(escape(atob(txt))));
+    if(!decoded.version||decoded.version!=='mt6'){toast('Código inválido o de versión incorrecta.',true);return;}
+    if(!confirm('¿Importar datos desde el código?\n\nEsto REEMPLAZARÁ todos los datos actuales en este dispositivo.\n\nPacientes: '+(decoded.patients?decoded.patients.length:0)+'\nMedicamentos: '+(decoded.meds?decoded.meds.length:0)+'\nRegistros: '+(decoded.adherence?decoded.adherence.length:0))) return;
+    if(decoded.users)  {users=decoded.users;     sU();}
+    if(decoded.patients){patients=decoded.patients; sP();}
+    if(decoded.meds)   {meds=decoded.meds;        sM();}
+    if(decoded.adherence){adherence=decoded.adherence; sA();}
+    // Set session to first matching user or first user
+    if(curUser && users.find(function(u){return u.e===curUser.e;})){
+      localStorage.setItem('mt6_s',JSON.stringify(curUser));
+    } else if(users.length>0){
+      curUser=users[0];
+      localStorage.setItem('mt6_s',JSON.stringify(curUser));
+    }
+    document.getElementById('sync-import-area').classList.remove('show');
+    document.getElementById('sync-import-txt').value='';
+    initApp();
+    toast('✅ Datos importados correctamente. Bienvenido, '+( curUser?curUser.name:'usuario')+'.');
+  } catch(e){
+    toast('Error al leer el código. Verifica que esté completo.',true);
+  }
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
