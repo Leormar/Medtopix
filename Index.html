@@ -1339,9 +1339,11 @@ function addMed(){
 
 function delMed(id){
   var m=meds.find(function(r){return r.id===id;});
+  var nombre=m?m.name:'este medicamento';
+  if(!confirm('⚠️ ¿Estás seguro de que deseas eliminar "'+nombre+'"?\n\nEsta acción no se puede deshacer.')) return;
   meds=meds.filter(function(r){return r.id!==id;});
   sM(); renderCards(); renderAlerts(); updateStats(); renderSF();
-  toast('🗑️ '+(m?m.name:'Medicamento')+' eliminado.');
+  toast('🗑️ '+nombre+' eliminado.');
 }
 
 function togEdit(id){var el=document.getElementById('ei-'+id);if(el)el.classList.toggle('open');}
@@ -1350,10 +1352,16 @@ function saveEdit(id){
   var med=meds.find(function(m){return m.id===id;}); if(!med) return;
   var ne=document.getElementById('ein-'+id), de=document.getElementById('eid-'+id);
   if(!ne||!ne.value.trim()){toast('El nombre no puede estar vacío.',true);return;}
-  var old=med.name; med.name=ne.value.trim(); med.dose=de?de.value.trim():'';
+  var newName=ne.value.trim(), newDose=de?de.value.trim():'';
+  var msg='¿Confirmas los cambios en este medicamento?';
+  msg+='\n\nNombre: '+newName;
+  if(newDose) msg+='\nDosis: '+newDose;
+  msg+='\n\nEsto actualizará también el historial de adherencia.';
+  if(!confirm(msg)) return;
+  var old=med.name; med.name=newName; med.dose=newDose;
   adherence.forEach(function(a){if(a.medId===id) a.medName=med.name;});
   sM(); sA(); renderCards(); renderAlerts();
-  toast('✅ '+old+' actualizado.');
+  toast('✅ '+old+' actualizado correctamente.');
 }
 
 function setFilter(s){curFilter=s; renderSF(); renderCards();}
