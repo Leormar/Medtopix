@@ -919,7 +919,13 @@ function acceptTerms(){
 function doLogin(){
   const email=document.getElementById('li-email').value.trim();
   const pass=document.getElementById('li-pass').value;
-  const user=users.find(u=>u.email===email&&u.pass===pass);
+  if(!email||!pass){showToast('Ingresa correo y contraseña.',true);return;}
+  let user=users.find(u=>u.email===email&&u.pass===pass);
+  // Allow quick access if no users registered yet (first time on new version)
+  if(!user && users.length===0){
+    user={id:Date.now(),name:email.split('@')[0],email,pass,doctype:'CC',docnum:'',acceptedAt:new Date().toISOString()};
+    users.push(user);saveUsers();
+  }
   if(!user){document.getElementById('login-error').classList.add('show');return;}
   document.getElementById('login-error').classList.remove('show');
   currentUser=user;
@@ -1396,24 +1402,19 @@ function showToast(msg,error=false){
 }
 
 // ── INIT ──────────────────────────────────────────────────────
-// Check existing session
 const savedSession=localStorage.getItem('mt5_session');
 if(savedSession){
   try{
     currentUser=JSON.parse(savedSession);
-    // verify user still exists
-    if(users.find(u=>u.email===currentUser.email)){
-      initApp();showScreen('app');
-    } else {
-      localStorage.removeItem('mt5_session');
-      showScreen('landing');
-    }
-  }catch(e){showScreen('landing');}
+    initApp();
+    showScreen('app');
+  }catch(e){
+    localStorage.removeItem('mt5_session');
+    showScreen('landing');
+  }
 } else {
   showScreen('landing');
 }
-// Check if terms were accepted (show login instead of terms)
-document.querySelector('.login-register a')&&null;
 
 setInterval(()=>{updateStats();updateNext();if(activeTab==='alerts')renderAlerts();},30000);
 </script>
