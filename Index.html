@@ -335,6 +335,16 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:4px;line-height:1;}
 .pw-eye:hover{color:var(--g600);}
 
+/* PATIENT CONTEXT BAR */
+.pt-bar{background:linear-gradient(135deg,var(--g700),var(--g600));padding:10px 22px;display:none;align-items:center;gap:14px;flex-wrap:wrap;}
+.pt-bar.show{display:flex;}
+.pt-bar-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;font-family:Fraunces,serif;flex-shrink:0;}
+.pt-bar-info{flex:1;}
+.pt-bar-name{font-size:13px;font-weight:700;color:#fff;}
+.pt-bar-meta{font-size:11px;color:rgba(255,255,255,0.65);margin-top:1px;}
+.pt-bar-close{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.6);font-size:11px;cursor:pointer;font-family:"Plus Jakarta Sans",sans-serif;}
+.pt-bar-close:hover{color:#fff;border-color:rgba(255,255,255,0.5);}
+
 /* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--g800);border:1.5px solid var(--g600);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;color:#fff;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px;box-shadow:0 8px 24px rgba(13,40,24,0.3);}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -520,6 +530,14 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <button class="tb" onclick="goTab('process')">🤖 Proceso IA</button>
     <button class="tb" onclick="goTab('team')">👥 Equipo</button>
   </div>
+  <div class="pt-bar" id="pt-bar">
+    <div class="pt-bar-av" id="pt-bar-av">?</div>
+    <div class="pt-bar-info">
+      <div class="pt-bar-name" id="pt-bar-name">—</div>
+      <div class="pt-bar-meta" id="pt-bar-meta">—</div>
+    </div>
+    <button class="pt-bar-close" onclick="clearPtContext()">✕ Limpiar filtro</button>
+  </div>
 </header>
 
 <div class="nb hidden" id="nb">
@@ -582,7 +600,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="fh"><div class="fh-ic">💊</div><div><div class="fh-t">Nuevo recordatorio</div><div class="fh-s">Asigna un paciente y programa la hora de toma</div></div></div>
     <div class="fg2">
       <div class="fg" style="grid-column:span 2"><label class="fl">Nombre del medicamento</label><input type="text" id="f-n" placeholder="Ej: Tobramicina 0.3% colirio"/></div>
-      <div class="fg"><label class="fl">Paciente asignado</label><select id="f-pt"><option value="">— Sin asignar —</option></select></div>
+      <div class="fg"><label class="fl">Paciente asignado</label><select id="f-pt" onchange="preloadPt()"><option value="">— Sin asignar —</option></select></div>
       <div class="fg"><label class="fl">Especialidad</label>
         <select id="f-sp"><option>General</option><option>Dermatología</option><option>Oftalmología</option><option>Traumatología</option><option>ORL</option><option>Ginecología</option><option>Neurología</option><option>Cardiología</option><option>Gastroenterología</option></select>
       </div>
@@ -1142,6 +1160,7 @@ function renderPatients(){
         +'</div>'
         +'<div class="pm">💊 '+mc+'</div>'
         +'<button class="btn-curve" onclick="togAdh('+p.id+')">📊 Curva</button>'
+        +'<button class="btn-curve" style="background:var(--g200);border-color:var(--g300)" onclick="setActivePt('+p.id+')">🔗 Ver todo</button>'
         +'<button class="btn-dpt" onclick="delPt('+p.id+')">✕</button>'
       +'</div>'
       +'<div class="adhp" id="adh-'+p.id+'"></div>'
@@ -1277,6 +1296,23 @@ function refreshPtSel(){
     patients.forEach(function(p){ropts+='<option value="'+p.id+'">'+p.name+'</option>';});
     rsel.innerHTML=ropts;
   }
+}
+
+// ── PRELOAD PATIENT INFO ─────────────────────────────────────
+function preloadPt(){
+  var sel=document.getElementById('f-pt'); if(!sel) return;
+  var pid=parseInt(sel.value)||null;
+  if(!pid) return;
+  var pt=patients.find(function(p){return p.id===pid;});
+  if(!pt) return;
+  // Auto-fill specialty
+  var spSel=document.getElementById('f-sp');
+  if(spSel && pt.specialty){
+    for(var i=0;i<spSel.options.length;i++){
+      if(spSel.options[i].value===pt.specialty){spSel.selectedIndex=i;break;}
+    }
+  }
+  toast('👤 Paciente cargado: '+pt.name+(pt.diagnosis?' — '+pt.diagnosis:''));
 }
 
 // ── MEDICATIONS ───────────────────────────────────────────────
@@ -1424,6 +1460,46 @@ function renderRep(){
     +'</tr>';
   });
   tbody.innerHTML=html;
+}
+
+// ── PATIENT CONTEXT ──────────────────────────────────────────
+var activePtId = null;
+
+function setActivePt(id){
+  activePtId = id;
+  var pt=patients.find(function(p){return p.id===id;});
+  if(!pt){clearPtContext();return;}
+  var ini=pt.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+  document.getElementById('pt-bar-av').textContent=ini;
+  document.getElementById('pt-bar-name').textContent=pt.name;
+  var meta=(pt.age!=null?pt.age+' años · ':'')+pt.specialty+(pt.diagnosis?' · '+pt.diagnosis:'')+(pt.phone?' · 📞 '+pt.phone:'');
+  document.getElementById('pt-bar-meta').textContent=meta;
+  document.getElementById('pt-bar').classList.add('show');
+  // Pre-select patient in meds form
+  var fpt=document.getElementById('f-pt');
+  if(fpt){
+    for(var i=0;i<fpt.options.length;i++){
+      if(parseInt(fpt.options[i].value)===id){fpt.selectedIndex=i;break;}
+    }
+    preloadPt();
+  }
+  // Pre-select in report filter
+  var rpt=document.getElementById('rp-pt');
+  if(rpt){
+    for(var i=0;i<rpt.options.length;i++){
+      if(parseInt(rpt.options[i].value)===id){rpt.selectedIndex=i;break;}
+    }
+    renderRep();
+  }
+  toast('👤 Viendo: '+pt.name);
+}
+
+function clearPtContext(){
+  activePtId=null;
+  document.getElementById('pt-bar').classList.remove('show');
+  var fpt=document.getElementById('f-pt'); if(fpt) fpt.selectedIndex=0;
+  var rpt=document.getElementById('rp-pt'); if(rpt) rpt.selectedIndex=0;
+  renderRep(); renderCards(); renderAlerts();
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
