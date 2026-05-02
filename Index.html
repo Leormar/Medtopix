@@ -1102,51 +1102,61 @@ function renderAlerts(){
   const list=document.getElementById('alerts-list');
   if(!list) return;
   const today=todayStr();
-  if(!sorted.length){list.innerHTML=`<div style="padding:36px;text-align:center;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🔕</div><div style="font-weight:600">Sin medicamentos. Ve a 💊 Medicamentos para agregar.</div></div>`;return;}
-  list.innerHTML=sorted.map(med=>{
-    const spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'💊'};
-    const pt=patients.find(p=>p.id===med.patientId);
-    const rec=adherence.find(a=>a.medId===med.id&&a.date===today);
-    const st=getStatus(med);
-    const maxReached=maxDoseReached(med);
-    const stPill={
-      pending:`<span class="sp-pill sp-pending">⏳ Pendiente</span>`,
-      done:`<span class="sp-pill sp-done">✅ Usó med.</span>`,
-      late:`<span class="sp-pill sp-done" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe">🕐 ${rec?rec.actualTime:''}</span>`,
-      no:`<span class="sp-pill sp-overdue">❌ No usó</span>`,
-      overdue:`<span class="sp-pill sp-overdue">⚠️ Vencido</span>`,
-    }[st]||'';
-    const showBtns=!rec;
-    const doseWarn=maxReached&&!rec?`<div class="dose-alert">⚠️ Dosis máxima diaria alcanzada: ${med.maxdose}</div>`:'';
-    return `<div class="alert-row">
-      <div class="alert-time-col"><div class="alert-t">${med.time}</div><div class="alert-freq">${med.freq.split(' ')[0]}</div></div>
-      <div class="alert-bar" style="background:${spec.color}"></div>
-      <div class="alert-info">
-        <div class="alert-name">${spec.icon} ${med.name}</div>
-        ${pt?`<div class="alert-pt">👤 ${pt.name}</div>`:''}
-        <div class="alert-meta">${med.dose||'—'} · ${med.route}${med.maxdose?' · Máx: '+med.maxdose:''}</div>
-        ${doseWarn}
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:150px">
-        ${stPill}
-        ${showBtns&&!maxReached?`<div class="adh-btns">
-          <button class="adh-btn adh-yes" onclick="recordManual(${med.id},'yes')">✅ Usó</button>
-          <button class="adh-btn adh-late" onclick="toggleLateInline(${med.id})">🕐 Otro</button>
-          <button class="adh-btn adh-no" onclick="recordManual(${med.id},'no')">❌ No</button>
-        </div>
-        <div class="late-time-inline" id="late-inline-${med.id}">
-          <input type="time" id="late-t-${med.id}"/>
-          <button onclick="recordLateManual(${med.id})">OK</button>
-        </div>`:
-        rec?`<button class="adh-btn" style="border-color:var(--border);color:var(--muted);font-size:10px" onclick="undoRecord(${med.id})">↩ Deshacer</button>`:
-        `<span style="font-size:10px;color:var(--red);font-weight:700">🚫 Dosis máx.</span>`}
-      </div>
-    </div>`;
+  if(!sorted.length){list.innerHTML='<div style="padding:36px;text-align:center;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🔕</div><div style="font-weight:600">Sin medicamentos. Ve a 💊 Medicamentos para agregar.</div></div>';return;}
+  list.innerHTML=sorted.map(function(med){
+    var spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'💊'};
+    var pt=patients.find(function(p){return p.id===med.patientId;});
+    var rec=adherence.find(function(a){return a.medId===med.id&&a.date===today;});
+    var st=getStatus(med);
+    var maxReached=maxDoseReached(med);
+    var stPillMap={
+      pending:'<span class="sp-pill sp-pending">⏳ Pendiente</span>',
+      done:'<span class="sp-pill sp-done">✅ Usó med.</span>',
+      late:'<span class="sp-pill sp-done" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe">🕐 '+(rec?rec.actualTime:'')+'</span>',
+      no:'<span class="sp-pill sp-overdue">❌ No usó</span>',
+      overdue:'<span class="sp-pill sp-overdue">⚠️ Vencido</span>'
+    };
+    var stPill=stPillMap[st]||'';
+    var showBtns=!rec;
+    var doseWarn=maxReached&&!rec?'<div class="dose-alert">⚠️ Dosis máxima diaria alcanzada: '+med.maxdose+'</div>':'';
+    var ptHtml=pt?'<div class="alert-pt">👤 '+pt.name+'</div>':'';
+    var maxHtml=med.maxdose?'<span> · Máx: '+med.maxdose+'</span>':'';
+    var actionHtml='';
+    if(showBtns&&!maxReached){
+      actionHtml='<div class="adh-btns">'
+        +'<button class="adh-btn adh-yes" onclick="recordManualYes('+med.id+')">✅ Usó</button>'
+        +'<button class="adh-btn adh-late" onclick="toggleLateInline('+med.id+')">🕐 Otro</button>'
+        +'<button class="adh-btn adh-no" onclick="recordManualNo('+med.id+')">❌ No</button>'
+        +'</div>'
+        +'<div class="late-time-inline" id="late-inline-'+med.id+'">'
+        +'<input type="time" id="late-t-'+med.id+'"/>'
+        +'<button onclick="recordLateManual('+med.id+')">OK</button>'
+        +'</div>';
+    } else if(rec){
+      actionHtml='<button class="adh-btn" style="border-color:var(--border);color:var(--muted);font-size:10px" onclick="undoRecord('+med.id+')">↩ Deshacer</button>';
+    } else {
+      actionHtml='<span style="font-size:10px;color:var(--red);font-weight:700">🚫 Dosis máx.</span>';
+    }
+    return '<div class="alert-row">'
+      +'<div class="alert-time-col"><div class="alert-t">'+med.time+'</div><div class="alert-freq">'+med.freq.split(' ')[0]+'</div></div>'
+      +'<div class="alert-bar" style="background:'+spec.color+'"></div>'
+      +'<div class="alert-info">'
+        +'<div class="alert-name">'+spec.icon+' '+med.name+'</div>'
+        +ptHtml
+        +'<div class="alert-meta">'+(med.dose||'—')+' · '+med.route+( med.maxdose?' · Máx: '+med.maxdose:'')+'</div>'
+        +doseWarn
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:150px">'
+        +stPill
+        +actionHtml
+      +'</div>'
+      +'</div>';
   }).join('');
 }
-
 function toggleLateInline(id){document.getElementById('late-inline-'+id).classList.toggle('show');}
 
+function recordManualYes(id){recordManual(id,'yes');}
+function recordManualNo(id){recordManual(id,'no');}
 function recordManual(medId,status,actual){
   const med=meds.find(m=>m.id===medId);if(!med) return;
   if(maxDoseReached(med)&&status!=='no'){showToast('⚠️ Dosis máxima diaria alcanzada.',true);return;}
@@ -1336,7 +1346,7 @@ function renderCards(){
     const rec=adherence.find(a=>a.medId===med.id&&a.date===today);
     const maxR=maxDoseReached(med);
     return `<div class="med-card" style="animation-delay:${i*0.04}s">
-      <div class="card-top" style="background:linear-gradient(135deg,${spec.color},color-mix(in srgb,${spec.color} 60%,#000 40%))">
+      <div class="card-top" style="background:linear-gradient(135deg,${spec.color},${spec.color}cc)">
         <div class="spec-badge">${spec.icon} ${med.specialty}</div>
         <div class="card-st-badge ${st.cls}">${st.lbl}</div>
         <div class="card-name">${med.name}</div>
