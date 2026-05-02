@@ -417,7 +417,10 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="hero-disc">
       <strong>⚠️ Aviso importante:</strong> MedTopix es una herramienta de apoyo al tratamiento prescrito. <strong>No reemplaza al médico tratante ni a ningún profesional de la salud.</strong> Ante dudas, efectos adversos o síntomas nuevos, consulte a su médico inmediatamente.
     </div>
-    <button class="btn-start" onclick="goTerms()">Comenzar →</button>
+    <button class="btn-start" onclick="goStart()">Comenzar →</button>
+    <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.4)">
+      ¿Ya tienes cuenta? <a onclick="show('slo')" style="color:var(--g400);cursor:pointer;font-weight:700">Iniciar sesión</a>
+    </div>
     <div class="hero-feats">
       <div class="feat"><div class="feat-ic">🔔</div><div class="feat-t">Alarmas automáticas</div><div class="feat-d">Alertas visuales y sonoras a la hora exacta de cada toma</div></div>
       <div class="feat"><div class="feat-ic">📊</div><div class="feat-t">Curva de adherencia</div><div class="feat-d">14 días de cumplimiento por paciente en tiempo real</div></div>
@@ -431,6 +434,9 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
   <div class="tw">
     <div class="t-title">Términos y Condiciones</div>
     <div class="t-sub">Por favor lea atentamente. Solo se solicitará una vez.</div>
+    <div style="margin-bottom:16px;font-size:13px;color:var(--muted)">
+      ¿Ya tienes cuenta? <a onclick="show('slo')" style="color:var(--g600);cursor:pointer;font-weight:700">Iniciar sesión aquí</a>
+    </div>
     <div class="t-box">
       <h4>1. Propósito</h4>
       <p>MedTopix es una herramienta digital de apoyo al cumplimiento de tratamientos con medicamentos tópicos, desarrollada con fines académicos (OBS Business School). NO reemplaza la consulta médica ni el criterio del profesional de la salud.</p>
@@ -747,7 +753,15 @@ function show(id){
   el.style.display='';
 }
 
-function goTerms(){show('st');}
+function goStart(){
+  // If user has session go straight to app
+  var saved=localStorage.getItem('mt6_s');
+  if(saved){ try{curUser=JSON.parse(saved);initApp();show('sa');return;}catch(e){} }
+  // If accounts exist, go to login
+  if(users.length>0){ show('slo'); }
+  else { show('st'); }
+}
+function goTerms(){ show('st'); }
 
 // ── TERMS ─────────────────────────────────────────────────────
 function chkReady(){
