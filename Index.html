@@ -19,6 +19,7 @@ html{scroll-behavior:smooth;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 .screen{display:none;min-height:100vh;}
 .screen.active{display:block;}
+#slo.active{display:flex;}
 
 /* LANDING */
 #sl{background:var(--g900);color:#fff;}
@@ -59,7 +60,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .btn-accept:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 
 /* LOGIN */
-#slo{background:var(--g900);display:flex;align-items:center;justify-content:center;}
+#slo{background:var(--g900);align-items:center;justify-content:center;}
 .lb{background:var(--white);border-radius:20px;padding:38px 34px;max-width:390px;width:92%;box-shadow:0 16px 48px rgba(0,0,0,0.3);}
 .lb-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:22px;}
 .lb-name{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:900;color:var(--g800);}
@@ -328,6 +329,12 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .fbl{display:flex;gap:14px;}
 .fbl a{color:rgba(255,255,255,0.3);font-size:10px;text-decoration:none;}
 
+/* PASSWORD TOGGLE */
+.pw-wrap{position:relative;width:100%;}
+.pw-wrap input{padding-right:40px;}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:4px;line-height:1;}
+.pw-eye:hover{color:var(--g600);}
+
 /* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--g800);border:1.5px solid var(--g600);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;color:#fff;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px;box-shadow:0 8px 24px rgba(13,40,24,0.3);}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -450,7 +457,11 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
         </div>
         <div class="fg"><label class="fl">Número de documento</label><input type="text" class="fi" id="tc-dn" placeholder="Ej: 1234567890"/></div>
         <div class="fg"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="tc-e" placeholder="correo@gmail.com"/></div>
-        <div class="fg"><label class="fl">Contraseña</label><input type="password" class="fi" id="tc-p" placeholder="Mínimo 6 caracteres"/></div>
+        <div class="fg"><label class="fl">Contraseña</label>
+<div class="pw-wrap">
+  <input type="password" class="fi" id="tc-p" placeholder="Mínimo 6 caracteres"/>
+  <button type="button" class="pw-eye" onclick="togPw('tc-p',this)" title="Mostrar/ocultar">👁️</button>
+</div></div>
       </div>
       <label class="t-chk"><input type="checkbox" id="tc-c1" onchange="chkReady()"/><span>He leído y acepto los Términos y Condiciones de MedTopix, incluyendo la política de datos conforme a la Ley 1581 de 2012.</span></label>
       <label class="t-chk"><input type="checkbox" id="tc-c2" onchange="chkReady()"/><span>Entiendo que MedTopix <strong>NO reemplaza al médico tratante</strong> ni a ningún profesional de salud.</span></label>
@@ -470,7 +481,11 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="lb-sub">Ingresa con tu correo y contraseña</div>
     <div class="lb-err" id="lb-err">Correo o contraseña incorrectos.</div>
     <div class="fg" style="margin-bottom:12px"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="li-e" placeholder="correo@gmail.com"/></div>
-    <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label><input type="password" class="fi" id="li-p" placeholder="Tu contraseña"/></div>
+    <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label>
+<div class="pw-wrap">
+  <input type="password" class="fi" id="li-p" placeholder="Tu contraseña"/>
+  <button type="button" class="pw-eye" onclick="togPw('li-p',this)" title="Mostrar/ocultar">👁️</button>
+</div></div>
     <button class="btn-login" onclick="doLogin()">Entrar</button>
     <div class="lb-div">¿No tienes cuenta?</div>
     <div class="lb-reg"><a onclick="goTerms()">Crear cuenta nueva</a></div>
@@ -723,8 +738,13 @@ function sU(){localStorage.setItem('mt6_u', JSON.stringify(users));}
 
 // ── SCREENS ───────────────────────────────────────────────────
 function show(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(function(s){
+    s.classList.remove('active');
+    s.style.display='none';
+  });
+  var el=document.getElementById(id);
+  el.classList.add('active');
+  el.style.display='';
 }
 
 function goTerms(){show('st');}
@@ -1398,6 +1418,21 @@ function toast(msg, err){
   el.textContent=msg;
   el.className='toast show'+(err?' err':'');
   setTimeout(function(){el.className='toast';},3200);
+}
+
+// ── PASSWORD TOGGLE ─────────────────────────────────────────
+function togPw(id, btn){
+  var el=document.getElementById(id);
+  if(!el) return;
+  if(el.type==='password'){
+    el.type='text';
+    btn.textContent='🙈';
+    btn.title='Ocultar contraseña';
+  } else {
+    el.type='password';
+    btn.textContent='👁️';
+    btn.title='Mostrar contraseña';
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────
