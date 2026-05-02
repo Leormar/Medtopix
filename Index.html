@@ -371,7 +371,32 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:16px 28px;text
 <header>
   <div class="header-top">
     <div class="logo">
-      <div class="logo-icon">💊</div>
+      <div class="logo-icon" style="width:48px;height:48px;background:none;padding:0;overflow:visible;">
+        <svg viewBox="0 0 100 100" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+          <!-- bg circle -->
+          <circle cx="50" cy="50" r="48" fill="#1a4a2e"/>
+          <circle cx="50" cy="50" r="42" fill="#1e6b3a"/>
+          <!-- clock face -->
+          <circle cx="50" cy="50" r="29" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="2"/>
+          <!-- hour marks -->
+          <line x1="50" y1="23" x2="50" y2="28" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="50" y1="72" x2="50" y2="77" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="23" y1="50" x2="28" y2="50" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="72" y1="50" x2="77" y2="50" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- hands -->
+          <line x1="50" y1="50" x2="50" y2="30" stroke="#1a4a2e" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="50" y1="50" x2="64" y2="57" stroke="#c97a20" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- center -->
+          <circle cx="50" cy="50" r="3" fill="#1a4a2e"/>
+          <circle cx="50" cy="50" r="1.5" fill="#f0b862"/>
+          <!-- pill -->
+          <g transform="translate(62,62) rotate(-35)">
+            <rect x="0" y="0" width="30" height="13" rx="6.5" fill="#f0b862"/>
+            <rect x="15" y="0" width="15" height="13" rx="6.5" fill="#2d8a4e"/>
+            <line x1="15" y1="0" x2="15" y2="13" stroke="#fff" stroke-width="1" opacity="0.5"/>
+          </g>
+        </svg>
+      </div>
       <div>
         <div class="logo-name">MedTopix</div>
         <div class="logo-sub">Recordatorio · Medicamentos Tópicos</div>
@@ -548,7 +573,24 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:16px 28px;text
   <div class="team-card">
     <div class="team-hdr">
       <div style="display:flex;align-items:center;gap:12px">
-        <div class="logo-icon">💊</div>
+        <svg viewBox="0 0 100 100" width="44" height="44" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+          <circle cx="50" cy="50" r="48" fill="#1a4a2e"/>
+          <circle cx="50" cy="50" r="42" fill="#1e6b3a"/>
+          <circle cx="50" cy="50" r="29" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="2"/>
+          <line x1="50" y1="23" x2="50" y2="28" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="50" y1="72" x2="50" y2="77" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="23" y1="50" x2="28" y2="50" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="72" y1="50" x2="77" y2="50" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="50" y1="50" x2="50" y2="30" stroke="#1a4a2e" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="50" y1="50" x2="64" y2="57" stroke="#c97a20" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="3" fill="#1a4a2e"/>
+          <circle cx="50" cy="50" r="1.5" fill="#f0b862"/>
+          <g transform="translate(62,62) rotate(-35)">
+            <rect x="0" y="0" width="30" height="13" rx="6.5" fill="#f0b862"/>
+            <rect x="15" y="0" width="15" height="13" rx="6.5" fill="#2d8a4e"/>
+            <line x1="15" y1="0" x2="15" y2="13" stroke="#fff" stroke-width="1" opacity="0.5"/>
+          </g>
+        </svg>
         <div>
           <div style="font-family:'Fraunces',serif;font-size:1.15rem;font-weight:900;color:var(--g800)">MedTopix</div>
           <div style="font-size:10px;color:var(--muted);margin-top:1px">Máster en Salud Digital e IA · OBS Business School · Mayo 2025</div>
