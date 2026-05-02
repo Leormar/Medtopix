@@ -1201,34 +1201,51 @@ function toggleAdhPanel(ptId){
 }
 
 function renderPatients(){
-  const el=document.getElementById('patients-list');
+  var el=document.getElementById('patients-list');
   if(!el) return;
-  if(!patients.length){el.innerHTML=`<div class="empty-state"><div class="empty-circle">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">Registra el primer paciente arriba.</div></div>`;return;}
-  el.innerHTML=patients.map(p=>{
-    const mc=meds.filter(r=>r.patientId===p.id).length;
-    const ini=p.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-    const ptAdh=adherence.filter(a=>a.patientId===p.id);
-    const pct=ptAdh.length?Math.round(ptAdh.filter(a=>a.status!=='no').length/ptAdh.length*100):null;
-    return `<div>
-    <div class="pt-card">
-      <div class="pt-avatar">${ini}</div>
-      <div class="pt-info">
-        <div class="pt-name">${p.name}</div>
-        <div class="pt-details">${p.age!=null?p.age+' años · ':''}${p.specialty}${p.diagnosis?' · '+p.diagnosis:''}</div>
-        ${p.dob?`<div class="pt-details">🎂 ${p.dob}</div>`:''}
-        ${p.phone?`<div class="pt-details">📞 ${p.phone}</div>`:''}
-        ${p.obs?`<div class="pt-details" style="font-size:10px">📌 ${p.obs}</div>`:''}
-        ${pct!==null?`<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:${pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626'}"><span>Adherencia: ${pct}%</span><span>${ptAdh.length} registros</span></div><div style="height:5px;background:var(--border);border-radius:3px;margin-top:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${pct>=80?'#16a34a':pct>=50?'#d97706':'#dc2626'};border-radius:3px;transition:width 0.6s"></div></div></div>`:''}
-      </div>
-      <div class="pt-meds">💊 ${mc}</div>
-      <button class="btn-view-adh" onclick="toggleAdhPanel(${p.id})">📊 Curva</button>
-      <button class="btn-del-pt" onclick="deletePt(${p.id})">✕</button>
-    </div>
-    <div class="adh-panel" id="adh-${p.id}"></div>
-    </div>`;
-  }).join('');
+  if(!patients.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-circle">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">Registra el primer paciente arriba.</div></div>';
+    return;
+  }
+  var html='';
+  patients.forEach(function(p){
+    var mc=meds.filter(function(r){return r.patientId===p.id;}).length;
+    var ini=p.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+    var ptAdh=adherence.filter(function(a){return a.patientId===p.id;});
+    var pct=ptAdh.length?Math.round(ptAdh.filter(function(a){return a.status!=='no';}).length/ptAdh.length*100):null;
+    var pctHtml='';
+    if(pct!==null){
+      var pctColor=pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626';
+      var pctBg=pct>=80?'#16a34a':pct>=50?'#d97706':'#dc2626';
+      pctHtml='<div style="margin-top:6px">'
+        +'<div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:'+pctColor+'">'
+          +'<span>Adherencia: '+pct+'%</span><span>'+ptAdh.length+' registros</span>'
+        +'</div>'
+        +'<div style="height:5px;background:var(--border);border-radius:3px;margin-top:3px;overflow:hidden">'
+          +'<div style="height:100%;width:'+pct+'%;background:'+pctBg+';border-radius:3px;transition:width 0.6s"></div>'
+        +'</div>'
+      +'</div>';
+    }
+    var dobHtml=p.dob?'<div class="pt-details">🎂 '+p.dob+'</div>':'';
+    var phoneHtml=p.phone?'<div class="pt-details">📞 '+p.phone+'</div>':'';
+    var obsHtml=p.obs?'<div class="pt-details" style="font-size:10px">📌 '+p.obs+'</div>':'';
+    html+='<div>'
+      +'<div class="pt-card">'
+        +'<div class="pt-avatar">'+ini+'</div>'
+        +'<div class="pt-info">'
+          +'<div class="pt-name">'+p.name+'</div>'
+          +'<div class="pt-details">'+(p.age!=null?p.age+' años · ':'')+p.specialty+(p.diagnosis?' · '+p.diagnosis:'')+'</div>'
+          +dobHtml+phoneHtml+obsHtml+pctHtml
+        +'</div>'
+        +'<div class="pt-meds">💊 '+mc+'</div>'
+        +'<button class="btn-view-adh" onclick="toggleAdhPanel('+p.id+')">📊 Curva</button>'
+        +'<button class="btn-del-pt" onclick="deletePt('+p.id+')">✕</button>'
+      +'</div>'
+      +'<div class="adh-panel" id="adh-'+p.id+'"></div>'
+    +'</div>';
+  });
+  el.innerHTML=html;
 }
-
 function renderAdhPanel(ptId){
   const pt=patients.find(p=>p.id===ptId);if(!pt) return;
   const ptAdh=adherence.filter(a=>a.patientId===ptId).sort((a,b)=>a.ts-b.ts);
@@ -1254,11 +1271,7 @@ function renderAdhPanel(ptId){
     </div>
     <div class="adh-chart-wrap"><div class="adh-chart-title">Últimos 14 días</div><canvas id="chart-${ptId}" height="160"></canvas></div>
     <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Historial reciente</div>
-    ${ptAdh.slice(-8).reverse().map(a=>`<div class="adh-hist-row ${a.status==='yes'?'adh-hist-ok':a.status==='late'?'adh-hist-late':'adh-hist-no'}">
-      <div style="font-size:14px">${a.status==='yes'?'✅':a.status==='late'?'🕐':'❌'}</div>
-      <div style="flex:1"><div style="font-size:12px;font-weight:700">${a.medName||'Medicamento'}</div><div style="font-size:10px;color:var(--muted)">${a.date} · ${a.scheduledTime}${a.status==='late'?' → '+a.actualTime:''}</div></div>
-      <div style="font-size:10px;font-weight:700;color:${ADH_COLORS[a.status]}">${ADH_LABELS[a.status]}</div>
-    </div>`).join('')}
+    ${(function(){var histHtml='';ptAdh.slice(-8).reverse().forEach(function(a){var cls=a.status==='yes'?'adh-hist-ok':a.status==='late'?'adh-hist-late':'adh-hist-no';var icon=a.status==='yes'?'✅':a.status==='late'?'🕐':'❌';histHtml+='<div class="adh-hist-row '+cls+'"><div style="font-size:14px">'+icon+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700">'+(a.medName||'Medicamento')+'</div><div style="font-size:10px;color:var(--muted)">'+a.date+' · '+a.scheduledTime+(a.status==='late'?' → '+a.actualTime:'')+'</div></div><div style="font-size:10px;font-weight:700;color:'+ADH_COLORS[a.status]+'">'+ADH_LABELS[a.status]+'</div></div>';});return histHtml;}())}
   </div>`;
   setTimeout(()=>drawChart('chart-'+ptId,dayData),50);
 }
@@ -1335,48 +1348,71 @@ function renderSpecFilter(){
 const STMAP={pending:{lbl:'Pendiente',cls:'st-pending'},done:{lbl:'Tomado ✓',cls:'st-done'},late:{lbl:'Otro horario',cls:'st-done'},overdue:{lbl:'¡Vencido!',cls:'st-overdue'},no:{lbl:'No usó',cls:'st-overdue'}};
 
 function renderCards(){
-  const filtered=activeFilter==='all'?meds:meds.filter(r=>r.specialty===activeFilter);
-  const today=todayStr();
-  const grid=document.getElementById('cards-grid');if(!grid)return;
-  if(!filtered.length){grid.innerHTML=`<div class="empty-state"><div class="empty-circle">💊</div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Usa el formulario de arriba.</div></div>`;return;}
-  grid.innerHTML=filtered.map((med,i)=>{
-    const spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'🩺'};
-    const st=STMAP[getStatus(med)]||STMAP.pending;
-    const pt=patients.find(p=>p.id===med.patientId);
-    const rec=adherence.find(a=>a.medId===med.id&&a.date===today);
-    const maxR=maxDoseReached(med);
-    return `<div class="med-card" style="animation-delay:${i*0.04}s">
-      <div class="card-top" style="background:linear-gradient(135deg,${spec.color},${spec.color}cc)">
-        <div class="spec-badge">${spec.icon} ${med.specialty}</div>
-        <div class="card-st-badge ${st.cls}">${st.lbl}</div>
-        <div class="card-name">${med.name}</div>
-        ${pt?`<div class="card-pt-tag">👤 ${pt.name}</div>`:''}
-        <div class="card-route">${RICONS[med.route]||'💊'} ${med.route}</div>
-      </div>
-      <div class="card-body">
-        <div class="time-row"><span style="font-size:1.2rem">🕐</span><span class="time-val">${med.time}</span><span class="time-freq">${med.freq}</span></div>
-        ${med.maxdose?`<div class="dose-max-row">⚠️ Dosis máx. diaria: ${med.maxdose}${maxR?' — <strong>ALCANZADA HOY</strong>':''}</div>`:''}
-        <div class="meta-row">
-          <div><span class="ml">Dosis</span><span class="mv">${med.dose||'—'}</span></div>
-          <div><span class="ml">Estado</span><span class="mv" style="color:${getStatus(med)==='done'||getStatus(med)==='late'?'#16a34a':'#dc2626'}">${st.lbl}</span></div>
-        </div>
-        ${rec&&getStatus(med)==='late'?`<div style="font-size:11px;color:#2563eb;background:#eff6ff;border-radius:6px;padding:6px 10px;margin-bottom:9px">🕐 Tomado a las ${rec.actualTime}</div>`:''}
-        ${med.notes?`<div class="card-notes">📌 ${med.notes}</div>`:''}
-        <div class="card-actions">
-          <button class="btn-edit-c" onclick="toggleEditInline(${med.id})">✏️ Editar</button>
-          <button class="btn-del-c" onclick="deleteMed(${med.id})">✕</button>
-        </div>
-        <div class="edit-inline" id="edit-inline-${med.id}">
-          <div style="font-size:10px;font-weight:700;color:var(--g700);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">✏️ Editar medicamento</div>
-          <div class="edit-inline-row"><input type="text" id="edit-name-${med.id}" value="${med.name.replace(/"/g,'&quot;')}" placeholder="Nombre"/></div>
-          <div class="edit-inline-row"><input type="text" id="edit-dose-${med.id}" value="${med.dose||''}" placeholder="Dosis"/></div>
-          <div style="display:flex;gap:6px"><button class="btn-save-edit" onclick="saveEdit(${med.id})">✅ Guardar</button><button class="btn-cancel-edit" onclick="toggleEditInline(${med.id})">Cancelar</button></div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+  var filtered=activeFilter==='all'?meds:meds.filter(function(r){return r.specialty===activeFilter;});
+  var today=todayStr();
+  var grid=document.getElementById('cards-grid');
+  if(!grid) return;
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty-state"><div class="empty-circle">💊</div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Usa el formulario de arriba.</div></div>';
+    return;
+  }
+  var html='';
+  filtered.forEach(function(med,i){
+    var spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'🩺'};
+    var st=STMAP[getStatus(med)]||STMAP.pending;
+    var pt=patients.find(function(p){return p.id===med.patientId;});
+    var rec=adherence.find(function(a){return a.medId===med.id&&a.date===today;});
+    var maxR=maxDoseReached(med);
+    var ptTag=pt?'<div class="card-pt-tag">👤 '+pt.name+'</div>':'';
+    var maxDoseHtml='';
+    if(med.maxdose){
+      maxDoseHtml='<div class="dose-max-row">⚠️ Dosis máx: '+med.maxdose+(maxR?' — <strong>ALCANZADA HOY</strong>':'')+'</div>';
+    }
+    var lateHtml='';
+    if(rec&&getStatus(med)==='late'){
+      lateHtml='<div style="font-size:11px;color:#2563eb;background:#eff6ff;border-radius:6px;padding:6px 10px;margin-bottom:9px">🕐 Tomado a las '+rec.actualTime+'</div>';
+    }
+    var notesHtml=med.notes?'<div class="card-notes">📌 '+med.notes+'</div>':'';
+    var stColor=getStatus(med)==='done'||getStatus(med)==='late'?'#16a34a':'#dc2626';
+    html+='<div class="med-card" style="animation-delay:'+(i*0.04)+'s">'
+      +'<div class="card-top" style="background:linear-gradient(160deg,'+spec.color+','+spec.color+'99)">'
+        +'<div class="spec-badge">'+spec.icon+' '+med.specialty+'</div>'
+        +'<div class="card-st-badge '+st.cls+'">'+st.lbl+'</div>'
+        +'<div class="card-name">'+med.name+'</div>'
+        +ptTag
+        +'<div class="card-route">'+(RICONS[med.route]||'💊')+' '+med.route+'</div>'
+      +'</div>'
+      +'<div class="card-body">'
+        +'<div class="time-row"><span style="font-size:1.2rem">🕐</span><span class="time-val">'+med.time+'</span><span class="time-freq">'+med.freq+'</span></div>'
+        +maxDoseHtml
+        +'<div class="meta-row">'
+          +'<div><span class="ml">Dosis</span><span class="mv">'+(med.dose||'—')+'</span></div>'
+          +'<div><span class="ml">Estado</span><span class="mv" style="color:'+stColor+'">'+st.lbl+'</span></div>'
+        +'</div>'
+        +lateHtml
+        +notesHtml
+        +'<div class="card-actions">'
+          +'<button class="btn-edit-c" onclick="toggleEditInline('+med.id+')">✏️ Editar</button>'
+          +'<button class="btn-del-c" onclick="deleteMed('+med.id+')">✕</button>'
+        +'</div>'
+        +'<div class="edit-inline" id="edit-inline-'+med.id+'">'
+          +'<div style="font-size:10px;font-weight:700;color:var(--g700);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">✏️ Editar medicamento</div>'
+          +'<div class="edit-inline-row"><input type="text" id="edit-name-'+med.id+'" placeholder="Nombre"/></div>'
+          +'<div class="edit-inline-row"><input type="text" id="edit-dose-'+med.id+'" placeholder="Dosis"/></div>'
+          +'<div style="display:flex;gap:6px"><button class="btn-save-edit" onclick="saveEdit('+med.id+')">✅ Guardar</button><button class="btn-cancel-edit" onclick="toggleEditInline('+med.id+')">Cancelar</button></div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  });
+  grid.innerHTML=html;
+  // Set edit field values after render
+  filtered.forEach(function(med){
+    var nameEl=document.getElementById('edit-name-'+med.id);
+    var doseEl=document.getElementById('edit-dose-'+med.id);
+    if(nameEl) nameEl.value=med.name;
+    if(doseEl) doseEl.value=med.dose||'';
+  });
 }
-
 // ── REPORT ─────────────────────────────────────────────────────
 function renderReport(){
   const ptFilter=document.getElementById('rp-patient')?.value||'';
