@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MedTopix · Recordatorio de Medicamentos</title>
+<meta name="theme-color" content="#1a4a2e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="MedTopix"/>
+<link rel="manifest" href="manifest.json"/>
+<!-- Apple touch icons -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a4a2e'/><circle cx='50' cy='50' r='30' fill='%23f0f7f2' stroke='%232d8a4e' stroke-width='2'/><line x1='50' y1='50' x2='50' y2='28' stroke='%231a4a2e' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='50' x2='65' y2='58' stroke='%23c97a20' stroke-width='2.5' stroke-linecap='round'/></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -719,6 +726,37 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     </div>
   </div>
 </footer>
+<!-- NOTIFICATION PERMISSION BANNER -->
+<div id="notif-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:var(--g800);border:1.5px solid var(--g500);border-radius:14px;padding:16px 20px;max-width:420px;width:92%;box-shadow:0 8px 32px rgba(13,40,24,0.4);align-items:center;gap:14px;flex-wrap:wrap;">
+  <div style="font-size:1.8rem">🔔</div>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700;color:#fff">Activar alertas en tu dispositivo</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Recibe notificaciones aunque la app esté en segundo plano. En iPhone con la app instalada, también en tu Apple Watch ⌚</div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%">
+    <button onclick="requestNotif()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✅ Activar alertas</button>
+    <button onclick="document.getElementById('notif-banner').style.display='none'" style="padding:10px 14px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;">Ahora no</button>
+  </div>
+</div>
+
+<!-- iOS INSTALL TIP -->
+<div id="install-tip" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:500;background:var(--g900);border:1.5px solid var(--g400);border-radius:14px;padding:16px 20px;max-width:380px;width:92%;box-shadow:0 8px 32px rgba(13,40,24,0.4);flex-direction:column;gap:10px;">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="font-size:1.5rem">⌚</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#fff">Instala MedTopix en tu iPhone</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Para recibir alertas en tu Apple Watch</div>
+    </div>
+    <button onclick="closeInstallTip()" style="margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;">✕</button>
+  </div>
+  <div style="background:rgba(255,255,255,0.06);border-radius:9px;padding:12px;font-size:12px;color:rgba(255,255,255,0.7);line-height:1.7">
+    1. Toca <strong style="color:var(--g400)">⬆️ Compartir</strong> en Safari<br>
+    2. Selecciona <strong style="color:var(--g400)">"Añadir a pantalla de inicio"</strong><br>
+    3. Abre MedTopix desde tu pantalla de inicio<br>
+    4. Las alertas llegarán automáticamente a tu ⌚ Apple Watch
+  </div>
+</div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -832,6 +870,74 @@ function initApp(){
   document.getElementById('un').textContent = curUser.name.split(' ')[0];
   renderAlerts(); refreshPtSel(); renderRep();
   startAlarms();
+  // Register service worker for background notifications
+  registerSW();
+  // Auto-request notifications if not yet decided
+  if(Notification.permission==='default'){
+    setTimeout(askNotifPermission, 1500);
+  }
+}
+
+function registerSW(){
+  if(!('serviceWorker' in navigator)) return;
+  // Inline service worker as blob
+  var swCode = [
+    'self.addEventListener("push", function(e){',
+    '  var data=e.data?e.data.json():{title:"MedTopix",body:"Hora de tu medicamento"};',
+    '  e.waitUntil(self.registration.showNotification(data.title,{',
+    '    body:data.body,icon:"/icon.png",badge:"/icon.png",',
+    '    vibrate:[200,100,200],tag:"medtopix-alarm",renotify:true',
+    '  }));',
+    '});',
+    'self.addEventListener("notificationclick",function(e){',
+    '  e.notification.close();',
+    '  e.waitUntil(clients.openWindow("/"));',
+    '});'
+  ].join("\n");
+  var blob = new Blob([swCode], {type:"application/javascript"});
+  var swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).then(function(reg){
+    console.log("MedTopix SW registered");
+    window._swReg = reg;
+  }).catch(function(e){console.log("SW error:",e);});
+}
+
+function askNotifPermission(){
+  if(Notification.permission!=='default') return;
+  // Show in-app banner instead of direct browser prompt
+  showNotifBanner();
+}
+
+function showNotifBanner(){
+  var banner=document.getElementById('notif-banner');
+  if(banner) banner.style.display='flex';
+}
+
+function requestNotif(){
+  Notification.requestPermission().then(function(result){
+    var banner=document.getElementById('notif-banner');
+    if(banner) banner.style.display='none';
+    if(result==='granted'){
+      toast('✅ Notificaciones activadas. Recibirás alertas en tu dispositivo y Apple Watch.');
+      // Show install PWA tip on iOS
+      var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+      if(isIOS && !window.navigator.standalone){
+        setTimeout(showInstallTip, 1000);
+      }
+    } else {
+      toast('Las alarmas sonarán solo si la app está abierta.', true);
+    }
+  });
+}
+
+function showInstallTip(){
+  var tip=document.getElementById('install-tip');
+  if(tip) tip.style.display='flex';
+}
+
+function closeInstallTip(){
+  var tip=document.getElementById('install-tip');
+  if(tip) tip.style.display='none';
 }
 
 // ── CLOCK ─────────────────────────────────────────────────────
@@ -895,7 +1001,7 @@ function triggerAlarm(med){
   document.getElementById('lp').classList.remove('show');
   document.getElementById('alo').classList.remove('hidden');
   beep();
-  if(Notification.permission==='granted') new Notification('MedTopix 💊',{body:'Hora de: '+med.name+(pt?' — '+pt.name:'')});
+  sendNotification('💊 Hora de tu medicamento', med.name+(pt?' — 👤 '+pt.name:'')+' | '+med.time+(med.dose?' · '+med.dose:''));
 }
 
 function showLP(){ document.getElementById('lp').classList.toggle('show'); }
@@ -920,6 +1026,25 @@ function snooze(){
   document.getElementById('alo').classList.add('hidden');
   curAlarm = null;
   toast('⏰ Pospuesto 10 minutos.');
+}
+
+function sendNotification(title, body){
+  if(Notification.permission!=='granted') return;
+  // Try via service worker first (works in background + Apple Watch)
+  if(window._swReg && window._swReg.showNotification){
+    window._swReg.showNotification(title,{
+      body:body,
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%231a4a2e"/><text y="70" font-size="60" text-anchor="middle" x="50">💊</text></svg>',
+      vibrate:[300,100,300,100,300],
+      tag:'medtopix-alarm',
+      renotify:true,
+      requireInteraction:true
+    });
+  } else {
+    // Fallback to basic notification
+    var n=new Notification(title,{body:body});
+    setTimeout(function(){n.close();},8000);
+  }
 }
 
 function beep(){
