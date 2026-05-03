@@ -515,7 +515,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     </div>
     <div class="lb-title">Iniciar sesión</div>
     <div class="lb-sub">Ingresa con tu correo y contraseña</div>
-    <div class="lb-err" id="lb-err">Correo o contraseña incorrectos.</div>
+    <div class="lb-err" id="lb-err">Usuario no encontrado en este dispositivo.</div>
     <div class="fg" style="margin-bottom:12px"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="li-e" placeholder="correo@gmail.com"/></div>
     <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label>
 <div class="pw-wrap">
@@ -523,7 +523,11 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
   <button type="button" class="pw-eye" onclick="togPw('li-p',this)" title="Mostrar/ocultar">👁️</button>
 </div></div>
     <button class="btn-login" onclick="doLogin()">Entrar</button>
-    <div class="lb-div">¿No tienes cuenta?</div>
+    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:11px;color:#92400e;margin:12px 0;line-height:1.5;">
+  <strong>📱 ¿Usas otro dispositivo?</strong><br>
+  Los datos se guardan localmente. Usa la pestaña <strong>🔄 Sync</strong> para transferir tu cuenta entre dispositivos.
+</div>
+<div class="lb-div">¿No tienes cuenta?</div>
     <div class="lb-reg"><a onclick="goTerms()">Crear cuenta nueva</a></div>
   </div>
 </div>
@@ -611,6 +615,9 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="ff"><button class="btn-add" onclick="addPt()">➕ Registrar paciente</button><span class="hint">Datos guardados localmente</span></div>
   </div>
   <div class="st"><div class="si">👥</div>Pacientes y adherencia</div>
+  <div style="margin-bottom:14px;">
+    <button onclick="exportPatients()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#9c27b0,#ba68c8);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">📥 Exportar listado de pacientes CSV</button>
+  </div>
   <div class="pl" id="pl"></div>
 </div>
 
@@ -646,6 +653,10 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <!-- REPORTE -->
 <div class="tp" id="tp-report">
   <div class="st"><div class="si">📋</div>Reporte de adherencia</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <button onclick="exportAdherence()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#16a34a,#5fc97e);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">📥 Exportar adherencia CSV</button>
+    <button onclick="exportMeds()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">📥 Exportar medicamentos CSV</button>
+  </div>
   <div class="fc">
     <div class="fh"><div class="fh-ic">🔍</div><div><div class="fh-t">Filtros</div><div class="fh-s">Filtra por paciente, fecha y estado</div></div></div>
     <div class="rfi">
@@ -890,7 +901,11 @@ function acceptTerms(){
   var p = document.getElementById('tc-p').value;
   if(!n||!dn||!e||!p){toast('Completa todos los campos.',true);return;}
   if(p.length<6){toast('Contraseña mínimo 6 caracteres.',true);return;}
-  if(users.find(function(u){return u.e===e;})){toast('Este correo ya está registrado.',true);return;}
+  if(users.find(function(u){return u.e===e;})){
+    toast('Ya tienes una cuenta en este dispositivo. Ve a Iniciar sesión.',true);
+    setTimeout(function(){show('slo');},1500);
+    return;
+  }
   var u = {id:Date.now(),name:n,doctype:document.getElementById('tc-dt').value,docnum:dn,e:e,p:p,at:new Date().toISOString()};
   users.push(u); sU();
   curUser = u;
@@ -904,10 +919,19 @@ function doLogin(){
   var e = document.getElementById('li-e').value.trim();
   var p = document.getElementById('li-p').value;
   if(!e||!p){toast('Ingresa correo y contraseña.',true);return;}
+  // Check local users first
   var u = users.find(function(x){return x.e===e && x.p===p;});
   if(!u){
-    document.getElementById('lb-err').classList.add('show');
-    return;
+    // If no local users exist, create profile automatically (first time on this device)
+    if(users.length===0){
+      u={id:Date.now(),name:e.split('@')[0],e:e,p:p,doctype:'CC',docnum:'',at:new Date().toISOString()};
+      users.push(u); sU();
+      toast('✅ Perfil creado en este dispositivo.');
+    } else {
+      document.getElementById('lb-err').classList.add('show');
+      document.getElementById('lb-err').textContent='Usuario no encontrado en este dispositivo. Usa 🔄 Sync para importar tu cuenta desde otro dispositivo, o crea una cuenta nueva.';
+      return;
+    }
   }
   document.getElementById('lb-err').classList.remove('show');
   curUser = u;
@@ -1752,6 +1776,82 @@ function importData(){
   } catch(e){
     toast('Error al leer el código. Verifica que esté completo.',true);
   }
+}
+
+// ── EXPORT CSV ───────────────────────────────────────────────
+function exportCSV(rows, headers, filename){
+  var csv = headers.join(',') + '\n';
+  rows.forEach(function(row){
+    csv += row.map(function(cell){
+      var val = cell===null||cell===undefined ? '' : String(cell);
+      // Escape quotes and wrap in quotes if contains comma/newline
+      val = val.replace(/"/g,'""');
+      if(val.indexOf(',')>=0||val.indexOf('"')>=0||val.indexOf('\n')>=0) val='"'+val+'"';
+      return val;
+    }).join(',') + '\n';
+  });
+  var blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✅ '+filename+' descargado.');
+}
+
+function exportPatients(){
+  if(!patients.length){toast('Sin pacientes para exportar.',true);return;}
+  var headers=['Nombre','Fecha Nacimiento','Edad','Identificacion','Especialidad','Diagnostico','Telefono','Observaciones','Medicamentos Asignados','Adherencia %','Fecha Registro'];
+  var rows = patients.map(function(p){
+    var mc = meds.filter(function(r){return r.patientId===p.id;}).length;
+    var ptAdh = adherence.filter(function(a){return a.patientId===p.id;});
+    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return a.status!=='no';}).length/ptAdh.length*100) : '';
+    return [
+      p.name, p.dob||'', p.age!=null?p.age+'':'', p.idNum||'',
+      p.specialty||'', p.diagnosis||'', p.phone||'', p.obs||'',
+      mc, pct!==''?pct+'%':'Sin registros',
+      p.createdAt?p.createdAt.split('T')[0]:''
+    ];
+  });
+  exportCSV(rows, headers, 'MedTopix_Pacientes_'+todayStr()+'.csv');
+}
+
+function exportAdherence(){
+  if(!adherence.length){toast('Sin registros de adherencia para exportar.',true);return;}
+  var headers=['Fecha','Hora Programada','Hora Real','Medicamento','Paciente','Especialidad','Estado','Dosis'];
+  var statusLabel={'yes':'Uso la medicacion','late':'Aplico en otro horario','no':'No uso la medicacion'};
+  var sorted = adherence.slice().sort(function(a,b){return b.ts-a.ts;});
+  var rows = sorted.map(function(a){
+    var pt = patients.find(function(p){return p.id===a.patientId;});
+    var med = meds.find(function(m){return m.id===a.medId;});
+    return [
+      a.date, a.scheduledTime, a.status==='late'?a.actualTime:'',
+      a.medName||'', pt?pt.name:'Sin asignar',
+      med?med.specialty:'', statusLabel[a.status]||a.status,
+      med?med.dose||'':''
+    ];
+  });
+  exportCSV(rows, headers, 'MedTopix_Adherencia_'+todayStr()+'.csv');
+}
+
+function exportMeds(){
+  if(!meds.length){toast('Sin medicamentos para exportar.',true);return;}
+  var headers=['Medicamento','Paciente','Especialidad','Dosis','Hora','Frecuencia','Dosis Maxima Diaria','Via','Notas','Tomas Hoy','Estado Hoy'];
+  var today=todayStr();
+  var rows = meds.map(function(m){
+    var pt=patients.find(function(p){return p.id===m.patientId;});
+    var todayRecs=adherence.filter(function(a){return a.medId===m.id&&a.date===today;});
+    var tomasHoy=todayRecs.length;
+    var estadoHoy=tomasHoy>0?{'yes':'Uso','late':'Otro horario','no':'No uso'}[todayRecs[0].status]||'':getStatus(m);
+    return [
+      m.name, pt?pt.name:'Sin asignar', m.specialty||'',
+      m.dose||'', m.time||'', m.freq||'',
+      m.maxdose||'', m.route||'', m.notes||'',
+      tomasHoy, estadoHoy
+    ];
+  });
+  exportCSV(rows, headers, 'MedTopix_Medicamentos_'+todayStr()+'.csv');
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
