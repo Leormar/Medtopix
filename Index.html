@@ -910,30 +910,38 @@ function goStart(){
   // Check pending QR sync first
   var pendingSync = sessionStorage.getItem('mt6_qr');
   if(pendingSync){
+    sessionStorage.removeItem('mt6_qr');
     try{
-      var decoded=JSON.parse(decodeURIComponent(escape(atob(pendingSync))));
+      var raw = atob(pendingSync);
+      var decoded = JSON.parse(decodeURIComponent(escape(raw)));
       if(decoded.version==='mt6'){
-        if(decoded.users)    {users=decoded.users;     sU();}
-        if(decoded.patients) {patients=decoded.patients; sP();}
-        if(decoded.meds)     {meds=decoded.meds;        sM();}
-        if(decoded.adherence){adherence=decoded.adherence; sA();}
-        sessionStorage.removeItem('mt6_qr');
-        if(users.length>0){
-          curUser=users[0];
-          localStorage.setItem('mt6_s',JSON.stringify(curUser));
-          initApp(); show('sa');
-          setTimeout(function(){toast('✅ Bienvenido '+curUser.name+'. Datos sincronizados.');},600);
+        // Import all data
+        if(decoded.users && decoded.users.length>0){
+          users = decoded.users; sU();
+          patients = decoded.patients||[]; sP();
+          meds = decoded.meds||[]; sM();
+          adherence = decoded.adherence||[]; sA();
+          // Auto-login as first user - NO password needed via QR
+          curUser = users[0];
+          localStorage.setItem('mt6_s', JSON.stringify(curUser));
+          initApp();
+          show('sa');
+          setTimeout(function(){
+            toast('✅ Bienvenido '+curUser.name+'. Sincronizado por QR.');
+          }, 800);
           return;
         }
       }
-    }catch(e){
-      sessionStorage.removeItem('mt6_qr');
-      toast('Error al leer el QR. Usa importar manualmente.',true);
+    } catch(e){
+      toast('Error en el QR. Usa importar manual.',true);
     }
   }
   // Normal flow
   var saved=localStorage.getItem('mt6_s');
-  if(saved){ try{curUser=JSON.parse(saved);initApp();show('sa');return;}catch(e){} }
+  if(saved){
+    try{curUser=JSON.parse(saved);initApp();show('sa');return;}
+    catch(e){localStorage.removeItem('mt6_s');}
+  }
   if(users.length>0){ show('slo'); }
   else { show('st'); }
 }
