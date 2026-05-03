@@ -448,7 +448,13 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="hero-disc">
       <strong>⚠️ Aviso importante:</strong> MedTopix es una herramienta de apoyo al tratamiento prescrito. <strong>No reemplaza al médico tratante ni a ningún profesional de la salud.</strong> Ante dudas, efectos adversos o síntomas nuevos, consulte a su médico inmediatamente.
     </div>
-    <button class="btn-start" onclick="goStart()">Comenzar →</button>
+    <div id="qr-landing-msg" style="display:none;background:rgba(58,170,99,0.2);border:1.5px solid var(--g400);border-radius:12px;padding:14px 20px;max-width:400px;margin:0 auto 20px;text-align:center;">
+      <div style="font-size:1.5rem;margin-bottom:6px">✅</div>
+      <div style="font-size:14px;font-weight:700;color:var(--g300)">Datos listos para importar</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">Toca "Entrar con QR" para sincronizar</div>
+    </div>
+    <button class="btn-start" id="btn-start-qr" style="display:none;background:linear-gradient(135deg,#2563eb,#60a5fa)" onclick="goStart()">✅ Entrar con QR →</button>
+    <button class="btn-start" id="btn-start-normal" onclick="goStart()">Comenzar →</button>
     <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.4)">
       ¿Ya tienes cuenta? <a onclick="show('slo')" style="color:var(--g400);cursor:pointer;font-weight:700">Iniciar sesión</a>
     </div>
@@ -901,10 +907,33 @@ function show(id){
 }
 
 function goStart(){
-  // If user has session go straight to app
+  // Check pending QR sync first
+  var pendingSync = sessionStorage.getItem('mt6_qr');
+  if(pendingSync){
+    try{
+      var decoded=JSON.parse(decodeURIComponent(escape(atob(pendingSync))));
+      if(decoded.version==='mt6'){
+        if(decoded.users)    {users=decoded.users;     sU();}
+        if(decoded.patients) {patients=decoded.patients; sP();}
+        if(decoded.meds)     {meds=decoded.meds;        sM();}
+        if(decoded.adherence){adherence=decoded.adherence; sA();}
+        sessionStorage.removeItem('mt6_qr');
+        if(users.length>0){
+          curUser=users[0];
+          localStorage.setItem('mt6_s',JSON.stringify(curUser));
+          initApp(); show('sa');
+          setTimeout(function(){toast('✅ Bienvenido '+curUser.name+'. Datos sincronizados.');},600);
+          return;
+        }
+      }
+    }catch(e){
+      sessionStorage.removeItem('mt6_qr');
+      toast('Error al leer el QR. Usa importar manualmente.',true);
+    }
+  }
+  // Normal flow
   var saved=localStorage.getItem('mt6_s');
   if(saved){ try{curUser=JSON.parse(saved);initApp();show('sa');return;}catch(e){} }
-  // If accounts exist, go to login
   if(users.length>0){ show('slo'); }
   else { show('st'); }
 }
@@ -1959,37 +1988,36 @@ function togPw(id, btn){
 
 // ── INIT ──────────────────────────────────────────────────────
 (function(){
-  // Check for QR sync parameter in URL
+  // Save sync param to sessionStorage immediately (before URL gets cleaned)
   var urlParams = new URLSearchParams(window.location.search);
   var syncParam = urlParams.get('sync');
   if(syncParam){
-    try{
-      var decoded=JSON.parse(decodeURIComponent(escape(atob(syncParam))));
-      if(decoded.version==='mt6'){
-        if(decoded.users)    {users=decoded.users;     sU();}
-        if(decoded.patients) {patients=decoded.patients; sP();}
-        if(decoded.meds)     {meds=decoded.meds;        sM();}
-        if(decoded.adherence){adherence=decoded.adherence; sA();}
-        if(users.length>0){
-          curUser=users[0];
-          localStorage.setItem('mt6_s',JSON.stringify(curUser));
-          // Clean URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-          initApp(); show('sa');
-          setTimeout(function(){toast('✅ Datos sincronizados via QR. Bienvenido '+curUser.name+'!');},500);
-          return;
-        }
-      }
-    }catch(e){ console.log('QR sync error',e); }
+    sessionStorage.setItem('mt6_qr', syncParam);
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 
+  // Normal session check
   var saved=localStorage.getItem('mt6_s');
   if(saved){
     try{curUser=JSON.parse(saved);initApp();show('sa');}
     catch(e){localStorage.removeItem('mt6_s');show('sl');}
-  } else {
-    show('sl');
+    return;
   }
+
+  // Check if QR data pending - show special button
+  var pendingSync = sessionStorage.getItem('mt6_qr');
+  if(pendingSync){
+    show('sl');
+    var msg=document.getElementById('qr-landing-msg');
+    var btnQR=document.getElementById('btn-start-qr');
+    var btnNorm=document.getElementById('btn-start-normal');
+    if(msg) msg.style.display='block';
+    if(btnQR) btnQR.style.display='block';
+    if(btnNorm) btnNorm.style.display='none';
+    return;
+  }
+
+  show('sl');
   setInterval(function(){
     updateStats(); updateNext();
     if(curTab==='alerts') renderAlerts();
