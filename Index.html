@@ -11,6 +11,7 @@
 <link rel="manifest" href="manifest.json"/>
 <!-- Apple touch icons -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a4a2e'/><circle cx='50' cy='50' r='30' fill='%23f0f7f2' stroke='%232d8a4e' stroke-width='2'/><line x1='50' y1='50' x2='50' y2='28' stroke='%231a4a2e' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='50' x2='65' y2='58' stroke='%23c97a20' stroke-width='2.5' stroke-linecap='round'/></svg>"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -740,8 +741,21 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="sync-title">📤 Exportar mis datos</div>
     <div class="sync-sub">Genera un código con tus datos (cuenta, pacientes, medicamentos) para usarlo en otro dispositivo. <strong>No compartas este código con nadie.</strong></div>
     <div class="sync-btns">
-      <button class="btn-exp" onclick="exportData()">📤 Generar código de exportación</button>
-      <button class="btn-exp" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="copyCode()">📋 Copiar código</button>
+      <button class="btn-exp" onclick="genQR()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M17 17h3v3h-3z"/><path d="M14 20h3"/><path d="M20 14h-3"/></svg>
+        Generar QR para iPhone
+      </button>
+      <button class="btn-exp" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="exportData();copyCode()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        Copiar código texto
+      </button>
+    </div>
+    <!-- QR Display -->
+    <div id="qr-wrap" style="display:none;margin-top:16px;text-align:center;background:var(--bg);border-radius:10px;padding:20px;border:1.5px solid var(--border)">
+      <div style="font-size:12px;font-weight:700;color:var(--g700);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Escanea con tu iPhone</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Abre la cámara o lector QR → escanea → se abre MedTopix con los datos listos</div>
+      <div id="qr-canvas" style="display:inline-block;background:#fff;padding:12px;border-radius:10px;box-shadow:0 2px 12px rgba(13,40,24,0.12)"></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted)">El QR expira cuando cierres esta página</div>
     </div>
     <div class="sync-code" id="sync-code"></div>
   </div>
@@ -1811,6 +1825,40 @@ function importData(){
 }
 
 // ── EXPORT CSV ───────────────────────────────────────────────
+function genQR(){
+  // Generate the data first
+  var data={
+    users:users, patients:patients, meds:meds, adherence:adherence,
+    exportedAt:new Date().toISOString(), version:'mt6'
+  };
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  
+  // Build URL that auto-imports on iPhone
+  var url = window.location.origin + window.location.pathname + '?sync=' + encoded;
+  
+  // Show QR
+  var wrap = document.getElementById('qr-wrap');
+  var canvas = document.getElementById('qr-canvas');
+  canvas.innerHTML = '';
+  wrap.style.display = 'block';
+  
+  try {
+    new QRCode(canvas, {
+      text: url,
+      width: 220,
+      height: 220,
+      colorDark: '#1a4a2e',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    toast('✅ QR generado. Escanéalo con tu iPhone.');
+  } catch(e) {
+    // Fallback if QR fails - just show copy option
+    canvas.innerHTML = '<div style="padding:20px;font-size:12px;color:var(--red)">QR no disponible. Usa "Copiar código texto".</div>';
+    toast('Usa Copiar código texto en su lugar.', true);
+  }
+}
+
 function exportCSV(rows, headers, filename){
   var csv = headers.join(',') + '\n';
   rows.forEach(function(row){
@@ -1911,6 +1959,30 @@ function togPw(id, btn){
 
 // ── INIT ──────────────────────────────────────────────────────
 (function(){
+  // Check for QR sync parameter in URL
+  var urlParams = new URLSearchParams(window.location.search);
+  var syncParam = urlParams.get('sync');
+  if(syncParam){
+    try{
+      var decoded=JSON.parse(decodeURIComponent(escape(atob(syncParam))));
+      if(decoded.version==='mt6'){
+        if(decoded.users)    {users=decoded.users;     sU();}
+        if(decoded.patients) {patients=decoded.patients; sP();}
+        if(decoded.meds)     {meds=decoded.meds;        sM();}
+        if(decoded.adherence){adherence=decoded.adherence; sA();}
+        if(users.length>0){
+          curUser=users[0];
+          localStorage.setItem('mt6_s',JSON.stringify(curUser));
+          // Clean URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          initApp(); show('sa');
+          setTimeout(function(){toast('✅ Datos sincronizados via QR. Bienvenido '+curUser.name+'!');},500);
+          return;
+        }
+      }
+    }catch(e){ console.log('QR sync error',e); }
+  }
+
   var saved=localStorage.getItem('mt6_s');
   if(saved){
     try{curUser=JSON.parse(saved);initApp();show('sa');}
