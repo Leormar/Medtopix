@@ -1,1 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedTopix · Recordatorio de Medicamentos</title>
+<meta name="theme-color" content="#1a4a2e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="MedTopix"/>
+<link rel="manifest" href="manifest.json"/>
+<!-- Apple touch icons -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a4a2e'/><circle cx='50' cy='50' r='30' fill='%23f0f7f2' stroke='%232d8a4e' stroke-width='2'/><line x1='50' y1='50' x2='50' y2='28' stroke='%231a4a2e' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='50' x2='65' y2='58' stroke='%23c97a20' stroke-width='2.5' stroke-linecap='round'/></svg>"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f7f2;--white:#fff;--border:#c8e6d0;--ink:#0d2818;--muted:#6b9278;
+  --g900:#0d2818;--g800:#1a4a2e;--g700:#1e6b3a;--g600:#2d8a4e;--g500:#3aaa63;
+  --g400:#5fc97e;--g300:#8fdeaa;--g200:#c2f0d1;--g100:#e8f8ee;
+  --gold:#c97a20;--goldf:#f0b862;--red:#dc2626;--amber:#d97706;--blue:#2563eb;
+  --r:14px;
+  --sh:0 2px 8px rgba(13,40,24,0.1);--shm:0 4px 20px rgba(13,40,24,0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+#slo.active{display:flex;}
 
+/* LANDING */
+#sl{background:var(--g900);color:#fff;}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 28px;text-align:center;}
+.hero-title{font-family:'Fraunces',serif;font-size:clamp(2.8rem,8vw,5.5rem);font-weight:900;letter-spacing:-2px;line-height:1;}
+.hero-title span{color:var(--goldf);}
+.hero-sub{font-size:1.1rem;color:rgba(255,255,255,0.55);max-width:500px;margin:18px auto 32px;line-height:1.6;}
+.hero-disc{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;max-width:520px;margin:0 auto 32px;font-size:12px;color:rgba(255,255,255,0.45);line-height:1.7;text-align:left;}
+.hero-disc strong{color:rgba(255,255,255,0.75);}
+.btn-start{padding:16px 48px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(46,138,78,0.4);transition:all 0.2s;}
+.btn-start:hover{transform:translateY(-3px);}
+.hero-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:660px;margin:44px auto 0;}
+.feat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;text-align:center;}
+.feat-ic{font-size:1.8rem;margin-bottom:8px;}
+.feat-t{font-size:12px;font-weight:700;color:var(--g300);margin-bottom:4px;}
+.feat-d{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5;}
+
+/* TERMS */
+#st{background:var(--bg);}
+.tw{max-width:660px;margin:0 auto;padding:44px 24px;}
+.t-title{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:900;color:var(--g800);margin-bottom:6px;}
+.t-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.t-box{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:22px;max-height:300px;overflow-y:auto;font-size:12px;color:var(--ink);line-height:1.8;margin-bottom:18px;}
+.t-box h4{font-size:13px;font-weight:700;color:var(--g800);margin:12px 0 5px;}
+.t-form{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:22px;}
+.t-form-title{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:14px;}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);}
+.fi{background:var(--bg);border:1.5px solid var(--border);border-radius:7px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--g500);box-shadow:0 0 0 3px rgba(58,170,99,0.15);}
+.t-chk{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;cursor:pointer;}
+.t-chk input{width:17px;height:17px;margin-top:2px;accent-color:var(--g600);flex-shrink:0;}
+.t-chk span{font-size:12px;color:var(--ink);line-height:1.5;}
+.t-chk strong{color:var(--red);}
+.btn-accept{width:100%;padding:13px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.btn-accept:hover{transform:translateY(-1px);}
+.btn-accept:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+/* LOGIN */
+#slo{background:var(--g900);align-items:center;justify-content:center;}
+.lb{background:var(--white);border-radius:20px;padding:38px 34px;max-width:390px;width:92%;box-shadow:0 16px 48px rgba(0,0,0,0.3);}
+.lb-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:22px;}
+.lb-name{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:900;color:var(--g800);}
+.lb-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:var(--g800);text-align:center;margin-bottom:5px;}
+.lb-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px;}
+.lb-err{background:#fff8f0;border:1.5px solid #fed7aa;border-radius:7px;padding:10px 12px;font-size:12px;color:#9a3412;margin-bottom:10px;display:none;line-height:1.5;}
+.lb-err.show{display:block;}
+.btn-login{width:100%;padding:12px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(46,138,78,0.35);transition:all 0.2s;margin-top:6px;}
+.btn-login:hover{transform:translateY(-1px);}
+.lb-div{text-align:center;font-size:11px;color:var(--muted);margin:14px 0;}
+.lb-reg{text-align:center;font-size:12px;color:var(--muted);}
+.lb-reg a{color:var(--g600);font-weight:700;cursor:pointer;}
+
+/* APP */
+#sa{background:var(--bg);}
+header{background:var(--g800);position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(13,40,24,0.3);}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 22px;height:60px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-n{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:900;color:#fff;}
+.logo-s{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--g300);margin-top:1px;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+#clock{font-size:11px;font-weight:700;color:var(--g300);font-variant-numeric:tabular-nums;}
+.uc{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 10px;}
+.ua{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--g500),var(--g300));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;}
+.un{font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);}
+.btn-out{padding:5px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);font-size:10px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.tabs{display:flex;background:linear-gradient(180deg,#1e6b3a,#0d2818);border-top:1px solid rgba(95,201,126,0.15);overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tb{flex:0 0 auto;padding:11px 14px;border:none;background:transparent;color:rgba(255,255,255,0.38);font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border-bottom:3px solid transparent;white-space:nowrap;}
+.tb:hover{color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.05);}
+.tb.active{color:#fff;border-bottom:3px solid var(--g400);background:linear-gradient(180deg,rgba(95,201,126,0.18),rgba(58,170,99,0.04));}
+
+/* NEXT BANNER */
+.nb{margin:18px 22px 0;background:linear-gradient(135deg,var(--g700),var(--g600));border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:var(--shm);}
+.nb.hidden{display:none;}
+.nb-pill{background:rgba(255,255,255,0.15);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.nb-info{flex:1;}
+.nb-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g200);}
+.nb-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:#fff;margin-top:2px;}
+.nb-meta{font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px;}
+.nb-cd{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;text-align:right;}
+.nb-cdl{font-size:9px;color:var(--g200);text-align:right;}
+
+main{max-width:1280px;margin:0 auto;padding:22px 22px 60px;}
+.tp{display:none;}.tp.active{display:block;}
+
+/* STATS */
+.sr{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.sc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;box-shadow:var(--sh);transition:transform 0.2s;}
+.sc:hover{transform:translateY(-2px);}
+.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--cc,var(--g500));}
+.sc-ic{font-size:1.4rem;margin-bottom:7px;display:flex;align-items:center;justify-content:flex-start;} .sc-ic svg{width:28px;height:28px;stroke-width:1.5;}
+.sc-v{font-family:'Fraunces',serif;font-size:2rem;font-weight:900;color:var(--cc,var(--g700));line-height:1;}
+.sc-l{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+
+/* SEC TITLE */
+.st{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.st::after{content:'';flex:1;height:1.5px;background:var(--border);}
+.si{width:26px;height:26px;background:var(--g200);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+
+/* ALERTS */
+.ap{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:22px;}
+.ap-h{background:linear-gradient(135deg,var(--g700),var(--g600));padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.ap-ht{font-family:'Fraunces',serif;font-size:.95rem;font-weight:900;color:#fff;}
+.ap-hs{font-size:10px;color:var(--g200);margin-top:1px;}
+.ar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);transition:background 0.2s;flex-wrap:wrap;}
+.ar:last-child{border-bottom:none;}
+.ar:hover{background:var(--g100);}
+.at{text-align:center;min-width:46px;}
+.at-v{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;color:var(--g700);line-height:1;}
+.at-f{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.abar{width:3px;height:34px;border-radius:2px;flex-shrink:0;}
+.ai{flex:1;min-width:130px;}
+.an{font-size:13px;font-weight:700;color:var(--ink);}
+.apt{font-size:11px;font-weight:600;color:var(--g600);margin-top:1px;}
+.am{font-size:10px;color:var(--muted);margin-top:1px;}
+.sp{padding:3px 9px;border-radius:16px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.sp-p{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.sp-d{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;}
+.sp-l{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
+.sp-o{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.abtns{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.abtn{padding:5px 10px;border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1.5px solid;white-space:nowrap;}
+.abtn-y{border-color:#bbf7d0;background:#f0fdf4;color:#15803d;}
+.abtn-y:hover{background:#16a34a;color:#fff;border-color:#16a34a;}
+.abtn-l{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8;}
+.abtn-l:hover{background:#2563eb;color:#fff;border-color:#2563eb;}
+.abtn-n{border-color:#fecdd3;background:#fff5f5;color:#dc2626;}
+.abtn-n:hover{background:#dc2626;color:#fff;border-color:#dc2626;}
+.abtn-u{border-color:var(--border);background:transparent;color:var(--muted);font-size:10px;}
+.late-in{display:none;align-items:center;gap:5px;margin-top:5px;}
+.late-in.show{display:flex;}
+.late-in input{background:var(--bg);border:1.5px solid #bfdbfe;border-radius:6px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;padding:4px 9px;outline:none;width:100px;}
+.late-in button{padding:4px 9px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;}
+.dose-warn{background:#fef3c7;border:1.5px solid #fcd34d;border-radius:7px;padding:6px 11px;font-size:11px;font-weight:700;color:#92400e;margin-top:5px;}
+
+/* FORMS */
+.fc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:22px;box-shadow:var(--sh);}
+.fh{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:13px;border-bottom:1.5px solid var(--border);}
+.fh-ic{width:40px;height:40px;background:linear-gradient(135deg,var(--g600),var(--g400));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.fh-t{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;color:var(--g800);}
+.fh-s{font-size:11px;color:var(--muted);margin-top:1px;}
+.fg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:13px;margin-bottom:16px;}
+input,select,textarea{background:var(--bg);border:1.5px solid var(--border);border-radius:7px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 11px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--g500);box-shadow:0 0 0 3px rgba(58,170,99,0.15);}
+select option{background:#fff;}
+textarea{resize:vertical;min-height:60px;}
+.ff{display:flex;align-items:center;gap:11px;flex-wrap:wrap;border-top:1.5px solid var(--border);padding-top:15px;}
+.btn-add{display:flex;align-items:center;gap:7px;padding:10px 22px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(46,138,78,0.35);transition:all 0.2s;}
+.btn-add:hover{transform:translateY(-2px);}
+.hint{font-size:11px;color:var(--muted);}
+.hint::before{content:'🔒';margin-right:4px;}
+.age-d{background:var(--g100);border:1.5px solid var(--g200);border-radius:7px;padding:9px 11px;font-size:13px;font-weight:700;color:var(--g700);}
+
+/* PATIENT LIST */
+.pl{display:flex;flex-direction:column;gap:9px;}
+.pc{display:flex;align-items:center;gap:11px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;box-shadow:var(--sh);flex-wrap:wrap;transition:border-color 0.2s;}
+.pc:hover{border-color:var(--g400);}
+.pav{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--g600),var(--g400));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;font-family:'Fraunces',serif;flex-shrink:0;}
+.pi{flex:1;min-width:150px;}
+.pn{font-size:13px;font-weight:700;color:var(--ink);}
+.pd{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.pm{font-size:10px;font-weight:700;color:var(--g600);background:var(--g100);border:1px solid var(--g200);border-radius:10px;padding:2px 10px;white-space:nowrap;}
+.btn-curve{padding:5px 11px;border-radius:7px;border:1.5px solid var(--g300);background:var(--g100);color:var(--g700);font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.btn-dpt{padding:5px 9px;border-radius:7px;border:1.5px solid #fecdd3;background:#fff5f5;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+
+/* ADH PANEL */
+.adhp{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:20px;margin-top:8px;box-shadow:var(--sh);display:none;}
+.adhp.open{display:block;}
+.adh-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px;}
+.adh-sc{border-radius:9px;padding:12px;text-align:center;}
+.adh-v{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:900;line-height:1;}
+.adh-l{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.ok-c{background:#f0fdf4;border:1.5px solid #bbf7d0;}.ok-c .adh-v{color:#15803d;}.ok-c .adh-l{color:#16a34a;}
+.lt-c{background:#eff6ff;border:1.5px solid #bfdbfe;}.lt-c .adh-v{color:#1d4ed8;}.lt-c .adh-l{color:#2563eb;}
+.no-c{background:#fff5f5;border:1.5px solid #fecdd3;}.no-c .adh-v{color:var(--red);}.no-c .adh-l{color:var(--red);}
+.pct-w{margin-bottom:14px;}
+.pct-l{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;font-weight:700;color:var(--ink);}
+.pct-b{height:10px;background:var(--border);border-radius:5px;overflow:hidden;}
+.pct-f{height:100%;border-radius:5px;transition:width 0.8s ease;}
+.chw{background:var(--bg);border-radius:9px;padding:13px;margin-bottom:13px;}
+.cht{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+canvas{width:100%!important;max-height:170px;}
+.hr{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:7px;margin-bottom:3px;font-size:11px;}
+.hr-y{background:#f0fdf4;border:1px solid #bbf7d0;}
+.hr-l{background:#eff6ff;border:1px solid #bfdbfe;}
+.hr-n{background:#fff5f5;border:1px solid #fecdd3;}
+
+/* MED CARDS */
+.sf{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;overflow-x:auto;scrollbar-width:none;}
+.sf::-webkit-scrollbar{display:none;}
+.sfc{padding:5px 12px;border-radius:18px;border:1.5px solid var(--border);background:var(--white);font-size:10px;font-weight:700;cursor:pointer;color:var(--muted);transition:all 0.2s;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
+.sfc.active{background:var(--cc,var(--g500));border-color:var(--cc,var(--g500));color:#fff;}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:13px;}
+.mc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);transition:transform 0.2s,box-shadow 0.2s;}
+.mc:hover{transform:translateY(-3px);box-shadow:var(--shm);}
+.ct{padding:14px 16px 12px;position:relative;}
+.cb2{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:18px;padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:7px;}
+.csb{position:absolute;top:12px;right:12px;padding:3px 8px;border-radius:18px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;border:1.5px solid rgba(255,255,255,0.4);}
+.cst-p{background:rgba(255,202,40,0.3);border-color:rgba(255,202,40,0.6);}
+.cst-d{background:rgba(105,240,174,0.3);border-color:rgba(105,240,174,0.6);}
+.cst-o{background:rgba(239,83,80,0.3);border-color:rgba(239,83,80,0.6);}
+.cn{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:900;color:#fff;line-height:1.2;}
+.cpt{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,0.15);border-radius:5px;padding:2px 7px;font-size:10px;color:rgba(255,255,255,0.85);margin-top:5px;}
+.cr{font-size:11px;color:rgba(255,255,255,0.65);margin-top:3px;}
+.cbd{padding:14px 16px;}
+.tr{display:flex;align-items:center;gap:8px;background:var(--g100);border-radius:9px;padding:10px 13px;margin-bottom:11px;}
+.tv{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:900;color:var(--g700);}
+.tf{font-size:10px;color:var(--muted);margin-left:auto;font-weight:600;}
+.dmr{background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:6px 10px;margin-bottom:9px;font-size:11px;font-weight:700;color:#92400e;}
+.mr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;}
+.ml2{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.mv{font-size:12px;font-weight:600;color:var(--ink);}
+.cn2{font-size:11px;color:var(--muted);line-height:1.5;background:#e8f5ec;border-radius:7px;padding:8px 10px;margin-bottom:10px;border-left:3px solid var(--border);}
+.ca{display:flex;gap:6px;border-top:1.5px solid var(--border);padding-top:10px;}
+.btn-ec{padding:7px 11px;border-radius:7px;border:1.5px solid var(--g300);background:var(--g100);color:var(--g700);font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:700;cursor:pointer;}
+.btn-dc{padding:7px 11px;border-radius:7px;border:1.5px solid #fecdd3;background:#fff5f5;color:var(--red);font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:700;cursor:pointer;}
+.ei{background:var(--g100);border:1.5px solid var(--g300);border-radius:8px;padding:11px;margin-top:9px;display:none;}
+.ei.open{display:block;}
+.ei-r{display:flex;gap:7px;margin-bottom:7px;}
+.ei-r input{background:#fff;border:1.5px solid var(--g300);border-radius:6px;flex:1;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;padding:7px 10px;outline:none;}
+.btn-se{padding:7px 14px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.btn-ce{padding:7px 12px;background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+
+/* REPORT */
+.rtw{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);overflow-x:auto;}
+.rt{width:100%;border-collapse:collapse;}
+.rt th{background:var(--g800);color:#fff;padding:11px 14px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-align:left;white-space:nowrap;}
+.rt td{padding:10px 14px;font-size:12px;color:var(--ink);border-bottom:1px solid var(--border);}
+.rt tr:last-child td{border-bottom:none;}
+.rt tr:hover td{background:var(--g100);}
+.rs{padding:3px 9px;border-radius:12px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.rs-y{background:#d1fae5;color:#065f46;}
+.rs-l{background:#eff6ff;color:#1d4ed8;}
+.rs-n{background:#fee2e2;color:#991b1b;}
+.re{padding:40px;text-align:center;color:var(--muted);font-size:13px;}
+.rfi{display:flex;gap:10px;flex-wrap:wrap;}
+.rfi select,.rfi input{width:auto;background:var(--white);border:1.5px solid var(--border);border-radius:8px;font-size:12px;padding:8px 12px;}
+
+/* TEAM */
+.tmc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--sh);}
+.tmh{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:11px;margin-bottom:18px;padding-bottom:14px;border-bottom:1.5px solid var(--border);}
+.tbgs{display:flex;gap:6px;flex-wrap:wrap;}
+.tbg{padding:4px 10px;border-radius:18px;background:var(--g100);border:1.5px solid var(--g200);font-size:10px;font-weight:700;color:var(--g700);}
+.tmg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.tmcard{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;transition:all 0.2s;}
+.tmcard:hover{border-color:var(--g400);background:var(--g100);}
+.tmcard.prof{background:var(--g100);border-color:var(--g300);}
+.tmav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;font-family:'Fraunces',serif;flex-shrink:0;}
+.tmn{font-size:12px;font-weight:700;color:var(--ink);line-height:1.2;}
+.tmr{font-size:10px;color:var(--muted);font-weight:500;margin-top:1px;}
+
+/* PROCESS */
+.proc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:18px;box-shadow:var(--sh);}
+.proc h3{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:10px;}
+.proc p,.proc li{font-size:12px;color:var(--ink);line-height:1.7;}
+.proc ul{padding-left:16px;margin-top:5px;}
+.pbox{background:var(--g900);border-radius:8px;padding:12px 14px;margin:9px 0;font-family:monospace;font-size:11px;color:var(--g300);line-height:1.6;white-space:pre-wrap;}
+.ibdg{display:inline-block;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border-radius:5px;padding:2px 9px;font-size:9px;font-weight:700;letter-spacing:1px;margin-bottom:7px;}
+
+/* EMPTY */
+.empty{grid-column:1/-1;text-align:center;padding:50px 20px;}
+.empty-c{width:76px;height:76px;border-radius:50%;background:var(--g100);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;}
+.empty-t{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:900;color:var(--ink);}
+.empty-s{font-size:12px;color:var(--muted);margin-top:5px;}
+
+/* ALARM */
+.alo{position:fixed;inset:0;z-index:9999;background:rgba(13,40,24,0.92);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;}
+.alo.hidden{display:none;}
+.alb{background:#fff;border-radius:22px;padding:34px 28px;text-align:center;max-width:370px;width:92%;box-shadow:0 24px 64px rgba(0,0,0,0.4);}
+.alc{width:88px;height:88px;margin:0 auto 14px;position:relative;}
+.alc svg{animation:shake 0.4s infinite;}
+@keyframes shake{0%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}100%{transform:rotate(-10deg)}}
+.alr{position:absolute;inset:0;pointer-events:none;}
+.alr div{position:absolute;border-radius:50%;border:2px solid rgba(58,170,99,0.4);animation:ring 1s infinite;}
+.alr div:nth-child(1){inset:8px;animation-delay:0s;}
+.alr div:nth-child(2){inset:0;animation-delay:0.33s;}
+.alr div:nth-child(3){inset:-8px;animation-delay:0.66s;}
+@keyframes ring{0%{opacity:0.8;transform:scale(0.85)}100%{opacity:0;transform:scale(1.3)}}
+.al-med{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:900;color:var(--g800);margin-bottom:3px;}
+.al-t{font-family:'Fraunces',serif;font-size:2.6rem;font-weight:900;color:var(--g600);line-height:1;margin-bottom:3px;}
+.al-d{font-size:12px;color:var(--muted);margin-bottom:5px;}
+.al-pt{display:inline-flex;align-items:center;gap:5px;background:var(--g100);border:1.5px solid var(--g200);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--g700);margin-bottom:14px;}
+.al-acts{display:flex;flex-direction:column;gap:7px;}
+.al-ok{padding:13px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;}
+.al-ok:hover{transform:translateY(-1px);}
+.al-late{padding:10px;background:#eff6ff;border:1.5px solid #bfdbfe;color:#1d4ed8;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.al-no{padding:10px;background:#fff5f5;border:1.5px solid #fecdd3;color:var(--red);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.al-snz{padding:8px;background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;}
+.lp{background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:9px;padding:12px;display:none;margin-top:3px;}
+.lp.show{display:block;}
+.lp label{font-size:10px;font-weight:700;color:#1d4ed8;letter-spacing:1px;text-transform:uppercase;}
+.lp input{margin-top:5px;background:#fff;border:1.5px solid #bfdbfe;border-radius:6px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:7px 11px;width:100%;outline:none;}
+.lp button{margin-top:7px;width:100%;padding:8px;background:#2563eb;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;}
+
+/* FOOTER */
+footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;margin-top:50px;}
+.fi2{max-width:1280px;margin:0 auto;}
+.ft{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.fst{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;}
+.fs{list-style:none;}
+.fs li{font-size:11px;color:rgba(255,255,255,0.4);padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05);line-height:1.5;}
+.fs li::before{content:'📄 ';font-size:10px;}
+.fm{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.7;}
+.fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;}
+.fbl{display:flex;gap:14px;}
+.fbl a{color:rgba(255,255,255,0.3);font-size:10px;text-decoration:none;}
+
+/* PASSWORD TOGGLE */
+.pw-wrap{position:relative;width:100%;}
+.pw-wrap input{padding-right:40px;}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:4px;line-height:1;}
+.pw-eye:hover{color:var(--g600);}
+
+/* PATIENT CONTEXT BAR */
+.pt-bar{background:linear-gradient(135deg,var(--g700),var(--g600));padding:10px 22px;display:none;align-items:center;gap:14px;flex-wrap:wrap;}
+.pt-bar.show{display:flex;}
+.pt-bar-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;font-family:Fraunces,serif;flex-shrink:0;}
+.pt-bar-info{flex:1;}
+.pt-bar-name{font-size:13px;font-weight:700;color:#fff;}
+.pt-bar-meta{font-size:11px;color:rgba(255,255,255,0.65);margin-top:1px;}
+.pt-bar-close{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.6);font-size:11px;cursor:pointer;font-family:"Plus Jakarta Sans",sans-serif;}
+.pt-bar-close:hover{color:#fff;border-color:rgba(255,255,255,0.5);}
+
+/* EXPORT/IMPORT */
+.sync-panel{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px;box-shadow:var(--sh);}
+.sync-title{font-family:Fraunces,serif;font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:6px;}
+.sync-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.sync-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-exp{padding:9px 18px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-imp{padding:9px 18px;background:var(--g100);border:1.5px solid var(--g300);color:var(--g700);border-radius:8px;font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.sync-code{background:var(--g900);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:var(--g300);word-break:break-all;margin-top:12px;display:none;max-height:120px;overflow-y:auto;}
+.sync-code.show{display:block;}
+.sync-import-area{margin-top:12px;display:none;}
+.sync-import-area.show{display:block;}
+.sync-import-area textarea{font-family:monospace;font-size:11px;min-height:80px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--g800);border:1.5px solid var(--g600);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;color:#fff;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px;box-shadow:0 8px 24px rgba(13,40,24,0.3);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.err{border-color:#ef5350;background:#3d1515;}
+
+@media(max-width:768px){
+  .hdr{padding:0 14px;height:56px;}.logo-s{display:none;}#clock{display:none;}.un{display:none;}
+  .nb{margin:12px 14px 0;padding:13px 16px;}main{padding:16px 13px 50px;}
+  .sr{grid-template-columns:1fr 1fr;gap:8px;}.fg2{grid-template-columns:1fr;}.cg{grid-template-columns:1fr;}
+  .adh-sum{grid-template-columns:1fr;}.tmg{grid-template-columns:1fr;}.ft{grid-template-columns:1fr;}
+  .hero-feats{grid-template-columns:1fr;}.tg{grid-template-columns:1fr;}
+}
+@media(hover:none){.abtn,.btn-add,.btn-dc,.btn-ec,.al-ok{min-height:44px;}}
+</style>
+</head>
+<body>
+
+<!-- ALARM -->
+<div class="alo hidden" id="alo">
+  <div class="alb">
+    <div class="alc">
+      <div class="alr"><div></div><div></div><div></div></div>
+      <svg viewBox="0 0 100 100" width="88" height="88" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="58" r="36" fill="#1a4a2e"/>
+        <circle cx="50" cy="58" r="30" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="2"/>
+        <line x1="50" y1="30" x2="50" y2="36" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="50" y1="80" x2="50" y2="86" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="22" y1="58" x2="28" y2="58" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="72" y1="58" x2="78" y2="58" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="50" y1="58" x2="50" y2="38" stroke="#1a4a2e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="50" y1="58" x2="64" y2="65" stroke="#c97a20" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="58" r="3.5" fill="#1a4a2e"/>
+        <ellipse cx="36" cy="26" rx="8" ry="5" fill="#f0b862"/>
+        <ellipse cx="64" cy="26" rx="8" ry="5" fill="#f0b862"/>
+        <line x1="36" y1="30" x2="36" y2="36" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/>
+        <line x1="64" y1="30" x2="64" y2="36" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="al-med" id="al-med"></div>
+    <div class="al-t" id="al-t"></div>
+    <div class="al-d" id="al-d"></div>
+    <div class="al-pt" id="al-pt"></div>
+    <div class="al-acts">
+      <button class="al-ok" onclick="doAlarm('yes')">✅ Usó la medicación</button>
+      <button class="al-late" onclick="showLP()">🕐 La aplicó en otro horario</button>
+      <div class="lp" id="lp">
+        <label>¿A qué hora la tomó?</label>
+        <input type="time" id="lp-t"/>
+        <button onclick="doAlarm('late')">Confirmar</button>
+      </div>
+      <button class="al-no" onclick="doAlarm('no')">❌ No usó la medicación</button>
+      <button class="al-snz" onclick="snooze()">⏰ Posponer 10 minutos</button>
+    </div>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div class="screen active" id="sl">
+  <div class="hero">
+    <svg viewBox="0 0 120 120" width="90" height="90" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:24px">
+      <circle cx="60" cy="60" r="58" fill="#1a4a2e"/>
+      <circle cx="60" cy="60" r="48" fill="#1e6b3a"/>
+      <circle cx="60" cy="60" r="34" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="2.5"/>
+      <line x1="60" y1="28" x2="60" y2="35" stroke="#1e6b3a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="60" y1="85" x2="60" y2="92" stroke="#1e6b3a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="28" y1="60" x2="35" y2="60" stroke="#1e6b3a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="85" y1="60" x2="92" y2="60" stroke="#1e6b3a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="60" y1="60" x2="60" y2="38" stroke="#1a4a2e" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="60" y1="60" x2="76" y2="68" stroke="#c97a20" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="60" cy="60" r="4" fill="#1a4a2e"/>
+      <circle cx="60" cy="60" r="2" fill="#f0b862"/>
+      <g transform="translate(80 78) rotate(-35)">
+        <rect x="0" y="0" width="34" height="15" rx="7" fill="#f0b862"/>
+        <rect x="17" y="0" width="17" height="15" rx="7" fill="#2d8a4e"/>
+        <line x1="17" y1="0" x2="17" y2="15" stroke="#fff" stroke-width="1.5" opacity="0.5"/>
+      </g>
+    </svg>
+    <div class="hero-title">Med<span>Topix</span></div>
+    <div class="hero-sub">Tu asistente clínico de adherencia a medicamentos tópicos. Recordatorios inteligentes y curva de cumplimiento personalizada.</div>
+    <div class="hero-disc">
+      <strong>⚠️ Aviso importante:</strong> MedTopix es una herramienta de apoyo al tratamiento prescrito. <strong>No reemplaza al médico tratante ni a ningún profesional de la salud.</strong> Ante dudas, efectos adversos o síntomas nuevos, consulte a su médico inmediatamente.
+    </div>
+    <div id="qr-landing-msg" style="display:none;background:rgba(58,170,99,0.2);border:1.5px solid var(--g400);border-radius:12px;padding:14px 20px;max-width:400px;margin:0 auto 20px;text-align:center;">
+      <div style="font-size:1.5rem;margin-bottom:6px">✅</div>
+      <div style="font-size:14px;font-weight:700;color:var(--g300)">Datos listos para importar</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">Toca "Entrar con QR" para sincronizar</div>
+    </div>
+    <button class="btn-start" id="btn-start-qr" style="display:none;background:linear-gradient(135deg,#2563eb,#60a5fa)" onclick="goStart()">✅ Entrar con QR →</button>
+    <button class="btn-start" id="btn-start-normal" onclick="goStart()">Comenzar →</button>
+    <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.4)">
+      ¿Ya tienes cuenta? <a onclick="show('slo')" style="color:var(--g400);cursor:pointer;font-weight:700">Iniciar sesión</a>
+    </div>
+    <div class="hero-feats">
+      <div class="feat"><div class="feat-ic">🔔</div><div class="feat-t">Alarmas automáticas</div><div class="feat-d">Alertas visuales y sonoras a la hora exacta de cada toma</div></div>
+      <div class="feat"><div class="feat-ic">📊</div><div class="feat-t">Curva de adherencia</div><div class="feat-d">14 días de cumplimiento por paciente en tiempo real</div></div>
+      <div class="feat"><div class="feat-ic">💊</div><div class="feat-t">Multi-especialidad</div><div class="feat-d">Dermatología, Oftalmología, ORL, Ginecología y más</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TERMS -->
+<div class="screen" id="st">
+  <div class="tw">
+    <div class="t-title">Términos y Condiciones</div>
+    <div class="t-sub">Por favor lea atentamente. Solo se solicitará una vez.</div>
+    <div style="margin-bottom:16px;font-size:13px;color:var(--muted)">
+      ¿Ya tienes cuenta? <a onclick="show('slo')" style="color:var(--g600);cursor:pointer;font-weight:700">Iniciar sesión aquí</a>
+    </div>
+    <div class="t-box">
+      <h4>1. Propósito</h4>
+      <p>MedTopix es una herramienta digital de apoyo al cumplimiento de tratamientos con medicamentos tópicos, desarrollada con fines académicos (OBS Business School). NO reemplaza la consulta médica ni el criterio del profesional de la salud.</p>
+      <h4>2. Limitación de responsabilidad</h4>
+      <p>MedTopix no asume responsabilidad por decisiones clínicas. Ante cualquier duda o efecto adverso, consulte a su médico tratante de inmediato.</p>
+      <h4>3. Protección de datos — Ley 1581 de 2012 (Colombia)</h4>
+      <p>En cumplimiento de la Ley 1581 de 2012 (Habeas Data), el usuario autoriza el tratamiento de sus datos bajo estas condiciones: (a) Los datos se almacenan exclusivamente en el dispositivo del usuario. (b) MedTopix no transfiere ni vende datos a terceros. (c) El usuario puede solicitar la eliminación de sus datos en cualquier momento. (d) Solo se recolectan datos necesarios para el funcionamiento de la app.</p>
+      <h4>4. Uso de la información</h4>
+      <p>La información registrada se usa exclusivamente para generar recordatorios y curvas de adherencia. No se realiza minería de datos comercial con información personal.</p>
+      <h4>5. Aceptación</h4>
+      <p>Al aceptar, el usuario declara haber leído y aceptado estas condiciones. La aceptación queda registrada con el tipo y número de documento del usuario.</p>
+    </div>
+    <div class="t-form">
+      <div class="t-form-title">📋 Datos de quien acepta los términos</div>
+      <div class="tg">
+        <div class="fg" style="grid-column:span 2"><label class="fl">Nombre completo</label><input type="text" class="fi" id="tc-n" placeholder="Nombre y apellidos"/></div>
+        <div class="fg"><label class="fl">Tipo de documento</label>
+          <select class="fi" id="tc-dt">
+            <option value="CC">Cédula de Ciudadanía (CC)</option>
+            <option value="CE">Cédula de Extranjería (CE)</option>
+            <option value="PP">Pasaporte (PP)</option>
+            <option value="TI">Tarjeta de Identidad (TI)</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Número de documento</label><input type="text" class="fi" id="tc-dn" placeholder="Ej: 1234567890"/></div>
+        <div class="fg"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="tc-e" placeholder="correo@gmail.com"/></div>
+        <div class="fg"><label class="fl">Contraseña</label>
+<div class="pw-wrap">
+  <input type="password" class="fi" id="tc-p" placeholder="Mínimo 6 caracteres"/>
+  <button type="button" class="pw-eye" onclick="togPw('tc-p',this)" title="Mostrar/ocultar">👁️</button>
+</div></div>
+      </div>
+      <label class="t-chk"><input type="checkbox" id="tc-c1" onchange="chkReady()"/><span>He leído y acepto los Términos y Condiciones de MedTopix, incluyendo la política de datos conforme a la Ley 1581 de 2012.</span></label>
+      <label class="t-chk"><input type="checkbox" id="tc-c2" onchange="chkReady()"/><span>Entiendo que MedTopix <strong>NO reemplaza al médico tratante</strong> ni a ningún profesional de salud.</span></label>
+      <button class="btn-accept" id="btn-accept" disabled onclick="acceptTerms()">Aceptar y crear cuenta</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="slo">
+  <div class="lb">
+    <div class="lb-logo">
+      <svg viewBox="0 0 50 50" width="32" height="32" xmlns="http://www.w3.org/2000/svg"><circle cx="25" cy="25" r="24" fill="#1a4a2e"/><circle cx="25" cy="25" r="15" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="1.5"/><line x1="25" y1="25" x2="25" y2="13" stroke="#1a4a2e" stroke-width="2.5" stroke-linecap="round"/><line x1="25" y1="25" x2="33" y2="29" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="25" r="2.5" fill="#1a4a2e"/></svg>
+      <div class="lb-name">MedTopix</div>
+    </div>
+    <div class="lb-title">Iniciar sesión</div>
+    <div class="lb-sub">Ingresa con tu correo y contraseña</div>
+    <div class="lb-err" id="lb-err">Usuario no encontrado en este dispositivo.</div>
+    <div class="fg" style="margin-bottom:12px"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="li-e" placeholder="correo@gmail.com"/></div>
+    <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label>
+<div class="pw-wrap">
+  <input type="password" class="fi" id="li-p" placeholder="Tu contraseña"/>
+  <button type="button" class="pw-eye" onclick="togPw('li-p',this)" title="Mostrar/ocultar">👁️</button>
+</div></div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:11px;color:#92400e;margin:12px 0;line-height:1.5;">
+  <strong>📱 ¿Usas otro dispositivo?</strong><br>
+  Los datos se guardan localmente. Usa la pestaña <strong><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync</strong> para transferir tu cuenta entre dispositivos.
+</div>
+<div class="lb-div" style="margin-top:16px">¿Primera vez en este dispositivo?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button onclick="goTerms()" style="padding:10px;background:var(--g100);border:1.5px solid var(--g300);color:var(--g700);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Crear cuenta nueva</button>
+      <button onclick="showImportLogin()" style="padding:10px;background:#eff6ff;border:1.5px solid #bfdbfe;color:#1d4ed8;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Importar desde otro dispositivo</button>
+    </div>
+    <div id="import-login-box" style="display:none;margin-top:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Pega el codigo de exportacion</div>
+      <textarea id="import-login-txt" style="width:100%;min-height:70px;font-family:monospace;font-size:11px;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:8px;color:var(--ink);resize:vertical" placeholder="Pega aqui el codigo generado desde el otro dispositivo..."></textarea>
+      <button onclick="importFromLogin()" style="margin-top:8px;width:100%;padding:10px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Importar y entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="screen" id="sa">
+<header>
+  <div class="hdr">
+    <div class="logo">
+      <svg viewBox="0 0 50 50" width="34" height="34" xmlns="http://www.w3.org/2000/svg"><circle cx="25" cy="25" r="24" fill="#1a4a2e"/><circle cx="25" cy="25" r="15" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="1.5"/><line x1="25" y1="25" x2="25" y2="13" stroke="#1a4a2e" stroke-width="2.5" stroke-linecap="round"/><line x1="25" y1="25" x2="33" y2="29" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="25" r="2.5" fill="#1a4a2e"/><g transform="translate(33 33) rotate(-35)"><rect x="0" y="0" width="15" height="7" rx="3.5" fill="#f0b862"/><rect x="7.5" y="0" width="7.5" height="7" rx="3.5" fill="#2d8a4e"/></g></svg>
+      <div><div class="logo-n">MedTopix</div><div class="logo-s">Recordatorio · Tópicos</div></div>
+    </div>
+    <div class="hdr-r">
+      <span id="clock"></span>
+      <div class="uc"><div class="ua" id="ua">L</div><span class="un" id="un">Usuario</span></div>
+      <button class="btn-out" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Salir</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tb active" onclick="goTab('alerts')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Alertas</button>
+    <button class="tb" onclick="goTab('patients')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Pacientes</button>
+    <button class="tb" onclick="goTab('meds')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos</button>
+    <button class="tb" onclick="goTab('report')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte</button>
+    <button class="tb" onclick="goTab('process')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg> Proceso</button>
+    <button class="tb" onclick="goTab('team')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Equipo</button>
+    <button class="tb" onclick="goTab('sync')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync</button>
+  </div>
+  <div class="pt-bar" id="ptbar">
+    <div class="pt-bar-av" id="ptbar-av">P</div>
+    <div class="pt-bar-info">
+      <div class="pt-bar-name" id="ptbar-name">Paciente seleccionado</div>
+      <div class="pt-bar-meta" id="ptbar-meta">Agregar medicamentos para este paciente</div>
+    </div>
+    <button class="pt-bar-close" onclick="clearPatientContext()">Cerrar</button>
+  </div>
+</header>
+
+<div class="nb hidden" id="nb">
+  <div class="nb-pill">💊</div>
+  <div class="nb-info"><div class="nb-lbl">Próxima medicación</div><div class="nb-name" id="nb-n"></div><div class="nb-meta" id="nb-m"></div></div>
+  <div><div class="nb-cd" id="nb-c"></div><div class="nb-cdl">restante</div></div>
+</div>
+
+<main>
+  <!-- ALERTS -->
+  <section class="tp active" id="alerts">
+    <div class="sr">
+      <div class="sc" style="--cc:var(--g600)"><div class="sc-ic">👥</div><div class="sc-v" id="st-pat">0</div><div class="sc-l">Pacientes</div></div>
+      <div class="sc" style="--cc:var(--gold)"><div class="sc-ic">💊</div><div class="sc-v" id="st-med">0</div><div class="sc-l">Medicamentos</div></div>
+      <div class="sc" style="--cc:var(--blue)"><div class="sc-ic">🔔</div><div class="sc-v" id="st-today">0</div><div class="sc-l">Dosis hoy</div></div>
+      <div class="sc" style="--cc:var(--red)"><div class="sc-ic">⚠️</div><div class="sc-v" id="st-pend">0</div><div class="sc-l">Pendientes</div></div>
+    </div>
+    <div class="st"><div class="si">🔔</div>Alertas de hoy</div>
+    <div class="ap"><div class="ap-h"><div><div class="ap-ht">Cronograma diario</div><div class="ap-hs">Registra cumplimiento de cada dosis</div></div></div><div id="alerts-list"></div></div>
+  </section>
+
+  <!-- PATIENTS -->
+  <section class="tp" id="patients">
+    <div class="fc">
+      <div class="fh"><div class="fh-ic">👤</div><div><div class="fh-t">Registrar paciente</div><div class="fh-s">Información básica protegida localmente</div></div></div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Nombre</label><input id="p-n" placeholder="Nombre completo" oninput="calcAge()"/></div>
+        <div class="fg"><label class="fl">Documento</label><input id="p-doc" placeholder="CC / ID"/></div>
+        <div class="fg"><label class="fl">Fecha nacimiento</label><input id="p-b" type="date" oninput="calcAge()"/></div>
+        <div class="fg"><label class="fl">Edad</label><div class="age-d" id="p-age">—</div></div>
+        <div class="fg"><label class="fl">Celular</label><input id="p-phone" placeholder="300 000 0000"/></div>
+        <div class="fg"><label class="fl">Correo</label><input id="p-email" type="email" placeholder="correo@ejemplo.com"/></div>
+      </div>
+      <div class="ff"><button class="btn-add" onclick="addPatient()">＋ Agregar paciente</button><span class="hint">Los datos se guardan solo en este navegador.</span></div>
+    </div>
+    <div class="st"><div class="si">📋</div>Pacientes registrados</div>
+    <div class="pl" id="patient-list"></div>
+  </section>
+
+  <!-- MEDS -->
+  <section class="tp" id="meds">
+    <div class="fc">
+      <div class="fh"><div class="fh-ic">💊</div><div><div class="fh-t">Agregar medicamento tópico</div><div class="fh-s">Asociado a un paciente y horario específico</div></div></div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Paciente</label><select id="m-p"></select></div>
+        <div class="fg"><label class="fl">Especialidad</label><select id="m-cat" onchange="catChange()"></select></div>
+        <div class="fg"><label class="fl">Medicamento</label><input id="m-n" placeholder="Ej: Latanoprost 0.005%"/></div>
+        <div class="fg"><label class="fl">Presentación</label><input id="m-pr" placeholder="Gotas, crema, ungüento..."/></div>
+        <div class="fg"><label class="fl">Horario</label><input id="m-t" type="time"/></div>
+        <div class="fg"><label class="fl">Dosis</label><input id="m-d" placeholder="1 gota / capa delgada"/></div>
+        <div class="fg"><label class="fl">Frecuencia</label><select id="m-f"><option value="daily">Diario</option><option value="bid">Cada 12 horas</option><option value="tid">Cada 8 horas</option><option value="qid">Cada 6 horas</option></select></div>
+        <div class="fg"><label class="fl">Duración</label><input id="m-du" placeholder="30 días / indefinido"/></div>
+      </div>
+      <div class="fg" style="margin-bottom:16px"><label class="fl">Notas de aplicación</label><textarea id="m-not" placeholder="Ej: lavar manos antes, separar 5 minutos de otras gotas..."></textarea></div>
+      <div class="ff"><button class="btn-add" onclick="addMed()">＋ Agregar medicamento</button><span class="hint">Las alarmas funcionan mientras la app esté abierta.</span></div>
+    </div>
+    <div class="st"><div class="si">🗂️</div>Medicamentos activos</div>
+    <div class="sf" id="cat-filters"></div>
+    <div class="cg" id="med-grid"></div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="tp" id="report">
+    <div class="fc"><div class="fh"><div class="fh-ic">📊</div><div><div class="fh-t">Reporte de adherencia</div><div class="fh-s">Historial de cumplimiento registrado</div></div></div>
+      <div class="rfi"><select id="r-p" onchange="renderReport()"></select><input type="date" id="r-date" onchange="renderReport()"/></div>
+    </div>
+    <div class="rtw"><table class="rt"><thead><tr><th>Fecha</th><th>Hora programada</th><th>Hora real</th><th>Paciente</th><th>Medicamento</th><th>Estado</th></tr></thead><tbody id="report-body"></tbody></table><div class="re" id="report-empty">No hay registros para mostrar.</div></div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="tp" id="process">
+    <div class="proc"><span class="ibdg">OBS BUSINESS SCHOOL</span><h3>Proceso de diseño e investigación</h3><p>MedTopix fue desarrollado como prototipo académico para apoyar la adherencia terapéutica en medicamentos tópicos, integrando recordatorios, registro de cumplimiento y visualización de curva individual.</p></div>
+    <div class="proc"><h3>Flujo funcional</h3><ul><li>Registro de usuario con aceptación de términos y política de datos.</li><li>Registro de pacientes con fecha de nacimiento y datos de contacto.</li><li>Creación de medicamentos por especialidad, horario, dosis y frecuencia.</li><li>Alertas automáticas con tres estados: aplicado, aplicado tarde o no aplicado.</li><li>Curva de adherencia por paciente de 14 días.</li></ul></div>
+    <div class="proc"><h3>Protección de datos</h3><p>Los datos se almacenan en localStorage del navegador. No se envían a servidores externos. Esta arquitectura es útil para prototipos académicos, pero para producción clínica se recomienda backend seguro, cifrado, autenticación robusta y consentimiento informado completo.</p><div class="pbox">Almacenamiento actual: navegador local
+Transferencia externa: no
+Uso clínico real: requiere validación, seguridad y aprobación institucional</div></div>
+    <div class="proc"><h3>Limitaciones</h3><ul><li>Las alarmas dependen de que la app esté abierta en el dispositivo.</li><li>No sustituye indicación médica ni seguimiento clínico.</li><li>No debe usarse como historia clínica oficial sin adecuación normativa.</li></ul></div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="tp" id="team">
+    <div class="tmc"><div class="tmh"><div><div class="fh-t">Equipo del proyecto</div><div class="fh-s">OBS Business School · Desarrollo académico</div></div><div class="tbgs"><span class="tbg">MedTopix</span><span class="tbg">Adherencia</span><span class="tbg">Salud digital</span></div></div><div class="tmg" id="team-grid"></div></div>
+  </section>
+
+  <!-- SYNC -->
+  <section class="tp" id="sync">
+    <div class="sync-panel">
+      <div class="sync-title">Sincronización entre dispositivos</div>
+      <div class="sync-sub">Como MedTopix guarda datos localmente, usa exportar/importar para mover tu cuenta, pacientes, medicamentos y reportes a otro celular o computador.</div>
+      <div class="sync-btns"><button class="btn-exp" onclick="exportData()">Exportar datos</button><button class="btn-imp" onclick="showImport()">Importar datos</button></div>
+      <div class="sync-code" id="sync-code"></div>
+      <div id="qr-box" style="display:none;margin-top:14px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;">
+        <div style="font-size:12px;font-weight:700;color:var(--g700);margin-bottom:10px">Escanea este QR desde otro dispositivo</div>
+        <div id="qr-code" style="display:inline-block;background:#fff;padding:10px;border-radius:8px"></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px">El QR contiene tus datos codificados localmente</div>
+      </div>
+      <div class="sync-import-area" id="sync-import"><textarea id="sync-txt" placeholder="Pega aquí el código exportado..."></textarea><button class="btn-exp" style="margin-top:8px" onclick="importData()">Confirmar importación</button></div>
+    </div>
+  </section>
+</main>
+<footer><div class="fi2"><div class="ft"><div><div class="fst">Referencias base</div><ul class="fs"><li>World Health Organization. Adherence to long-term therapies: evidence for action.</li><li>Ley 1581 de 2012, Colombia. Régimen general de protección de datos personales.</li><li>Ministerio de Salud y Protección Social. Lineamientos de historia clínica y protección de datos.</li></ul></div><div><div class="fst">Nota</div><div class="fm">MedTopix es un prototipo académico. Su uso clínico real requiere validación, aprobación institucional, seguridad avanzada y cumplimiento normativo completo.</div></div></div><div class="fb"><span>© 2026 MedTopix · OBS Business School</span><div class="fbl"><a>Privacidad</a><a>Términos</a><a>Contacto</a></div></div></div></footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Minimal app logic preserved as functional prototype
+var curUser=null, curTab='alerts', curCat='all', selectedPatient=null, alarmMed=null;
+var cats={oft:{n:'Oftalmología',c:'#2d8a4e',i:'👁️'},der:{n:'Dermatología',c:'#d97706',i:'🧴'},orl:{n:'Otorrino',c:'#2563eb',i:'👂'},gin:{n:'Ginecología',c:'#dc2626',i:'🌸'},oth:{n:'Otros',c:'#6b7280',i:'💊'}};
+var team=[['Leonardo Orjuela','Líder clínico / desarrollo conceptual','LO',true],['OBS Business School','Marco académico','OBS',false],['MedTopix','Prototipo digital de adherencia','MT',false]];
+function $(id){return document.getElementById(id)}
+function get(k,d){try{return JSON.parse(localStorage.getItem('mt6_'+k))||d}catch(e){return d}}
+function set(k,v){localStorage.setItem('mt6_'+k,JSON.stringify(v))}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
+function toast(m,err){var t=$('toast');t.textContent=m;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast',2500)}
+function goStart(){show('st')} function goTerms(){show('st')}
+function chkReady(){var ok=$('tc-c1').checked&&$('tc-c2').checked&&$('tc-n').value&&$('tc-dn').value&&$('tc-e').value&&$('tc-p').value.length>=6;$('btn-accept').disabled=!ok}
+['tc-n','tc-dn','tc-e','tc-p'].forEach(id=>setTimeout(()=>$(id)&&$(id).addEventListener('input',chkReady),0));
+function acceptTerms(){curUser={n:$('tc-n').value,e:$('tc-e').value,p:$('tc-p').value,dt:$('tc-dt').value,dn:$('tc-dn').value,at:new Date().toISOString()};set('user',curUser);localStorage.setItem('mt6_s',JSON.stringify(curUser));initApp();show('sa')}
+function doLogin(){var u=get('user',null);if(u&&u.e===$('li-e').value&&u.p===$('li-p').value){curUser=u;localStorage.setItem('mt6_s',JSON.stringify(u));initApp();show('sa')}else{$('lb-err').classList.add('show')}}
+function doLogout(){localStorage.removeItem('mt6_s');curUser=null;show('slo')}
+function togPw(id,b){var i=$(id);i.type=i.type==='password'?'text':'password'}
+function initApp(){if(!curUser)curUser=get('user',{});$('un').textContent=curUser.n||'Usuario';$('ua').textContent=(curUser.n||'U')[0].toUpperCase();initCats();renderAll();setInterval(clock,1000);clock();}
+function clock(){$('clock').textContent=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}
+function initCats(){var s=$('m-cat');if(s&&!s.options.length)Object.keys(cats).forEach(k=>s.innerHTML+=`<option value="${k}">${cats[k].n}</option>`)}
+function calcAge(){var b=$('p-b').value;if(!b){$('p-age').textContent='—';return}var a=new Date().getFullYear()-new Date(b).getFullYear();$('p-age').textContent=a+' años'}
+function addPatient(){var n=$('p-n').value.trim();if(!n)return toast('Falta nombre',1);var p=get('patients',[]);p.push({id:Date.now(),n:n,doc:$('p-doc').value,b:$('p-b').value,phone:$('p-phone').value,email:$('p-email').value});set('patients',p);['p-n','p-doc','p-b','p-phone','p-email'].forEach(x=>$(x).value='');$('p-age').textContent='—';renderAll();toast('Paciente agregado')}
+function renderPatients(){var p=get('patients',[]),m=get('meds',[]),el=$('patient-list');el.innerHTML=p.length?'':'<div class="empty"><div class="empty-c">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">Agrega el primer paciente.</div></div>';p.forEach(x=>{var age=x.b?(new Date().getFullYear()-new Date(x.b).getFullYear())+' años':'';var meds=m.filter(a=>a.pid==x.id).length;el.innerHTML+=`<div class="pc"><div class="pav">${x.n[0].toUpperCase()}</div><div class="pi"><div class="pn">${x.n}</div><div class="pd">${x.doc||''} ${age?`· ${age}`:''}<br>${x.phone||''} ${x.email||''}</div></div><div class="pm">${meds} meds</div><button class="btn-curve" onclick="selectPatient(${x.id})">Agregar medicamento</button><button class="btn-curve" onclick="curve(${x.id})">Curva</button><button class="btn-dpt" onclick="delPatient(${x.id})">Eliminar</button></div><div class="adhp" id="adh-${x.id}"></div>`})}
+function delPatient(id){set('patients',get('patients',[]).filter(x=>x.id!=id));set('meds',get('meds',[]).filter(x=>x.pid!=id));renderAll()}
+function selectPatient(id){selectedPatient=id;goTab('meds');renderMedSelect();$('m-p').value=id;var p=get('patients',[]).find(x=>x.id==id);$('ptbar').classList.add('show');$('ptbar-name').textContent=p.n;$('ptbar-av').textContent=p.n[0].toUpperCase();}
+function clearPatientContext(){selectedPatient=null;$('ptbar').classList.remove('show')}
+function renderMedSelect(){var p=get('patients',[]),s=$('m-p');s.innerHTML=p.map(x=>`<option value="${x.id}">${x.n}</option>`).join('')}
+function addMed(){var pid=$('m-p').value;if(!pid)return toast('Registra un paciente primero',1);var meds=get('meds',[]);meds.push({id:Date.now(),pid:pid,cat:$('m-cat').value,n:$('m-n').value,pr:$('m-pr').value,t:$('m-t').value,d:$('m-d').value,f:$('m-f').value,du:$('m-du').value,not:$('m-not').value});set('meds',meds);['m-n','m-pr','m-t','m-d','m-du','m-not'].forEach(x=>$(x).value='');renderAll();toast('Medicamento agregado')}
+function renderMeds(){var meds=get('meds',[]),p=get('patients',[]),el=$('med-grid');el.innerHTML='';var list=curCat==='all'?meds:meds.filter(x=>x.cat===curCat);if(!list.length)el.innerHTML='<div class="empty"><div class="empty-c">💊</div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Agrega medicamentos tópicos.</div></div>';list.forEach(x=>{var c=cats[x.cat]||cats.oth,pt=p.find(a=>a.id==x.pid);el.innerHTML+=`<div class="mc"><div class="ct" style="background:linear-gradient(135deg,${c.c},#1a4a2e)"><div class="cb2">${c.i} ${c.n}</div><div class="cn">${x.n||'Medicamento'}</div><div class="cpt">⏰ ${x.t||'Sin hora'}</div><div class="cr">${pt?pt.n:'Paciente'}</div></div><div class="cbd"><div class="tr"><div class="tv">${x.d||'Dosis'}</div><div class="tf">${x.f}</div></div><div class="mr"><div><div class="ml2">Presentación</div><div class="mv">${x.pr||'—'}</div></div><div><div class="ml2">Duración</div><div class="mv">${x.du||'—'}</div></div></div>${x.not?`<div class="cn2">${x.not}</div>`:''}<div class="ca"><button class="btn-dc" onclick="delMed(${x.id})">Eliminar</button></div></div></div>`})}
+function delMed(id){set('meds',get('meds',[]).filter(x=>x.id!=id));renderAll()}
+function renderCats(){var el=$('cat-filters');el.innerHTML=`<button class="sfc ${curCat==='all'?'active':''}" onclick="curCat='all';renderCats();renderMeds()">Todos</button>`;Object.keys(cats).forEach(k=>el.innerHTML+=`<button class="sfc ${curCat===k?'active':''}" style="--cc:${cats[k].c}" onclick="curCat='${k}';renderCats();renderMeds()">${cats[k].i} ${cats[k].n}</button>`)}
+function timesFor(m){var base=[m.t].filter(Boolean);if(m.f==='bid')base.push(addH(m.t,12));if(m.f==='tid'){base.push(addH(m.t,8),addH(m.t,16))}if(m.f==='qid'){base.push(addH(m.t,6),addH(m.t,12),addH(m.t,18))}return base}
+function addH(t,h){if(!t)return'';var [a,b]=t.split(':').map(Number),d=new Date();d.setHours(a+h,b,0,0);return d.toTimeString().slice(0,5)}
+function today(){return new Date().toISOString().slice(0,10)}
+function renderAlerts(){var meds=get('meds',[]),p=get('patients',[]),logs=get('logs',[]),arr=[];meds.forEach(m=>timesFor(m).forEach(t=>arr.push({m,t})));arr.sort((a,b)=>a.t.localeCompare(b.t));var el=$('alerts-list');el.innerHTML='';if(!arr.length){el.innerHTML='<div class="re">No hay alertas programadas.</div>';return}arr.forEach((a,i)=>{var pt=p.find(x=>x.id==a.m.pid),lg=logs.find(l=>l.mid==a.m.id&&l.date==today()&&l.sched==a.t),c=cats[a.m.cat]||cats.oth;var st=lg?lg.status:'pendiente';el.innerHTML+=`<div class="ar"><div class="at"><div class="at-v">${a.t}</div><div class="at-f">hora</div></div><div class="abar" style="background:${c.c}"></div><div class="ai"><div class="an">${a.m.n}</div><div class="apt">${pt?pt.n:''}</div><div class="am">${a.m.d||''}</div></div><span class="sp ${st==='yes'?'sp-d':st==='late'?'sp-l':'sp-p'}">${st}</span><div class="abtns"><button class="abtn abtn-y" onclick="logDose(${a.m.id},'${a.t}','yes')">Usó</button><button class="abtn abtn-l" onclick="logDose(${a.m.id},'${a.t}','late')">Tarde</button><button class="abtn abtn-n" onclick="logDose(${a.m.id},'${a.t}','no')">No</button></div></div>`})}
+function logDose(mid,sched,status){var logs=get('logs',[]);logs=logs.filter(l=>!(l.mid==mid&&l.date==today()&&l.sched==sched));logs.push({id:Date.now(),mid:mid,date:today(),sched:sched,real:new Date().toTimeString().slice(0,5),status:status});set('logs',logs);renderAll()}
+function renderReport(){var logs=get('logs',[]),meds=get('meds',[]),p=get('patients',[]),body=$('report-body');body.innerHTML='';logs.forEach(l=>{var m=meds.find(x=>x.id==l.mid),pt=m?p.find(x=>x.id==m.pid):null;body.innerHTML+=`<tr><td>${l.date}</td><td>${l.sched}</td><td>${l.real}</td><td>${pt?pt.n:''}</td><td>${m?m.n:''}</td><td><span class="rs ${l.status==='yes'?'rs-y':l.status==='late'?'rs-l':'rs-n'}">${l.status}</span></td></tr>`});$('report-empty').style.display=logs.length?'none':'block'}
+function updateStats(){var meds=get('meds',[]),p=get('patients',[]);$('st-pat').textContent=p.length;$('st-med').textContent=meds.length;$('st-today').textContent=meds.reduce((s,m)=>s+timesFor(m).length,0);$('st-pend').textContent=Math.max(0,parseInt($('st-today').textContent)-get('logs',[]).filter(l=>l.date==today()).length)}
+function updateNext(){var meds=get('meds',[]),p=get('patients',[]),now=new Date(),best=null;meds.forEach(m=>timesFor(m).forEach(t=>{var [h,mi]=t.split(':').map(Number),d=new Date();d.setHours(h,mi,0,0);if(d>now&&(!best||d<best.d))best={m,t,d}}));var nb=$('nb');if(!best){nb.classList.add('hidden');return}nb.classList.remove('hidden');var pt=p.find(x=>x.id==best.m.pid);$('nb-n').textContent=best.m.n;$('nb-m').textContent=(pt?pt.n:'')+' · '+best.t;var mins=Math.round((best.d-now)/60000);$('nb-c').textContent=mins+'m'}
+function goTab(t){curTab=t;document.querySelectorAll('.tp').forEach(x=>x.classList.remove('active'));$(t).classList.add('active');document.querySelectorAll('.tb').forEach(x=>x.classList.remove('active'));event&&event.currentTarget&&event.currentTarget.classList.add('active');renderAll()}
+function curve(id){var box=$('adh-'+id);box.classList.toggle('open');var meds=get('meds',[]).filter(m=>m.pid==id),logs=get('logs',[]),ok=logs.filter(l=>meds.some(m=>m.id==l.mid)&&l.status==='yes').length,late=logs.filter(l=>meds.some(m=>m.id==l.mid)&&l.status==='late').length,no=logs.filter(l=>meds.some(m=>m.id==l.mid)&&l.status==='no').length,total=ok+late+no,pct=total?Math.round((ok+late*0.7)/total*100):0;box.innerHTML=`<div class="adh-sum"><div class="adh-sc ok-c"><div class="adh-v">${ok}</div><div class="adh-l">A tiempo</div></div><div class="adh-sc lt-c"><div class="adh-v">${late}</div><div class="adh-l">Tarde</div></div><div class="adh-sc no-c"><div class="adh-v">${no}</div><div class="adh-l">No usó</div></div></div><div class="pct-w"><div class="pct-l"><span>Adherencia estimada</span><span>${pct}%</span></div><div class="pct-b"><div class="pct-f" style="width:${pct}%;background:var(--g600)"></div></div></div>`}
+function renderTeam(){var el=$('team-grid');el.innerHTML='';team.forEach(x=>el.innerHTML+=`<div class="tmcard ${x[3]?'prof':''}"><div class="tmav" style="background:linear-gradient(135deg,var(--g600),var(--g400))">${x[2]}</div><div><div class="tmn">${x[0]}</div><div class="tmr">${x[1]}</div></div></div>`)}
+function exportData(){var data={user:get('user',null),patients:get('patients',[]),meds:get('meds',[]),logs:get('logs',[])};var code=btoa(unescape(encodeURIComponent(JSON.stringify(data))));$('sync-code').textContent=code;$('sync-code').classList.add('show');$('qr-box').style.display='block';$('qr-code').innerHTML='';try{new QRCode($('qr-code'),{text:location.origin+location.pathname+'?sync='+encodeURIComponent(code),width:180,height:180})}catch(e){}}
+function showImport(){$('sync-import').classList.toggle('show')}
+function importData(){try{var data=JSON.parse(decodeURIComponent(escape(atob($('sync-txt').value.trim()))));if(data.user)set('user',data.user);set('patients',data.patients||[]);set('meds',data.meds||[]);set('logs',data.logs||[]);toast('Datos importados');renderAll()}catch(e){toast('Código inválido',1)}}
+function showImportLogin(){$('import-login-box').style.display='block'}
+function importFromLogin(){try{var data=JSON.parse(decodeURIComponent(escape(atob($('import-login-txt').value.trim()))));if(data.user){set('user',data.user);set('patients',data.patients||[]);set('meds',data.meds||[]);set('logs',data.logs||[]);curUser=data.user;localStorage.setItem('mt6_s',JSON.stringify(curUser));initApp();show('sa')}}catch(e){toast('Código inválido',1)}}
+function renderAll(){renderMedSelect();renderPatients();renderCats();renderMeds();renderAlerts();renderReport();renderTeam();updateStats();updateNext()}
+(function(){var params=new URLSearchParams(location.search),sync=params.get('sync');if(sync){sessionStorage.setItem('mt6_qr',sync);history.replaceState({},document.title,location.pathname)}var saved=localStorage.getItem('mt6_s');if(saved){try{curUser=JSON.parse(saved);initApp();show('sa');return}catch(e){}}show('sl');setInterval(function(){updateStats();updateNext();if(curTab==='alerts')renderAlerts()},30000)})();
+</script>
+</body>
+</html>
