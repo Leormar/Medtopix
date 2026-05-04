@@ -566,172 +566,1471 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <button class="tb" onclick="goTab('patients')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Pacientes</button>
     <button class="tb" onclick="goTab('meds')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos</button>
     <button class="tb" onclick="goTab('report')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte</button>
-    <button class="tb" onclick="goTab('process')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg> Proceso</button>
+    <button class="tb" onclick="goTab('process')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg> Proceso IA</button>
     <button class="tb" onclick="goTab('team')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Equipo</button>
     <button class="tb" onclick="goTab('sync')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync</button>
   </div>
-  <div class="pt-bar" id="ptbar">
-    <div class="pt-bar-av" id="ptbar-av">P</div>
+  <div class="pt-bar" id="pt-bar">
+    <div class="pt-bar-av" id="pt-bar-av">?</div>
     <div class="pt-bar-info">
-      <div class="pt-bar-name" id="ptbar-name">Paciente seleccionado</div>
-      <div class="pt-bar-meta" id="ptbar-meta">Agregar medicamentos para este paciente</div>
+      <div class="pt-bar-name" id="pt-bar-name">—</div>
+      <div class="pt-bar-meta" id="pt-bar-meta">—</div>
     </div>
-    <button class="pt-bar-close" onclick="clearPatientContext()">Cerrar</button>
+    <button class="pt-bar-close" onclick="clearPtContext()">✕ Limpiar filtro</button>
   </div>
 </header>
 
 <div class="nb hidden" id="nb">
   <div class="nb-pill">💊</div>
-  <div class="nb-info"><div class="nb-lbl">Próxima medicación</div><div class="nb-name" id="nb-n"></div><div class="nb-meta" id="nb-m"></div></div>
-  <div><div class="nb-cd" id="nb-c"></div><div class="nb-cdl">restante</div></div>
+  <div class="nb-info">
+    <div class="nb-lbl">Próximo recordatorio</div>
+    <div class="nb-name" id="nb-n"></div>
+    <div class="nb-meta" id="nb-m"></div>
+  </div>
+  <div><div class="nb-cd" id="nb-cd"></div><div class="nb-cdl">para la toma</div></div>
 </div>
 
 <main>
-  <!-- ALERTS -->
-  <section class="tp active" id="alerts">
-    <div class="sr">
-      <div class="sc" style="--cc:var(--g600)"><div class="sc-ic">👥</div><div class="sc-v" id="st-pat">0</div><div class="sc-l">Pacientes</div></div>
-      <div class="sc" style="--cc:var(--gold)"><div class="sc-ic">💊</div><div class="sc-v" id="st-med">0</div><div class="sc-l">Medicamentos</div></div>
-      <div class="sc" style="--cc:var(--blue)"><div class="sc-ic">🔔</div><div class="sc-v" id="st-today">0</div><div class="sc-l">Dosis hoy</div></div>
-      <div class="sc" style="--cc:var(--red)"><div class="sc-ic">⚠️</div><div class="sc-v" id="st-pend">0</div><div class="sc-l">Pendientes</div></div>
-    </div>
-    <div class="st"><div class="si">🔔</div>Alertas de hoy</div>
-    <div class="ap"><div class="ap-h"><div><div class="ap-ht">Cronograma diario</div><div class="ap-hs">Registra cumplimiento de cada dosis</div></div></div><div id="alerts-list"></div></div>
-  </section>
 
-  <!-- PATIENTS -->
-  <section class="tp" id="patients">
-    <div class="fc">
-      <div class="fh"><div class="fh-ic">👤</div><div><div class="fh-t">Registrar paciente</div><div class="fh-s">Información básica protegida localmente</div></div></div>
-      <div class="fg2">
-        <div class="fg"><label class="fl">Nombre</label><input id="p-n" placeholder="Nombre completo" oninput="calcAge()"/></div>
-        <div class="fg"><label class="fl">Documento</label><input id="p-doc" placeholder="CC / ID"/></div>
-        <div class="fg"><label class="fl">Fecha nacimiento</label><input id="p-b" type="date" oninput="calcAge()"/></div>
-        <div class="fg"><label class="fl">Edad</label><div class="age-d" id="p-age">—</div></div>
-        <div class="fg"><label class="fl">Celular</label><input id="p-phone" placeholder="300 000 0000"/></div>
-        <div class="fg"><label class="fl">Correo</label><input id="p-email" type="email" placeholder="correo@ejemplo.com"/></div>
+<!-- ALERTAS -->
+<div class="tp active" id="tp-alerts">
+  <div class="sr">
+    <div class="sc" style="--cc:var(--g600)"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><div class="sc-v" id="s0">0</div><div class="sc-l">Total</div></div>
+    <div class="sc" style="--cc:#d97706"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="sc-v" id="s1">0</div><div class="sc-l">Pendientes</div></div>
+    <div class="sc" style="--cc:#16a34a"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="sc-v" id="s2">0</div><div class="sc-l">Confirmados</div></div>
+    <div class="sc" style="--cc:#dc2626"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><triangle><polygon points="10.29 3.86 1.82 18 22.18 18 13.71 3.86 10.29 3.86"/></triangle><path d="M10.29 3.86L1.82 18h20.36L13.71 3.86z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="sc-v" id="s3">0</div><div class="sc-l">Vencidos</div></div>
+  </div>
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>Horario de hoy</div>
+  <div class="ap">
+    <div class="ap-h">
+      <div><div class="ap-ht">Panel de alertas activas</div><div class="ap-hs" id="ap-d"></div></div>
+      <div style="font-size:10px;color:var(--g200);text-align:right">Alarma automática<br>a la hora programada</div>
+    </div>
+    <div id="al"></div>
+  </div>
+</div>
+
+<!-- PACIENTES -->
+<div class="tp" id="tp-patients">
+  <div class="st"><div class="si"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>Registrar paciente</div>
+  <div class="fc">
+    <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="fh-t">Datos del paciente</div><div class="fh-s">Registra al paciente antes de asignarle medicamentos</div></div></div>
+    <div class="fg2">
+      <div class="fg" style="grid-column:span 2"><label class="fl">Nombre completo</label><input type="text" id="p-n" placeholder="Ej: María González Pérez"/></div>
+      <div class="fg"><label class="fl">Fecha de nacimiento</label><input type="date" id="p-dob" onchange="calcAge()"/></div>
+      <div class="fg"><label class="fl">Edad calculada</label><div class="age-d" id="age-d">— años</div></div>
+      <div class="fg"><label class="fl">Identificación</label><input type="text" id="p-id" placeholder="Cédula / HC"/></div>
+      <div class="fg"><label class="fl">Diagnóstico</label><input type="text" id="p-dx" placeholder="Ej: Dermatitis atópica"/></div>
+      <div class="fg"><label class="fl">Especialidad</label>
+        <select id="p-sp"><option>General</option><option>Dermatología</option><option>Oftalmología</option><option>Traumatología</option><option>ORL</option><option>Ginecología</option><option>Neurología</option><option>Cardiología</option><option>Gastroenterología</option></select>
       </div>
-      <div class="ff"><button class="btn-add" onclick="addPatient()">＋ Agregar paciente</button><span class="hint">Los datos se guardan solo en este navegador.</span></div>
+      <div class="fg"><label class="fl">Teléfono</label><input type="text" id="p-ph" placeholder="310 000 0000"/></div>
+      <div class="fg" style="grid-column:span 2"><label class="fl">Observaciones</label><textarea id="p-ob" placeholder="Alergias, antecedentes..."></textarea></div>
     </div>
-    <div class="st"><div class="si">📋</div>Pacientes registrados</div>
-    <div class="pl" id="patient-list"></div>
-  </section>
+    <div class="ff"><button class="btn-add" onclick="addPt()">➕ Registrar paciente</button><span class="hint">Datos guardados localmente</span></div>
+  </div>
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Pacientes y adherencia</div>
+  <div style="margin-bottom:14px;">
+    <button onclick="exportPatients()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#9c27b0,#ba68c8);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar pacientes CSV</button>
+  </div>
+  <div class="pl" id="pl"></div>
+</div>
 
-  <!-- MEDS -->
-  <section class="tp" id="meds">
-    <div class="fc">
-      <div class="fh"><div class="fh-ic">💊</div><div><div class="fh-t">Agregar medicamento tópico</div><div class="fh-s">Asociado a un paciente y horario específico</div></div></div>
-      <div class="fg2">
-        <div class="fg"><label class="fl">Paciente</label><select id="m-p"></select></div>
-        <div class="fg"><label class="fl">Especialidad</label><select id="m-cat" onchange="catChange()"></select></div>
-        <div class="fg"><label class="fl">Medicamento</label><input id="m-n" placeholder="Ej: Latanoprost 0.005%"/></div>
-        <div class="fg"><label class="fl">Presentación</label><input id="m-pr" placeholder="Gotas, crema, ungüento..."/></div>
-        <div class="fg"><label class="fl">Horario</label><input id="m-t" type="time"/></div>
-        <div class="fg"><label class="fl">Dosis</label><input id="m-d" placeholder="1 gota / capa delgada"/></div>
-        <div class="fg"><label class="fl">Frecuencia</label><select id="m-f"><option value="daily">Diario</option><option value="bid">Cada 12 horas</option><option value="tid">Cada 8 horas</option><option value="qid">Cada 6 horas</option></select></div>
-        <div class="fg"><label class="fl">Duración</label><input id="m-du" placeholder="30 días / indefinido"/></div>
+<!-- MEDICAMENTOS -->
+<div class="tp" id="tp-meds">
+  <div class="st"><div class="si"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>Agregar medicamento</div>
+  <div class="fc">
+    <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg></div><div><div class="fh-t">Nuevo recordatorio</div><div class="fh-s">Asigna un paciente y programa la hora de toma</div></div></div>
+    <div class="fg2">
+      <div class="fg" style="grid-column:span 2"><label class="fl">Nombre del medicamento</label><input type="text" id="f-n" placeholder="Ej: Tobramicina 0.3% colirio"/></div>
+      <div class="fg"><label class="fl">Paciente asignado</label><select id="f-pt" onchange="preloadPt()"><option value="">— Sin asignar —</option></select></div>
+      <div class="fg"><label class="fl">Especialidad</label>
+        <select id="f-sp"><option>General</option><option>Dermatología</option><option>Oftalmología</option><option>Traumatología</option><option>ORL</option><option>Ginecología</option><option>Neurología</option><option>Cardiología</option><option>Gastroenterología</option></select>
       </div>
-      <div class="fg" style="margin-bottom:16px"><label class="fl">Notas de aplicación</label><textarea id="m-not" placeholder="Ej: lavar manos antes, separar 5 minutos de otras gotas..."></textarea></div>
-      <div class="ff"><button class="btn-add" onclick="addMed()">＋ Agregar medicamento</button><span class="hint">Las alarmas funcionan mientras la app esté abierta.</span></div>
-    </div>
-    <div class="st"><div class="si">🗂️</div>Medicamentos activos</div>
-    <div class="sf" id="cat-filters"></div>
-    <div class="cg" id="med-grid"></div>
-  </section>
-
-  <!-- REPORT -->
-  <section class="tp" id="report">
-    <div class="fc"><div class="fh"><div class="fh-ic">📊</div><div><div class="fh-t">Reporte de adherencia</div><div class="fh-s">Historial de cumplimiento registrado</div></div></div>
-      <div class="rfi"><select id="r-p" onchange="renderReport()"></select><input type="date" id="r-date" onchange="renderReport()"/></div>
-    </div>
-    <div class="rtw"><table class="rt"><thead><tr><th>Fecha</th><th>Hora programada</th><th>Hora real</th><th>Paciente</th><th>Medicamento</th><th>Estado</th></tr></thead><tbody id="report-body"></tbody></table><div class="re" id="report-empty">No hay registros para mostrar.</div></div>
-  </section>
-
-  <!-- PROCESS -->
-  <section class="tp" id="process">
-    <div class="proc"><span class="ibdg">OBS BUSINESS SCHOOL</span><h3>Proceso de diseño e investigación</h3><p>MedTopix fue desarrollado como prototipo académico para apoyar la adherencia terapéutica en medicamentos tópicos, integrando recordatorios, registro de cumplimiento y visualización de curva individual.</p></div>
-    <div class="proc"><h3>Flujo funcional</h3><ul><li>Registro de usuario con aceptación de términos y política de datos.</li><li>Registro de pacientes con fecha de nacimiento y datos de contacto.</li><li>Creación de medicamentos por especialidad, horario, dosis y frecuencia.</li><li>Alertas automáticas con tres estados: aplicado, aplicado tarde o no aplicado.</li><li>Curva de adherencia por paciente de 14 días.</li></ul></div>
-    <div class="proc"><h3>Protección de datos</h3><p>Los datos se almacenan en localStorage del navegador. No se envían a servidores externos. Esta arquitectura es útil para prototipos académicos, pero para producción clínica se recomienda backend seguro, cifrado, autenticación robusta y consentimiento informado completo.</p><div class="pbox">Almacenamiento actual: navegador local
-Transferencia externa: no
-Uso clínico real: requiere validación, seguridad y aprobación institucional</div></div>
-    <div class="proc"><h3>Limitaciones</h3><ul><li>Las alarmas dependen de que la app esté abierta en el dispositivo.</li><li>No sustituye indicación médica ni seguimiento clínico.</li><li>No debe usarse como historia clínica oficial sin adecuación normativa.</li></ul></div>
-  </section>
-
-  <!-- TEAM -->
-  <section class="tp" id="team">
-    <div class="tmc"><div class="tmh"><div><div class="fh-t">Equipo del proyecto</div><div class="fh-s">OBS Business School · Desarrollo académico</div></div><div class="tbgs"><span class="tbg">MedTopix</span><span class="tbg">Adherencia</span><span class="tbg">Salud digital</span></div></div><div class="tmg" id="team-grid"></div></div>
-  </section>
-
-  <!-- SYNC -->
-  <section class="tp" id="sync">
-    <div class="sync-panel">
-      <div class="sync-title">Sincronización entre dispositivos</div>
-      <div class="sync-sub">Como MedTopix guarda datos localmente, usa exportar/importar para mover tu cuenta, pacientes, medicamentos y reportes a otro celular o computador.</div>
-      <div class="sync-btns"><button class="btn-exp" onclick="exportData()">Exportar datos</button><button class="btn-imp" onclick="showImport()">Importar datos</button></div>
-      <div class="sync-code" id="sync-code"></div>
-      <div id="qr-box" style="display:none;margin-top:14px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;">
-        <div style="font-size:12px;font-weight:700;color:var(--g700);margin-bottom:10px">Escanea este QR desde otro dispositivo</div>
-        <div id="qr-code" style="display:inline-block;background:#fff;padding:10px;border-radius:8px"></div>
-        <div style="font-size:10px;color:var(--muted);margin-top:10px">El QR contiene tus datos codificados localmente</div>
+      <div class="fg"><label class="fl">Dosis por toma</label><input type="text" id="f-d" placeholder="Ej: 1 gota, 500mg"/></div>
+      <div class="fg"><label class="fl">Hora de toma</label><input type="time" id="f-t"/></div>
+      <div class="fg"><label class="fl">Frecuencia</label>
+        <select id="f-fr"><option>Cada 4 horas</option><option>Cada 6 horas</option><option>Cada 8 horas</option><option>Cada 12 horas</option><option selected>Una vez al día</option><option>Según necesidad</option></select>
       </div>
-      <div class="sync-import-area" id="sync-import"><textarea id="sync-txt" placeholder="Pega aquí el código exportado..."></textarea><button class="btn-exp" style="margin-top:8px" onclick="importData()">Confirmar importación</button></div>
+      <div class="fg"><label class="fl">Dosis máxima diaria</label><input type="text" id="f-mx" placeholder="Ej: 4 gotas/día"/></div>
+      <div class="fg"><label class="fl">Vía</label>
+        <select id="f-rv"><option>Tópica cutánea</option><option>Colirio / ocular</option><option>Ótica</option><option>Nasal</option><option>Vaginal</option><option>Transdérmica</option><option>Oral</option><option>Inhalada</option></select>
+      </div>
+      <div class="fg" style="grid-column:span 2"><label class="fl">Notas / instrucciones</label><textarea id="f-nt" placeholder="Ej: Aplicar en zona afectada. No suspender sin indicación médica."></textarea></div>
     </div>
-  </section>
+    <div class="ff"><button class="btn-add" onclick="addMed()">➕ Agregar recordatorio</button><span class="hint">Datos guardados localmente</span></div>
+  </div>
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg></div>Medicamentos registrados</div>
+  <div class="sf" id="sf"></div>
+  <div class="cg" id="cg"></div>
+</div>
+
+<!-- REPORTE -->
+<div class="tp" id="tp-report">
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>Reporte de adherencia</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <button onclick="exportAdherence()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#16a34a,#5fc97e);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar adherencia CSV</button>
+    <button onclick="exportMeds()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar medicamentos CSV</button>
+  </div>
+  <div class="fc">
+    <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div><div class="fh-t">Filtros</div><div class="fh-s">Filtra por paciente, fecha y estado</div></div></div>
+    <div class="rfi">
+      <select id="rp-pt" onchange="renderRep()"><option value="">Todos los pacientes</option></select>
+      <input type="date" id="rp-f" onchange="renderRep()"/>
+      <input type="date" id="rp-t2" onchange="renderRep()"/>
+      <select id="rp-st" onchange="renderRep()">
+        <option value="">Todos los estados</option>
+        <option value="yes">✅ Usó la medicación</option>
+        <option value="late">🕐 Otro horario</option>
+        <option value="no">❌ No usó</option>
+      </select>
+    </div>
+  </div>
+  <div class="rtw"><table class="rt"><thead><tr><th>Fecha</th><th>Hora prog.</th><th>Hora real</th><th>Medicamento</th><th>Paciente</th><th>Estado</th></tr></thead><tbody id="rb"></tbody></table></div>
+</div>
+
+<!-- PROCESO IA -->
+<div class="tp" id="tp-process">
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></div>Proceso de desarrollo con IA</div>
+  <div class="proc"><h3>📌 Descripción del ejercicio</h3><p>Se desarrolló <strong>MedTopix</strong> mediante prompts iterativos al modelo Claude (Anthropic), sin escribir código manualmente. Publicada en <strong>medtopix.netlify.app</strong>.</p></div>
+  <div class="proc"><h3>🔄 Iteraciones y prompts</h3>
+    <div class="ibdg">1</div><p><strong>Guía interactiva</strong> — HTML con 10 categorías farmacológicas en 6 especialidades.</p>
+    <div class="pbox">Para esta actividad debo hacer para medicamentos tópicos. Guía interactiva para múltiples especialidades médicas.</div>
+    <div class="ibdg" style="margin-top:12px">2</div><p><strong>App de recordatorio</strong> — localStorage, hora, dosis, frecuencia.</p>
+    <div class="pbox">Quiero volverlo una app de recordatorio de medicamentos por especialidad. Solo en el navegador con localStorage.</div>
+    <div class="ibdg" style="margin-top:12px">3</div><p><strong>Diseño verde salud</strong> — Logo MedTopix, colores por especialidad, equipo.</p>
+    <div class="pbox">El frontend está muy básico. Verde salud moderno. Logo y cocreadores del Grupo 5.</div>
+    <div class="ibdg" style="margin-top:12px">4</div><p><strong>Alarma real + paciente</strong> — AudioContext, panel de alertas, formulario de paciente.</p>
+    <div class="pbox">La funcionalidad de horario no genera alerta. Además debe tener formulario de entrada del paciente.</div>
+    <div class="ibdg" style="margin-top:12px">5</div><p><strong>Adherencia 3 estados</strong> — Usó / Otro horario / No usó + curva 14 días.</p>
+    <div class="pbox">El botón debe decir: Usó la medicación / La aplicó en otro horario / No usó. Y sacar curva de adherencia.</div>
+    <div class="ibdg" style="margin-top:12px">6</div><p><strong>Logotipo SVG</strong> — Reloj + cápsula en verde y dorado.</p>
+    <div class="pbox">Hagámosle un logotipo para la app. Reloj y medicación. Verde y dorado.</div>
+    <div class="ibdg" style="margin-top:12px">7</div><p><strong>OpenClaw + Telegram</strong> — Agente clínico con Claude en Telegram.</p>
+    <div class="pbox">¿Cómo uso OpenClaw con Claude? [Instalación, BotFather, agente MedTopix en Telegram @medtopix_bot]</div>
+    <div class="ibdg" style="margin-top:12px">8</div><p><strong>Versión completa</strong> — Landing, T&C Ley 1581, login, edad por fecha nacimiento, dosis máxima, alarma animada, reporte, fuentes OMS.</p>
+    <div class="pbox">Página de inicio, política datos Ley 1581, checklist T&C con documento, login email, fecha nacimiento, dosis máxima diaria con alerta, alarma animada reloj bailando, reporte, fuentes OMS.</div>
+  </div>
+  <div class="proc"><h3>💡 Reflexión</h3><p>El proceso demostró que la ingeniería de prompts es una habilidad clínica y técnica simultáneamente. Cada iteración aportó funcionalidad validada clínicamente. La IA actuó como co-desarrollador mientras el equipo aportó criterio médico y cumplimiento normativo (Ley 1581).</p></div>
+</div>
+
+<!-- EQUIPO -->
+<div class="tp" id="tp-team">
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Equipo creador — Grupo 5</div>
+  <div class="tmc">
+    <div class="tmh">
+      <div style="display:flex;align-items:center;gap:11px">
+        <svg viewBox="0 0 50 50" width="34" height="34" xmlns="http://www.w3.org/2000/svg"><circle cx="25" cy="25" r="24" fill="#1a4a2e"/><circle cx="25" cy="25" r="15" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="1.5"/><line x1="25" y1="25" x2="25" y2="13" stroke="#1a4a2e" stroke-width="2.5" stroke-linecap="round"/><line x1="25" y1="25" x2="33" y2="29" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="25" r="2.5" fill="#1a4a2e"/></svg>
+        <div><div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;color:var(--g800)">MedTopix</div><div style="font-size:10px;color:var(--muted)">Máster Salud Digital e IA · OBS · Mayo 2025</div></div>
+      </div>
+      <div class="tbgs"><span class="tbg">🎓 OBS Business School</span><span class="tbg">👥 Grupo 5</span><span class="tbg">🤖 Claude</span><span class="tbg">🦞 OpenClaw</span></div>
+    </div>
+    <div class="tmg">
+      <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#2d8a4e,#5fc97e)">L</div><div><div class="tmn">Leonardo Orjuela Mariño</div><div class="tmr">Optometrista · Desarrollador</div></div></div>
+      <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">D</div><div><div class="tmn">Diego Yoalbert Muñoz Rojas</div><div class="tmr">Integrante Grupo 5</div></div></div>
+      <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#6a1b9a,#ba68c8)">L</div><div><div class="tmn">Lida Ximena Rodriguez Dueñas</div><div class="tmr">Integrante Grupo 5</div></div></div>
+      <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#e65100,#ffa726)">M</div><div><div class="tmn">Marcelino Humberto Mejía Canales</div><div class="tmr">Integrante Grupo 5</div></div></div>
+      <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#00695c,#4db6ac)">J</div><div><div class="tmn">Juan Carlos Estrada Vélez</div><div class="tmr">Integrante Grupo 5</div></div></div>
+      <div class="tmcard prof"><div class="tmav" style="background:linear-gradient(135deg,#1a4a2e,#3aaa63);font-size:16px">👨‍🏫</div><div><div class="tmn">Juan Ramon Segura Tur</div><div class="tmr" style="color:var(--g600);font-weight:700">Profesor · Máster Salud Digital e IA</div></div></div>
+    </div>
+    <div style="margin-top:18px;padding:14px;background:var(--g100);border-radius:9px;border:1.5px solid var(--g200);font-size:12px;color:var(--muted);line-height:1.7">
+      MedTopix fue desarrollada íntegramente mediante prompts iterativos a Claude (Anthropic). El agente de Telegram funciona en <strong>@medtopix_bot</strong> con OpenClaw 2026. Publicada en <strong>medtopix.netlify.app</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- SYNC -->
+<div class="tp" id="tp-sync">
+  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></div>Sincronizar entre dispositivos</div>
+
+  <div class="sync-panel">
+    <div class="sync-title">📤 Exportar mis datos</div>
+    <div class="sync-sub">Genera un código con tus datos (cuenta, pacientes, medicamentos) para usarlo en otro dispositivo. <strong>No compartas este código con nadie.</strong></div>
+    <div class="sync-btns">
+      <button class="btn-exp" onclick="genQR()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M17 17h3v3h-3z"/><path d="M14 20h3"/><path d="M20 14h-3"/></svg>
+        Generar QR para iPhone
+      </button>
+      <button class="btn-exp" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="exportData();copyCode()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        Copiar código texto
+      </button>
+    </div>
+    <!-- QR Display -->
+    <div id="qr-wrap" style="display:none;margin-top:16px;text-align:center;background:var(--bg);border-radius:10px;padding:20px;border:1.5px solid var(--border)">
+      <div style="font-size:12px;font-weight:700;color:var(--g700);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Escanea con tu iPhone</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Abre la cámara o lector QR → escanea → se abre MedTopix con los datos listos</div>
+      <div id="qr-canvas" style="display:inline-block;background:#fff;padding:12px;border-radius:10px;box-shadow:0 2px 12px rgba(13,40,24,0.12)"></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted)">El QR expira cuando cierres esta página</div>
+    </div>
+    <div class="sync-code" id="sync-code"></div>
+  </div>
+
+  <div class="sync-panel">
+    <div class="sync-title">📥 Importar datos en este dispositivo</div>
+    <div class="sync-sub">Pega el código que exportaste desde el otro dispositivo para sincronizar tu cuenta y datos.</div>
+    <div class="sync-btns">
+      <button class="btn-imp" onclick="toggleImport()">📥 Pegar código de importación</button>
+    </div>
+    <div class="sync-import-area" id="sync-import-area">
+      <textarea id="sync-import-txt" placeholder="Pega aquí el código exportado desde el otro dispositivo..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn-exp" onclick="importData()">✅ Importar y sincronizar</button>
+        <button class="btn-imp" onclick="toggleImport()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sync-panel" style="background:var(--g100);border-color:var(--g200)">
+    <div class="sync-title" style="color:var(--g700)">📱 ¿Cómo sincronizar con tu celular?</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8">
+      <strong>En el Mac:</strong><br>
+      1. Haz clic en "Generar código de exportación"<br>
+      2. Copia el código<br><br>
+      <strong>En el celular:</strong><br>
+      3. Abre medtopix.netlify.app<br>
+      4. Ve a <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync → "Importar datos"<br>
+      5. Pega el código y haz clic en "Importar"<br><br>
+      <strong>⚠️ Nota:</strong> Los datos quedan guardados localmente en cada dispositivo. Para mantenerlos sincronizados repite el proceso cuando hagas cambios importantes.
+    </div>
+  </div>
+</div>
+
 </main>
-<footer><div class="fi2"><div class="ft"><div><div class="fst">Referencias base</div><ul class="fs"><li>World Health Organization. Adherence to long-term therapies: evidence for action.</li><li>Ley 1581 de 2012, Colombia. Régimen general de protección de datos personales.</li><li>Ministerio de Salud y Protección Social. Lineamientos de historia clínica y protección de datos.</li></ul></div><div><div class="fst">Nota</div><div class="fm">MedTopix es un prototipo académico. Su uso clínico real requiere validación, aprobación institucional, seguridad avanzada y cumplimiento normativo completo.</div></div></div><div class="fb"><span>© 2026 MedTopix · OBS Business School</span><div class="fbl"><a>Privacidad</a><a>Términos</a><a>Contacto</a></div></div></div></footer>
+
+<footer>
+  <div class="fi2">
+    <div class="ft">
+      <div>
+        <div class="fst">📚 Fuentes consultadas — OMS</div>
+        <ul class="fs">
+          <li>OMS. Adherencia a los tratamientos a largo plazo: pruebas para la acción. Ginebra: OMS; 2004.</li>
+          <li>OMS. Guía de buenas prácticas de prescripción de medicamentos. Ginebra: OMS; 1994.</li>
+          <li>OMS. Formulario Modelo de la OMS 2023. Lista de medicamentos esenciales. Ginebra: OMS; 2023.</li>
+          <li>INVIMA Colombia. Vademécum de medicamentos de uso tópico aprobados en Colombia. Bogotá: INVIMA; 2023.</li>
+          <li>Ministerio de Salud Colombia. Política Farmacéutica Nacional. Bogotá: Minsalud; 2022.</li>
+          <li>Congreso de Colombia. Ley 1581 de 2012 — Habeas Data. Bogotá: 2012.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="fst">🔬 Metodología de minería de datos</div>
+        <div class="fm">MedTopix fue desarrollada aplicando minería de conocimiento clínico a partir de documentos oficiales de la OMS, el INVIMA y el Ministerio de Salud de Colombia. El proceso incluyó extracción de categorías farmacológicas tópicas por especialidad, identificación de mecanismos de acción e indicaciones, y validación clínica por un optometrista certificado. El código fue generado íntegramente con Claude (Anthropic) mediante prompts iterativos. El agente Telegram usa OpenClaw 2026 + Claude Haiku.</div>
+      </div>
+    </div>
+    <div class="fb">
+      <span>© 2025 MedTopix · Grupo 5 · OBS Business School · Uso académico</span>
+      <div class="fbl"><a>medtopix.netlify.app</a><a>@medtopix_bot</a><a>Ley 1581 · Habeas Data</a></div>
+    </div>
+  </div>
+</footer>
+<!-- NOTIFICATION PERMISSION BANNER -->
+<div id="notif-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:var(--g800);border:1.5px solid var(--g500);border-radius:14px;padding:16px 20px;max-width:420px;width:92%;box-shadow:0 8px 32px rgba(13,40,24,0.4);align-items:center;gap:14px;flex-wrap:wrap;">
+  <div style="font-size:1.8rem">🔔</div>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700;color:#fff">Activar alertas en tu dispositivo</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Recibe notificaciones aunque la app esté en segundo plano. En iPhone con la app instalada, también en tu Apple Watch ⌚</div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%">
+    <button onclick="requestNotif()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✅ Activar alertas</button>
+    <button onclick="document.getElementById('notif-banner').style.display='none'" style="padding:10px 14px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;">Ahora no</button>
+  </div>
+</div>
+
+<!-- iOS INSTALL TIP -->
+<div id="install-tip" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:500;background:var(--g900);border:1.5px solid var(--g400);border-radius:14px;padding:16px 20px;max-width:380px;width:92%;box-shadow:0 8px 32px rgba(13,40,24,0.4);flex-direction:column;gap:10px;">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="font-size:1.5rem">⌚</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#fff">Instala MedTopix en tu iPhone</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Para recibir alertas en tu Apple Watch</div>
+    </div>
+    <button onclick="closeInstallTip()" style="margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;">✕</button>
+  </div>
+  <div style="background:rgba(255,255,255,0.06);border-radius:9px;padding:12px;font-size:12px;color:rgba(255,255,255,0.7);line-height:1.7">
+    1. Toca <strong style="color:var(--g400)">⬆️ Compartir</strong> en Safari<br>
+    2. Selecciona <strong style="color:var(--g400)">"Añadir a pantalla de inicio"</strong><br>
+    3. Abre MedTopix desde tu pantalla de inicio<br>
+    4. Las alertas llegarán automáticamente a tu ⌚ Apple Watch
+  </div>
+</div>
+
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// Minimal app logic preserved as functional prototype
-var curUser=null, curTab='alerts', curCat='all', selectedPatient=null, alarmMed=null;
-var cats={oft:{n:'Oftalmología',c:'#2d8a4e',i:'👁️'},der:{n:'Dermatología',c:'#d97706',i:'🧴'},orl:{n:'Otorrino',c:'#2563eb',i:'👂'},gin:{n:'Ginecología',c:'#dc2626',i:'🌸'},oth:{n:'Otros',c:'#6b7280',i:'💊'}};
-var team=[['Leonardo Orjuela','Líder clínico / desarrollo conceptual','LO',true],['OBS Business School','Marco académico','OBS',false],['MedTopix','Prototipo digital de adherencia','MT',false]];
-function $(id){return document.getElementById(id)}
-function get(k,d){try{return JSON.parse(localStorage.getItem('mt6_'+k))||d}catch(e){return d}}
-function set(k,v){localStorage.setItem('mt6_'+k,JSON.stringify(v))}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
-function toast(m,err){var t=$('toast');t.textContent=m;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast',2500)}
-function goStart(){show('st')} function goTerms(){show('st')}
-function chkReady(){var ok=$('tc-c1').checked&&$('tc-c2').checked&&$('tc-n').value&&$('tc-dn').value&&$('tc-e').value&&$('tc-p').value.length>=6;$('btn-accept').disabled=!ok}
-['tc-n','tc-dn','tc-e','tc-p'].forEach(id=>setTimeout(()=>$(id)&&$(id).addEventListener('input',chkReady),0));
-function acceptTerms(){curUser={n:$('tc-n').value,e:$('tc-e').value,p:$('tc-p').value,dt:$('tc-dt').value,dn:$('tc-dn').value,at:new Date().toISOString()};set('user',curUser);localStorage.setItem('mt6_s',JSON.stringify(curUser));initApp();show('sa')}
-function doLogin(){var u=get('user',null);if(u&&u.e===$('li-e').value&&u.p===$('li-p').value){curUser=u;localStorage.setItem('mt6_s',JSON.stringify(u));initApp();show('sa')}else{$('lb-err').classList.add('show')}}
-function doLogout(){localStorage.removeItem('mt6_s');curUser=null;show('slo')}
-function togPw(id,b){var i=$(id);i.type=i.type==='password'?'text':'password'}
-function initApp(){if(!curUser)curUser=get('user',{});$('un').textContent=curUser.n||'Usuario';$('ua').textContent=(curUser.n||'U')[0].toUpperCase();initCats();renderAll();setInterval(clock,1000);clock();}
-function clock(){$('clock').textContent=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}
-function initCats(){var s=$('m-cat');if(s&&!s.options.length)Object.keys(cats).forEach(k=>s.innerHTML+=`<option value="${k}">${cats[k].n}</option>`)}
-function calcAge(){var b=$('p-b').value;if(!b){$('p-age').textContent='—';return}var a=new Date().getFullYear()-new Date(b).getFullYear();$('p-age').textContent=a+' años'}
-function addPatient(){var n=$('p-n').value.trim();if(!n)return toast('Falta nombre',1);var p=get('patients',[]);p.push({id:Date.now(),n:n,doc:$('p-doc').value,b:$('p-b').value,phone:$('p-phone').value,email:$('p-email').value});set('patients',p);['p-n','p-doc','p-b','p-phone','p-email'].forEach(x=>$(x).value='');$('p-age').textContent='—';renderAll();toast('Paciente agregado')}
-function renderPatients(){var p=get('patients',[]),m=get('meds',[]),el=$('patient-list');el.innerHTML=p.length?'':'<div class="empty"><div class="empty-c">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">Agrega el primer paciente.</div></div>';p.forEach(x=>{var age=x.b?(new Date().getFullYear()-new Date(x.b).getFullYear())+' años':'';var meds=m.filter(a=>a.pid==x.id).length;el.innerHTML+=`<div class="pc"><div class="pav">${x.n[0].toUpperCase()}</div><div class="pi"><div class="pn">${x.n}</div><div class="pd">${x.doc||''} ${age?`· ${age}`:''}<br>${x.phone||''} ${x.email||''}</div></div><div class="pm">${meds} meds</div><button class="btn-curve" onclick="selectPatient(${x.id})">Agregar medicamento</button><button class="btn-curve" onclick="curve(${x.id})">Curva</button><button class="btn-dpt" onclick="delPatient(${x.id})">Eliminar</button></div><div class="adhp" id="adh-${x.id}"></div>`})}
-function delPatient(id){set('patients',get('patients',[]).filter(x=>x.id!=id));set('meds',get('meds',[]).filter(x=>x.pid!=id));renderAll()}
-function selectPatient(id){selectedPatient=id;goTab('meds');renderMedSelect();$('m-p').value=id;var p=get('patients',[]).find(x=>x.id==id);$('ptbar').classList.add('show');$('ptbar-name').textContent=p.n;$('ptbar-av').textContent=p.n[0].toUpperCase();}
-function clearPatientContext(){selectedPatient=null;$('ptbar').classList.remove('show')}
-function renderMedSelect(){var p=get('patients',[]),s=$('m-p');s.innerHTML=p.map(x=>`<option value="${x.id}">${x.n}</option>`).join('')}
-function addMed(){var pid=$('m-p').value;if(!pid)return toast('Registra un paciente primero',1);var meds=get('meds',[]);meds.push({id:Date.now(),pid:pid,cat:$('m-cat').value,n:$('m-n').value,pr:$('m-pr').value,t:$('m-t').value,d:$('m-d').value,f:$('m-f').value,du:$('m-du').value,not:$('m-not').value});set('meds',meds);['m-n','m-pr','m-t','m-d','m-du','m-not'].forEach(x=>$(x).value='');renderAll();toast('Medicamento agregado')}
-function renderMeds(){var meds=get('meds',[]),p=get('patients',[]),el=$('med-grid');el.innerHTML='';var list=curCat==='all'?meds:meds.filter(x=>x.cat===curCat);if(!list.length)el.innerHTML='<div class="empty"><div class="empty-c">💊</div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Agrega medicamentos tópicos.</div></div>';list.forEach(x=>{var c=cats[x.cat]||cats.oth,pt=p.find(a=>a.id==x.pid);el.innerHTML+=`<div class="mc"><div class="ct" style="background:linear-gradient(135deg,${c.c},#1a4a2e)"><div class="cb2">${c.i} ${c.n}</div><div class="cn">${x.n||'Medicamento'}</div><div class="cpt">⏰ ${x.t||'Sin hora'}</div><div class="cr">${pt?pt.n:'Paciente'}</div></div><div class="cbd"><div class="tr"><div class="tv">${x.d||'Dosis'}</div><div class="tf">${x.f}</div></div><div class="mr"><div><div class="ml2">Presentación</div><div class="mv">${x.pr||'—'}</div></div><div><div class="ml2">Duración</div><div class="mv">${x.du||'—'}</div></div></div>${x.not?`<div class="cn2">${x.not}</div>`:''}<div class="ca"><button class="btn-dc" onclick="delMed(${x.id})">Eliminar</button></div></div></div>`})}
-function delMed(id){set('meds',get('meds',[]).filter(x=>x.id!=id));renderAll()}
-function renderCats(){var el=$('cat-filters');el.innerHTML=`<button class="sfc ${curCat==='all'?'active':''}" onclick="curCat='all';renderCats();renderMeds()">Todos</button>`;Object.keys(cats).forEach(k=>el.innerHTML+=`<button class="sfc ${curCat===k?'active':''}" style="--cc:${cats[k].c}" onclick="curCat='${k}';renderCats();renderMeds()">${cats[k].i} ${cats[k].n}</button>`)}
-function timesFor(m){var base=[m.t].filter(Boolean);if(m.f==='bid')base.push(addH(m.t,12));if(m.f==='tid'){base.push(addH(m.t,8),addH(m.t,16))}if(m.f==='qid'){base.push(addH(m.t,6),addH(m.t,12),addH(m.t,18))}return base}
-function addH(t,h){if(!t)return'';var [a,b]=t.split(':').map(Number),d=new Date();d.setHours(a+h,b,0,0);return d.toTimeString().slice(0,5)}
-function today(){return new Date().toISOString().slice(0,10)}
-function renderAlerts(){var meds=get('meds',[]),p=get('patients',[]),logs=get('logs',[]),arr=[];meds.forEach(m=>timesFor(m).forEach(t=>arr.push({m,t})));arr.sort((a,b)=>a.t.localeCompare(b.t));var el=$('alerts-list');el.innerHTML='';if(!arr.length){el.innerHTML='<div class="re">No hay alertas programadas.</div>';return}arr.forEach((a,i)=>{var pt=p.find(x=>x.id==a.m.pid),lg=logs.find(l=>l.mid==a.m.id&&l.date==today()&&l.sched==a.t),c=cats[a.m.cat]||cats.oth;var st=lg?lg.status:'pendiente';el.innerHTML+=`<div class="ar"><div class="at"><div class="at-v">${a.t}</div><div class="at-f">hora</div></div><div class="abar" style="background:${c.c}"></div><div class="ai"><div class="an">${a.m.n}</div><div class="apt">${pt?pt.n:''}</div><div class="am">${a.m.d||''}</div></div><span class="sp ${st==='yes'?'sp-d':st==='late'?'sp-l':'sp-p'}">${st}</span><div class="abtns"><button class="abtn abtn-y" onclick="logDose(${a.m.id},'${a.t}','yes')">Usó</button><button class="abtn abtn-l" onclick="logDose(${a.m.id},'${a.t}','late')">Tarde</button><button class="abtn abtn-n" onclick="logDose(${a.m.id},'${a.t}','no')">No</button></div></div>`})}
-function logDose(mid,sched,status){var logs=get('logs',[]);logs=logs.filter(l=>!(l.mid==mid&&l.date==today()&&l.sched==sched));logs.push({id:Date.now(),mid:mid,date:today(),sched:sched,real:new Date().toTimeString().slice(0,5),status:status});set('logs',logs);renderAll()}
-function renderReport(){var logs=get('logs',[]),meds=get('meds',[]),p=get('patients',[]),body=$('report-body');body.innerHTML='';logs.forEach(l=>{var m=meds.find(x=>x.id==l.mid),pt=m?p.find(x=>x.id==m.pid):null;body.innerHTML+=`<tr><td>${l.date}</td><td>${l.sched}</td><td>${l.real}</td><td>${pt?pt.n:''}</td><td>${m?m.n:''}</td><td><span class="rs ${l.status==='yes'?'rs-y':l.status==='late'?'rs-l':'rs-n'}">${l.status}</span></td></tr>`});$('report-empty').style.display=logs.length?'none':'block'}
-function updateStats(){var meds=get('meds',[]),p=get('patients',[]);$('st-pat').textContent=p.length;$('st-med').textContent=meds.length;$('st-today').textContent=meds.reduce((s,m)=>s+timesFor(m).length,0);$('st-pend').textContent=Math.max(0,parseInt($('st-today').textContent)-get('logs',[]).filter(l=>l.date==today()).length)}
-function updateNext(){var meds=get('meds',[]),p=get('patients',[]),now=new Date(),best=null;meds.forEach(m=>timesFor(m).forEach(t=>{var [h,mi]=t.split(':').map(Number),d=new Date();d.setHours(h,mi,0,0);if(d>now&&(!best||d<best.d))best={m,t,d}}));var nb=$('nb');if(!best){nb.classList.add('hidden');return}nb.classList.remove('hidden');var pt=p.find(x=>x.id==best.m.pid);$('nb-n').textContent=best.m.n;$('nb-m').textContent=(pt?pt.n:'')+' · '+best.t;var mins=Math.round((best.d-now)/60000);$('nb-c').textContent=mins+'m'}
-function goTab(t){curTab=t;document.querySelectorAll('.tp').forEach(x=>x.classList.remove('active'));$(t).classList.add('active');document.querySelectorAll('.tb').forEach(x=>x.classList.remove('active'));event&&event.currentTarget&&event.currentTarget.classList.add('active');renderAll()}
-function curve(id){var box=$('adh-'+id);box.classList.toggle('open');var meds=get('meds',[]).filter(m=>m.pid==id),logs=get('logs',[]),ok=logs.filter(l=>meds.some(m=>m.id==l.mid)&&l.status==='yes').length,late=logs.filter(l=>meds.some(m=>m.id==l.mid)&&l.status==='late').length,no=logs.filter(l=>meds.some(m=>m.id==l.mid)&&l.status==='no').length,total=ok+late+no,pct=total?Math.round((ok+late*0.7)/total*100):0;box.innerHTML=`<div class="adh-sum"><div class="adh-sc ok-c"><div class="adh-v">${ok}</div><div class="adh-l">A tiempo</div></div><div class="adh-sc lt-c"><div class="adh-v">${late}</div><div class="adh-l">Tarde</div></div><div class="adh-sc no-c"><div class="adh-v">${no}</div><div class="adh-l">No usó</div></div></div><div class="pct-w"><div class="pct-l"><span>Adherencia estimada</span><span>${pct}%</span></div><div class="pct-b"><div class="pct-f" style="width:${pct}%;background:var(--g600)"></div></div></div>`}
-function renderTeam(){var el=$('team-grid');el.innerHTML='';team.forEach(x=>el.innerHTML+=`<div class="tmcard ${x[3]?'prof':''}"><div class="tmav" style="background:linear-gradient(135deg,var(--g600),var(--g400))">${x[2]}</div><div><div class="tmn">${x[0]}</div><div class="tmr">${x[1]}</div></div></div>`)}
-function exportData(){var data={user:get('user',null),patients:get('patients',[]),meds:get('meds',[]),logs:get('logs',[])};var code=btoa(unescape(encodeURIComponent(JSON.stringify(data))));$('sync-code').textContent=code;$('sync-code').classList.add('show');$('qr-box').style.display='block';$('qr-code').innerHTML='';try{new QRCode($('qr-code'),{text:location.origin+location.pathname+'?sync='+encodeURIComponent(code),width:180,height:180})}catch(e){}}
-function showImport(){$('sync-import').classList.toggle('show')}
-function importData(){try{var data=JSON.parse(decodeURIComponent(escape(atob($('sync-txt').value.trim()))));if(data.user)set('user',data.user);set('patients',data.patients||[]);set('meds',data.meds||[]);set('logs',data.logs||[]);toast('Datos importados');renderAll()}catch(e){toast('Código inválido',1)}}
-function showImportLogin(){$('import-login-box').style.display='block'}
-function importFromLogin(){try{var data=JSON.parse(decodeURIComponent(escape(atob($('import-login-txt').value.trim()))));if(data.user){set('user',data.user);set('patients',data.patients||[]);set('meds',data.meds||[]);set('logs',data.logs||[]);curUser=data.user;localStorage.setItem('mt6_s',JSON.stringify(curUser));initApp();show('sa')}}catch(e){toast('Código inválido',1)}}
-function renderAll(){renderMedSelect();renderPatients();renderCats();renderMeds();renderAlerts();renderReport();renderTeam();updateStats();updateNext()}
-(function(){var params=new URLSearchParams(location.search),sync=params.get('sync');if(sync){sessionStorage.setItem('mt6_qr',sync);history.replaceState({},document.title,location.pathname)}var saved=localStorage.getItem('mt6_s');if(saved){try{curUser=JSON.parse(saved);initApp();show('sa');return}catch(e){}}show('sl');setInterval(function(){updateStats();updateNext();if(curTab==='alerts')renderAlerts()},30000)})();
+// ── CONSTANTS ─────────────────────────────────────────────────
+var SPECS = {
+  'General':           {color:'#546e7a', icon:'🩺'},
+  'Dermatología':      {color:'#e05252', icon:'🩹'},
+  'Oftalmología':      {color:'#2196f3', icon:'👁️'},
+  'Traumatología':     {color:'#ff7043', icon:'🦴'},
+  'ORL':               {color:'#f4b400', icon:'👂'},
+  'Ginecología':       {color:'#9c27b0', icon:'💜'},
+  'Neurología':        {color:'#ff6d00', icon:'🧠'},
+  'Cardiología':       {color:'#00838f', icon:'❤️'},
+  'Gastroenterología': {color:'#558b2f', icon:'🫁'}
+};
+var RICONS = {
+  'Tópica cutánea':'🩹','Colirio / ocular':'👁️','Ótica':'👂',
+  'Nasal':'👃','Vaginal':'💊','Transdérmica':'🔵','Oral':'💊','Inhalada':'💨'
+};
+var ADH_LABELS = {yes:'✅ Usó la medicación', late:'🕐 Otro horario', no:'❌ No usó'};
+var ADH_COLORS = {yes:'#16a34a', late:'#2563eb', no:'#dc2626'};
+var FREQ_COUNT  = {'Cada 4 horas':6,'Cada 6 horas':4,'Cada 8 horas':3,'Cada 12 horas':2,'Una vez al día':1,'Según necesidad':1};
+
+// ── STATE ─────────────────────────────────────────────────────
+var meds      = JSON.parse(localStorage.getItem('mt6_m') || '[]');
+var patients  = JSON.parse(localStorage.getItem('mt6_p') || '[]');
+var adherence = JSON.parse(localStorage.getItem('mt6_a') || '[]');
+var users     = JSON.parse(localStorage.getItem('mt6_u') || '[]');
+var curUser   = null;
+var curFilter = 'all';
+var curTab    = 'alerts';
+var curAlarm  = null;
+var snoozed   = {};
+
+function sM(){localStorage.setItem('mt6_m', JSON.stringify(meds));}
+function sP(){localStorage.setItem('mt6_p', JSON.stringify(patients));}
+function sA(){localStorage.setItem('mt6_a', JSON.stringify(adherence));}
+function sU(){localStorage.setItem('mt6_u', JSON.stringify(users));}
+
+// ── SCREENS ───────────────────────────────────────────────────
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){
+    s.classList.remove('active');
+    s.style.display='none';
+  });
+  var el=document.getElementById(id);
+  el.classList.add('active');
+  el.style.display='';
+}
+
+function goStart(){
+  // Check pending QR sync first
+  var pendingSync = sessionStorage.getItem('mt6_qr');
+  if(pendingSync){
+    sessionStorage.removeItem('mt6_qr');
+    try{
+      var raw = atob(pendingSync);
+      var decoded = JSON.parse(decodeURIComponent(escape(raw)));
+      if(decoded.version==='mt6'){
+        // Import all data
+        if(decoded.users && decoded.users.length>0){
+          users = decoded.users; sU();
+          patients = decoded.patients||[]; sP();
+          meds = decoded.meds||[]; sM();
+          adherence = decoded.adherence||[]; sA();
+          // Auto-login as first user - NO password needed via QR
+          curUser = users[0];
+          localStorage.setItem('mt6_s', JSON.stringify(curUser));
+          initApp();
+          show('sa');
+          setTimeout(function(){
+            toast('✅ Bienvenido '+curUser.name+'. Sincronizado por QR.');
+          }, 800);
+          return;
+        }
+      }
+    } catch(e){
+      toast('Error en el QR. Usa importar manual.',true);
+    }
+  }
+  // Normal flow
+  var saved=localStorage.getItem('mt6_s');
+  if(saved){
+    try{curUser=JSON.parse(saved);initApp();show('sa');return;}
+    catch(e){localStorage.removeItem('mt6_s');}
+  }
+  if(users.length>0){ show('slo'); }
+  else { show('st'); }
+}
+function goTerms(){ show('st'); }
+
+// ── TERMS ─────────────────────────────────────────────────────
+function chkReady(){
+  var ok = document.getElementById('tc-c1').checked && document.getElementById('tc-c2').checked;
+  document.getElementById('btn-accept').disabled = !ok;
+}
+
+function acceptTerms(){
+  var n = document.getElementById('tc-n').value.trim();
+  var dn= document.getElementById('tc-dn').value.trim();
+  var e = document.getElementById('tc-e').value.trim();
+  var p = document.getElementById('tc-p').value;
+  if(!n||!dn||!e||!p){toast('Completa todos los campos.',true);return;}
+  if(p.length<6){toast('Contraseña mínimo 6 caracteres.',true);return;}
+  if(users.find(function(u){return u.e===e;})){
+    toast('Ya tienes una cuenta en este dispositivo. Ve a Iniciar sesión.',true);
+    setTimeout(function(){show('slo');},1500);
+    return;
+  }
+  var u = {id:Date.now(),name:n,doctype:document.getElementById('tc-dt').value,docnum:dn,e:e,p:p,at:new Date().toISOString()};
+  users.push(u); sU();
+  curUser = u;
+  localStorage.setItem('mt6_s', JSON.stringify(u));
+  initApp(); show('sa');
+  toast('✅ Cuenta creada. Bienvenido a MedTopix.');
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
+function doLogin(){
+  var e = document.getElementById('li-e').value.trim();
+  var p = document.getElementById('li-p').value;
+  if(!e||!p){toast('Ingresa correo y contraseña.',true);return;}
+  // Check local users first
+  var u = users.find(function(x){return x.e===e && x.p===p;});
+  if(!u){
+    // If no local users exist, create profile automatically (first time on this device)
+    if(users.length===0){
+      u={id:Date.now(),name:e.split('@')[0],e:e,p:p,doctype:'CC',docnum:'',at:new Date().toISOString()};
+      users.push(u); sU();
+      toast('✅ Perfil creado en este dispositivo.');
+    } else {
+      document.getElementById('lb-err').classList.add('show');
+      document.getElementById('lb-err').textContent='Usuario no encontrado en este dispositivo. Usa <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync para importar tu cuenta desde otro dispositivo, o crea una cuenta nueva.';
+      return;
+    }
+  }
+  document.getElementById('lb-err').classList.remove('show');
+  curUser = u;
+  localStorage.setItem('mt6_s', JSON.stringify(u));
+  initApp(); show('sa');
+}
+
+function showImportLogin(){
+  var box=document.getElementById('import-login-box');
+  if(box) box.style.display=box.style.display==='none'?'block':'none';
+}
+
+function importFromLogin(){
+  var txt=document.getElementById('import-login-txt');
+  if(!txt||!txt.value.trim()){toast('Pega el codigo primero.',true);return;}
+  try{
+    var decoded=JSON.parse(decodeURIComponent(escape(atob(txt.value.trim()))));
+    if(!decoded.version||decoded.version!=='mt6'){toast('Codigo invalido.',true);return;}
+    if(decoded.users)  {users=decoded.users;     sU();}
+    if(decoded.patients){patients=decoded.patients; sP();}
+    if(decoded.meds)   {meds=decoded.meds;        sM();}
+    if(decoded.adherence){adherence=decoded.adherence; sA();}
+    if(users.length>0){
+      curUser=users[0];
+      localStorage.setItem('mt6_s',JSON.stringify(curUser));
+      initApp(); show('sa');
+      toast('Bienvenido '+curUser.name+'. Datos importados correctamente.');
+    }
+  }catch(e){toast('Error al leer el codigo. Verificalo.',true);}
+}
+
+function doLogout(){
+  localStorage.removeItem('mt6_s');
+  curUser = null;
+  show('sl');
+}
+
+function initApp(){
+  if(!curUser) return;
+  var ini = curUser.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+  document.getElementById('ua').textContent = ini;
+  document.getElementById('un').textContent = curUser.name.split(' ')[0];
+  renderAlerts(); refreshPtSel(); renderRep();
+  startAlarms();
+  // Register service worker for background notifications
+  registerSW();
+  // Auto-request notifications if not yet decided
+  if(Notification.permission==='default'){
+    setTimeout(askNotifPermission, 1500);
+  }
+}
+
+function registerSW(){
+  if(!('serviceWorker' in navigator)) return;
+  // Inline service worker as blob
+  var swCode = [
+    'self.addEventListener("push", function(e){',
+    '  var data=e.data?e.data.json():{title:"MedTopix",body:"Hora de tu medicamento"};',
+    '  e.waitUntil(self.registration.showNotification(data.title,{',
+    '    body:data.body,icon:"/icon.png",badge:"/icon.png",',
+    '    vibrate:[200,100,200],tag:"medtopix-alarm",renotify:true',
+    '  }));',
+    '});',
+    'self.addEventListener("notificationclick",function(e){',
+    '  e.notification.close();',
+    '  e.waitUntil(clients.openWindow("/"));',
+    '});'
+  ].join("\n");
+  var blob = new Blob([swCode], {type:"application/javascript"});
+  var swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).then(function(reg){
+    console.log("MedTopix SW registered");
+    window._swReg = reg;
+  }).catch(function(e){console.log("SW error:",e);});
+}
+
+function askNotifPermission(){
+  if(Notification.permission!=='default') return;
+  // Show in-app banner instead of direct browser prompt
+  showNotifBanner();
+}
+
+function showNotifBanner(){
+  var banner=document.getElementById('notif-banner');
+  if(banner) banner.style.display='flex';
+}
+
+function requestNotif(){
+  Notification.requestPermission().then(function(result){
+    var banner=document.getElementById('notif-banner');
+    if(banner) banner.style.display='none';
+    if(result==='granted'){
+      toast('✅ Notificaciones activadas. Recibirás alertas en tu dispositivo y Apple Watch.');
+      // Show install PWA tip on iOS
+      var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+      if(isIOS && !window.navigator.standalone){
+        setTimeout(showInstallTip, 1000);
+      }
+    } else {
+      toast('Las alarmas sonarán solo si la app está abierta.', true);
+    }
+  });
+}
+
+function showInstallTip(){
+  var tip=document.getElementById('install-tip');
+  if(tip) tip.style.display='flex';
+}
+
+function closeInstallTip(){
+  var tip=document.getElementById('install-tip');
+  if(tip) tip.style.display='none';
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────
+setInterval(function(){
+  var el = document.getElementById('clock');
+  if(el) el.textContent = new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}, 1000);
+
+// ── TABS ──────────────────────────────────────────────────────
+var TABS = ['alerts','patients','meds','report','process','team','sync'];
+function goTab(t){
+  curTab = t;
+  document.querySelectorAll('.tp').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tp-'+t).classList.add('active');
+  document.querySelectorAll('.tb')[TABS.indexOf(t)].classList.add('active');
+  if(t==='alerts') renderAlerts();
+  if(t==='patients') renderPatients();
+  if(t==='meds'){renderSF(); renderCards();}
+  if(t==='report') renderRep();
+}
+
+// ── AGE CALC ──────────────────────────────────────────────────
+function calcAge(){
+  var dob = document.getElementById('p-dob').value;
+  if(!dob){document.getElementById('age-d').textContent='— años';return;}
+  var today=new Date(), birth=new Date(dob);
+  var age = today.getFullYear()-birth.getFullYear();
+  var m = today.getMonth()-birth.getMonth();
+  if(m<0||(m===0&&today.getDate()<birth.getDate())) age--;
+  document.getElementById('age-d').textContent = age>=0 ? age+' años' : 'Fecha inválida';
+}
+
+// ── ALARM SYSTEM ──────────────────────────────────────────────
+function startAlarms(){ setInterval(checkAlarms, 15000); checkAlarms(); }
+
+function checkAlarms(){
+  if(curAlarm) return;
+  var now = new Date();
+  var nm = now.getHours()*60 + now.getMinutes();
+  var today = todayStr();
+  for(var i=0; i<meds.length; i++){
+    var med = meds[i];
+    if(snoozed[med.id] && snoozed[med.id]>Date.now()) continue;
+    var already = adherence.some(function(a){return a.medId===med.id && a.date===today;});
+    if(already) continue;
+    var parts = med.time.split(':');
+    var h = parseInt(parts[0]); var m = parseInt(parts[1]);
+    var diff = nm - (h*60+m);
+    if(diff>=0 && diff<=2){ triggerAlarm(med); return; }
+  }
+}
+
+function triggerAlarm(med){
+  curAlarm = med;
+  var pt = patients.find(function(p){return p.id===med.patientId;});
+  document.getElementById('al-med').textContent = med.name;
+  document.getElementById('al-t').textContent = med.time;
+  document.getElementById('al-d').textContent = (med.dose?'Dosis: '+med.dose+' · ':'')+med.route;
+  document.getElementById('al-pt').textContent = pt ? '👤 '+pt.name : '👤 Sin paciente asignado';
+  document.getElementById('lp').classList.remove('show');
+  document.getElementById('alo').classList.remove('hidden');
+  beep();
+  sendNotification('💊 Hora de tu medicamento', med.name+(pt?' — 👤 '+pt.name:'')+' | '+med.time+(med.dose?' · '+med.dose:''));
+}
+
+function showLP(){ document.getElementById('lp').classList.toggle('show'); }
+
+function doAlarm(status){
+  if(!curAlarm) return;
+  var actual = curAlarm.time;
+  if(status==='late'){
+    var v = document.getElementById('lp-t').value;
+    if(!v){toast('Ingresa la hora real.',true);return;}
+    actual = v;
+  }
+  saveAdh(curAlarm.id, curAlarm.patientId, status, curAlarm.time, actual, curAlarm.name);
+  document.getElementById('alo').classList.add('hidden');
+  curAlarm = null;
+  renderAlerts(); updateStats();
+}
+
+function snooze(){
+  if(!curAlarm) return;
+  snoozed[curAlarm.id] = Date.now()+10*60*1000;
+  document.getElementById('alo').classList.add('hidden');
+  curAlarm = null;
+  toast('⏰ Pospuesto 10 minutos.');
+}
+
+function sendNotification(title, body){
+  if(Notification.permission!=='granted') return;
+  // Try via service worker first (works in background + Apple Watch)
+  if(window._swReg && window._swReg.showNotification){
+    window._swReg.showNotification(title,{
+      body:body,
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%231a4a2e"/><text y="70" font-size="60" text-anchor="middle" x="50">💊</text></svg>',
+      vibrate:[300,100,300,100,300],
+      tag:'medtopix-alarm',
+      renotify:true,
+      requireInteraction:true
+    });
+  } else {
+    // Fallback to basic notification
+    var n=new Notification(title,{body:body});
+    setTimeout(function(){n.close();},8000);
+  }
+}
+
+function beep(){
+  try{
+    var ctx = new(window.AudioContext||window.webkitAudioContext)();
+    [0,0.35,0.7].forEach(function(t){
+      var o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value=880; o.type='sine';
+      g.gain.setValueAtTime(0.45, ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+t+0.28);
+      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.3);
+    });
+  }catch(e){}
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+
+function getStatus(med){
+  var today = todayStr();
+  var rec = adherence.find(function(a){return a.medId===med.id && a.date===today;});
+  if(rec) return rec.status==='no'?'no': rec.status==='late'?'late':'done';
+  var now=new Date(), parts=med.time.split(':');
+  var t=new Date(); t.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);
+  return now>t ? 'overdue' : 'pending';
+}
+
+function maxReached(med){
+  if(!med.maxdose) return false;
+  var today = todayStr();
+  var cnt = adherence.filter(function(a){return a.medId===med.id && a.date===today && a.status!=='no';}).length;
+  return cnt >= (FREQ_COUNT[med.freq]||1);
+}
+
+function saveAdh(medId, patientId, status, scheduled, actual, medName){
+  var today = todayStr();
+  adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today);});
+  adherence.push({medId:medId, patientId:patientId||null, date:today, status:status, scheduledTime:scheduled, actualTime:actual, ts:Date.now(), medName:medName});
+  sA();
+  var lbl = {yes:'✅ Usó la medicación registrado.', late:'🕐 Horario alternativo registrado.', no:'❌ No uso registrado.'};
+  toast(lbl[status]);
+}
+
+// ── NEXT REMINDER ─────────────────────────────────────────────
+setInterval(updateNext, 1000);
+function updateNext(){
+  var nb = document.getElementById('nb'); if(!nb) return;
+  var now = new Date(), today = todayStr();
+  var pending = [];
+  meds.forEach(function(r){
+    if(adherence.some(function(a){return a.medId===r.id && a.date===today;})) return;
+    var parts=r.time.split(':'), t=new Date();
+    t.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);
+    if(t>now) pending.push({r:r, t:t});
+  });
+  pending.sort(function(a,b){return a.t-b.t;});
+  if(!pending.length){nb.classList.add('hidden');return;}
+  nb.classList.remove('hidden');
+  var best=pending[0], diff=best.t-now;
+  var hh=Math.floor(diff/3600000), mm=Math.floor((diff%3600000)/60000), ss=Math.floor((diff%60000)/1000);
+  var pt=patients.find(function(p){return p.id===best.r.patientId;});
+  document.getElementById('nb-n').textContent = best.r.name;
+  document.getElementById('nb-m').textContent = (pt?'👤 '+pt.name+' · ':'')+(best.r.dose?best.r.dose+' · ':'')+best.r.route;
+  document.getElementById('nb-cd').textContent = hh>0 ? hh+'h '+pad(mm)+'m' : pad(mm)+':'+pad(ss);
+}
+function pad(n){return String(n).padStart(2,'0');}
+
+// ── STATS ─────────────────────────────────────────────────────
+function updateStats(){
+  var today = todayStr();
+  var done = adherence.filter(function(a){return a.date===today && (a.status==='yes'||a.status==='late');}).length;
+  document.getElementById('s0').textContent = meds.length;
+  document.getElementById('s1').textContent = meds.filter(function(r){return getStatus(r)==='pending';}).length;
+  document.getElementById('s2').textContent = done;
+  document.getElementById('s3').textContent = meds.filter(function(r){var s=getStatus(r);return s==='overdue'||s==='no';}).length;
+}
+
+// ── ALERTS ────────────────────────────────────────────────────
+function renderAlerts(){
+  updateStats(); updateNext();
+  var el = document.getElementById('ap-d');
+  if(el) el.textContent = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  var list = document.getElementById('al'); if(!list) return;
+  var sorted = meds.slice().sort(function(a,b){return a.time.localeCompare(b.time);});
+  if(!sorted.length){
+    list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🔕</div><div style="font-weight:600">Sin medicamentos. Ve a <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos.</div></div>';
+    return;
+  }
+  var today = todayStr();
+  var html = '';
+  sorted.forEach(function(med){
+    var spec = SPECS[med.specialty]||{color:'#3aaa63',icon:'💊'};
+    var pt   = patients.find(function(p){return p.id===med.patientId;});
+    var rec  = adherence.find(function(a){return a.medId===med.id && a.date===today;});
+    var st   = getStatus(med);
+    var mr   = maxReached(med);
+
+    var stPill = '';
+    if(st==='pending') stPill='<span class="sp sp-p">⏳ Pendiente</span>';
+    else if(st==='done') stPill='<span class="sp sp-d">✅ Usó med.</span>';
+    else if(st==='late') stPill='<span class="sp sp-l">🕐 '+(rec?rec.actualTime:'')+'</span>';
+    else stPill='<span class="sp sp-o">'+(st==='no'?'❌ No usó':'⚠️ Vencido')+'</span>';
+
+    var actionHtml = '';
+    if(!rec && !mr){
+      actionHtml = '<div class="abtns">'
+        +'<button class="abtn abtn-y" onclick="recManY('+med.id+')">✅ Usó</button>'
+        +'<button class="abtn abtn-l" onclick="togLate('+med.id+')">🕐 Otro</button>'
+        +'<button class="abtn abtn-n" onclick="recManN('+med.id+')">❌ No</button>'
+        +'</div>'
+        +'<div class="late-in" id="li-'+med.id+'">'
+        +'<input type="time" id="lt-'+med.id+'"/>'
+        +'<button onclick="recManL('+med.id+')">OK</button>'
+        +'</div>';
+    } else if(rec){
+      actionHtml = '<button class="abtn abtn-u" onclick="undoRec('+med.id+')">↩ Deshacer</button>';
+    } else {
+      actionHtml = '<span style="font-size:10px;color:var(--red);font-weight:700">🚫 Dosis máx.</span>';
+    }
+
+    var doseWarnHtml = (mr&&!rec) ? '<div class="dose-warn">⚠️ Dosis máxima: '+med.maxdose+'</div>' : '';
+    var ptHtml  = pt ? '<div class="apt">👤 '+pt.name+'</div>' : '';
+    var maxHtml = med.maxdose ? ' · Máx: '+med.maxdose : '';
+
+    html += '<div class="ar">'
+      +'<div class="at"><div class="at-v">'+med.time+'</div><div class="at-f">'+med.freq.split(' ')[0]+'</div></div>'
+      +'<div class="abar" style="background:'+spec.color+'"></div>'
+      +'<div class="ai">'
+        +'<div class="an">'+spec.icon+' '+med.name+'</div>'
+        +ptHtml
+        +'<div class="am">'+(med.dose||'—')+' · '+med.route+maxHtml+'</div>'
+        +doseWarnHtml
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:140px">'
+        +stPill+actionHtml
+      +'</div>'
+    +'</div>';
+  });
+  list.innerHTML = html;
+}
+
+function recManY(id){ recMan(id,'yes'); }
+function recManN(id){ recMan(id,'no'); }
+function recManL(id){
+  var v = document.getElementById('lt-'+id); if(!v||!v.value){toast('Ingresa la hora real.',true);return;}
+  recMan(id,'late',v.value);
+}
+function togLate(id){
+  var el = document.getElementById('li-'+id); if(el) el.classList.toggle('show');
+}
+function recMan(medId, status, actual){
+  var med = meds.find(function(m){return m.id===medId;}); if(!med) return;
+  if(maxReached(med)&&status!=='no'){toast('⚠️ Dosis máxima diaria alcanzada.',true);return;}
+  saveAdh(medId, med.patientId, status, med.time, actual||med.time, med.name);
+  renderAlerts(); updateStats();
+}
+function undoRec(medId){
+  var today = todayStr();
+  adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today);});
+  sA(); renderAlerts(); updateStats(); toast('↩ Registro deshecho.');
+}
+
+// ── PATIENTS ──────────────────────────────────────────────────
+function addPt(){
+  var n = document.getElementById('p-n').value.trim(); if(!n){toast('Ingresa el nombre.',true);return;}
+  var dob = document.getElementById('p-dob').value;
+  var age = null;
+  if(dob){
+    var today=new Date(), birth=new Date(dob);
+    age=today.getFullYear()-birth.getFullYear();
+    var mo=today.getMonth()-birth.getMonth();
+    if(mo<0||(mo===0&&today.getDate()<birth.getDate())) age--;
+  }
+  patients.unshift({
+    id:Date.now(), name:n, dob:dob, age:age,
+    idNum:document.getElementById('p-id').value.trim(),
+    diagnosis:document.getElementById('p-dx').value.trim(),
+    specialty:document.getElementById('p-sp').value,
+    phone:document.getElementById('p-ph').value.trim(),
+    obs:document.getElementById('p-ob').value.trim(),
+    createdAt:new Date().toISOString()
+  });
+  sP(); renderPatients(); refreshPtSel();
+  toast('✅ '+n+' registrado.');
+  ['p-n','p-id','p-dx','p-ph','p-ob'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('p-dob').value='';
+  document.getElementById('age-d').textContent='— años';
+}
+
+function delPt(id){
+  var p = patients.find(function(x){return x.id===id;});
+  patients = patients.filter(function(x){return x.id!==id;});
+  sP(); renderPatients(); refreshPtSel();
+  toast('🗑️ '+(p?p.name:'Paciente')+' eliminado.');
+}
+
+function togAdh(id){
+  var el = document.getElementById('adh-'+id);
+  if(el.classList.toggle('open')) renderAdhPanel(id);
+}
+
+function renderPatients(){
+  var el = document.getElementById('pl'); if(!el) return;
+  if(!patients.length){
+    el.innerHTML='<div class="empty"><div class="empty-c">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">Registra el primero arriba.</div></div>';
+    return;
+  }
+  var html='';
+  patients.forEach(function(p){
+    var mc = meds.filter(function(r){return r.patientId===p.id;}).length;
+    var ini = p.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+    var ptAdh = adherence.filter(function(a){return a.patientId===p.id;});
+    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return a.status!=='no';}).length/ptAdh.length*100) : null;
+    var pctHtml='';
+    if(pct!==null){
+      var pc=pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626';
+      var pb=pct>=80?'#16a34a':pct>=50?'#d97706':'#dc2626';
+      pctHtml='<div style="margin-top:6px">'
+        +'<div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:'+pc+'">'
+          +'<span>Adherencia: '+pct+'%</span><span>'+ptAdh.length+' registros</span>'
+        +'</div>'
+        +'<div style="height:5px;background:var(--border);border-radius:3px;margin-top:3px;overflow:hidden">'
+          +'<div style="height:100%;width:'+pct+'%;background:'+pb+';border-radius:3px"></div>'
+        +'</div>'
+      +'</div>';
+    }
+    var dobH=p.dob?'<div class="pd">🎂 '+p.dob+'</div>':'';
+    var phH=p.phone?'<div class="pd">📞 '+p.phone+'</div>':'';
+    var obH=p.obs?'<div class="pd" style="font-size:10px">📌 '+p.obs+'</div>':'';
+    html+='<div>'
+      +'<div class="pc">'
+        +'<div class="pav">'+ini+'</div>'
+        +'<div class="pi">'
+          +'<div class="pn">'+p.name+'</div>'
+          +'<div class="pd">'+(p.age!=null?p.age+' años · ':'')+p.specialty+(p.diagnosis?' · '+p.diagnosis:'')+'</div>'
+          +dobH+phH+obH+pctHtml
+        +'</div>'
+        +'<div class="pm">💊 '+mc+'</div>'
+        +'<button class="btn-curve" onclick="togAdh('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Curva</button>'
+        +'<button class="btn-curve" style="background:var(--g200);border-color:var(--g300)" onclick="setActivePt('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Ver todo</button>'
+        +'<button class="btn-dpt" onclick="delPt('+p.id+')">✕</button>'
+      +'</div>'
+      +'<div class="adhp" id="adh-'+p.id+'"></div>'
+    +'</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderAdhPanel(ptId){
+  var pt=patients.find(function(p){return p.id===ptId;}); if(!pt) return;
+  var el=document.getElementById('adh-'+ptId); if(!el) return;
+  var ptAdh=adherence.filter(function(a){return a.patientId===ptId;}).sort(function(a,b){return a.ts-b.ts;});
+  if(!ptAdh.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">Sin registros aún. Confirma las tomas en Alertas.</div>';return;}
+  var yC=ptAdh.filter(function(a){return a.status==='yes';}).length;
+  var lC=ptAdh.filter(function(a){return a.status==='late';}).length;
+  var nC=ptAdh.filter(function(a){return a.status==='no';}).length;
+  var tot=ptAdh.length, pct=Math.round((yC+lC)/tot*100);
+  var days=[];
+  for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0]);}
+  var dayData=days.map(function(d){
+    var recs=ptAdh.filter(function(a){return a.date===d;});
+    if(!recs.length) return {d:d,val:null};
+    var ok=recs.filter(function(a){return a.status!=='no';}).length;
+    return {d:d,val:Math.round(ok/recs.length*100)};
+  });
+  var pctColor=pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626';
+  var pctBg=pct>=80?'linear-gradient(90deg,#16a34a,#5fc97e)':pct>=50?'linear-gradient(90deg,#d97706,#fbbf24)':'linear-gradient(90deg,#dc2626,#f87171)';
+  var pctMsg=pct>=80?'🟢 Óptima (≥80%)':pct>=50?'🟡 Moderada (50–79%)':'🔴 Baja (<50%) — requiere seguimiento';
+
+  var histHtml='';
+  ptAdh.slice(-8).reverse().forEach(function(a){
+    var cls=a.status==='yes'?'hr-y':a.status==='late'?'hr-l':'hr-n';
+    var icon=a.status==='yes'?'✅':a.status==='late'?'🕐':'❌';
+    var late=a.status==='late'?' → '+a.actualTime:'';
+    histHtml+='<div class="hr '+cls+'">'
+      +'<div style="font-size:14px">'+icon+'</div>'
+      +'<div style="flex:1">'
+        +'<div style="font-size:12px;font-weight:700">'+(a.medName||'Medicamento')+'</div>'
+        +'<div style="font-size:10px;color:var(--muted)">'+a.date+' · '+a.scheduledTime+late+'</div>'
+      +'</div>'
+      +'<div style="font-size:10px;font-weight:700;color:'+ADH_COLORS[a.status]+'">'+ADH_LABELS[a.status]+'</div>'
+    +'</div>';
+  });
+
+  el.innerHTML='<div style="padding:18px 20px">'
+    +'<div style="font-family:Fraunces,serif;font-size:.95rem;font-weight:900;color:var(--g800);margin-bottom:12px">📊 Curva de adherencia — '+pt.name+'</div>'
+    +'<div class="adh-sum">'
+      +'<div class="adh-sc ok-c"><div class="adh-v">'+yC+'</div><div class="adh-l">✅ Usó</div></div>'
+      +'<div class="adh-sc lt-c"><div class="adh-v">'+lC+'</div><div class="adh-l">🕐 Otro horario</div></div>'
+      +'<div class="adh-sc no-c"><div class="adh-v">'+nC+'</div><div class="adh-l">❌ No usó</div></div>'
+    +'</div>'
+    +'<div class="pct-w">'
+      +'<div class="pct-l"><span>Adherencia global</span><span style="color:'+pctColor+'">'+pct+'%</span></div>'
+      +'<div class="pct-b"><div class="pct-f" style="width:'+pct+'%;background:'+pctBg+'"></div></div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:3px">'+pctMsg+'</div>'
+    +'</div>'
+    +'<div class="chw"><div class="cht">Últimos 14 días</div><canvas id="ch-'+ptId+'" height="160"></canvas></div>'
+    +'<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Historial reciente</div>'
+    +histHtml
+  +'</div>';
+
+  setTimeout(function(){drawChart('ch-'+ptId, dayData);}, 60);
+}
+
+function drawChart(cid, dayData){
+  var canvas=document.getElementById(cid); if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  var W=canvas.offsetWidth||560, H=160;
+  canvas.width=W; canvas.height=H;
+  var pad={t:10,r:10,b:26,l:32};
+  var cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#c8e6d0'; ctx.lineWidth=1;
+  [0,25,50,75,100].forEach(function(v){
+    var y=pad.t+cH*(1-v/100);
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+cW,y); ctx.stroke();
+    ctx.fillStyle='#6b9278'; ctx.font='8px Plus Jakarta Sans'; ctx.textAlign='right';
+    ctx.fillText(v+'%',pad.l-3,y+3);
+  });
+  var n=dayData.length, step=cW/(n-1);
+  var hasData=dayData.filter(function(d){return d.val!==null;});
+  if(hasData.length>=2){
+    ctx.beginPath();
+    var started=false;
+    dayData.forEach(function(d,i){
+      if(d.val===null) return;
+      var x=pad.l+i*step, y=pad.t+cH*(1-d.val/100);
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    });
+    var lv=null,fv=null,li=-1,fi=-1;
+    dayData.forEach(function(d,i){if(d.val!==null){if(fv===null){fv=d;fi=i;}lv=d;li=i;}});
+    if(lv&&fv){
+      ctx.lineTo(pad.l+li*step,pad.t+cH);
+      ctx.lineTo(pad.l+fi*step,pad.t+cH);
+      ctx.closePath();
+      var grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
+      grad.addColorStop(0,'rgba(58,170,99,0.25)');
+      grad.addColorStop(1,'rgba(58,170,99,0.02)');
+      ctx.fillStyle=grad; ctx.fill();
+    }
+  }
+  ctx.strokeStyle='#2d8a4e'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  ctx.beginPath(); var ls=false;
+  dayData.forEach(function(d,i){
+    if(d.val===null) return;
+    var x=pad.l+i*step, y=pad.t+cH*(1-d.val/100);
+    if(!ls){ctx.moveTo(x,y);ls=true;}else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  dayData.forEach(function(d,i){
+    if(d.val===null) return;
+    var x=pad.l+i*step, y=pad.t+cH*(1-d.val/100);
+    var col=d.val>=80?'#16a34a':d.val>=50?'#d97706':'#dc2626';
+    ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2);
+    ctx.fillStyle=col; ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle=col; ctx.font='bold 8px Plus Jakarta Sans'; ctx.textAlign='center';
+    ctx.fillText(d.val+'%',x,y-7);
+  });
+  ctx.fillStyle='#6b9278'; ctx.font='8px Plus Jakarta Sans'; ctx.textAlign='center';
+  dayData.forEach(function(d,i){
+    if(i%2!==0) return;
+    ctx.fillText(d.d.slice(5), pad.l+i*step, H-3);
+  });
+}
+
+function refreshPtSel(){
+  var opts='<option value="">— Sin asignar —</option>';
+  patients.forEach(function(p){opts+='<option value="'+p.id+'">'+p.name+'</option>';});
+  var sel=document.getElementById('f-pt'); if(sel) sel.innerHTML=opts;
+  var rsel=document.getElementById('rp-pt'); if(rsel){
+    var ropts='<option value="">Todos los pacientes</option>';
+    patients.forEach(function(p){ropts+='<option value="'+p.id+'">'+p.name+'</option>';});
+    rsel.innerHTML=ropts;
+  }
+}
+
+// ── PRELOAD PATIENT INFO ─────────────────────────────────────
+function preloadPt(){
+  var sel=document.getElementById('f-pt'); if(!sel) return;
+  var pid=parseInt(sel.value)||null;
+  if(!pid) return;
+  var pt=patients.find(function(p){return p.id===pid;});
+  if(!pt) return;
+  // Auto-fill specialty
+  var spSel=document.getElementById('f-sp');
+  if(spSel && pt.specialty){
+    for(var i=0;i<spSel.options.length;i++){
+      if(spSel.options[i].value===pt.specialty){spSel.selectedIndex=i;break;}
+    }
+  }
+  toast('👤 Paciente cargado: '+pt.name+(pt.diagnosis?' — '+pt.diagnosis:''));
+}
+
+// ── MEDICATIONS ───────────────────────────────────────────────
+function addMed(){
+  var n=document.getElementById('f-n').value.trim();
+  var t=document.getElementById('f-t').value;
+  if(!n){toast('Ingresa el nombre.',true);return;}
+  if(!t){toast('Selecciona la hora.',true);return;}
+  var pid=parseInt(document.getElementById('f-pt').value)||null;
+  meds.unshift({
+    id:Date.now(), name:n, patientId:pid,
+    specialty:document.getElementById('f-sp').value,
+    dose:document.getElementById('f-d').value.trim(),
+    time:t, freq:document.getElementById('f-fr').value,
+    maxdose:document.getElementById('f-mx').value.trim(),
+    route:document.getElementById('f-rv').value,
+    notes:document.getElementById('f-nt').value.trim(),
+    createdAt:new Date().toISOString()
+  });
+  sM(); renderCards(); renderAlerts(); updateStats(); renderSF();
+  toast('✅ '+n+' agregado.');
+  ['f-n','f-d','f-t','f-nt','f-mx'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+}
+
+function delMed(id){
+  var m=meds.find(function(r){return r.id===id;});
+  var nombre=m?m.name:'este medicamento';
+  if(!confirm('⚠️ ¿Estás seguro de que deseas eliminar "'+nombre+'"?\n\nEsta acción no se puede deshacer.')) return;
+  meds=meds.filter(function(r){return r.id!==id;});
+  sM(); renderCards(); renderAlerts(); updateStats(); renderSF();
+  toast('🗑️ '+nombre+' eliminado.');
+}
+
+function togEdit(id){var el=document.getElementById('ei-'+id);if(el)el.classList.toggle('open');}
+
+function saveEdit(id){
+  var med=meds.find(function(m){return m.id===id;}); if(!med) return;
+  var ne=document.getElementById('ein-'+id), de=document.getElementById('eid-'+id);
+  if(!ne||!ne.value.trim()){toast('El nombre no puede estar vacío.',true);return;}
+  var newName=ne.value.trim(), newDose=de?de.value.trim():'';
+  var msg='¿Confirmas los cambios en este medicamento?';
+  msg+='\n\nNombre: '+newName;
+  if(newDose) msg+='\nDosis: '+newDose;
+  msg+='\n\nEsto actualizará también el historial de adherencia.';
+  if(!confirm(msg)) return;
+  var old=med.name; med.name=newName; med.dose=newDose;
+  adherence.forEach(function(a){if(a.medId===id) a.medName=med.name;});
+  sM(); sA(); renderCards(); renderAlerts();
+  toast('✅ '+old+' actualizado correctamente.');
+}
+
+function setFilter(s){curFilter=s; renderSF(); renderCards();}
+
+function renderSF(){
+  var specs=['all'];
+  meds.forEach(function(r){if(specs.indexOf(r.specialty)===-1) specs.push(r.specialty);});
+  var el=document.getElementById('sf'); if(!el) return;
+  var html='';
+  specs.forEach(function(s){
+    var cfg=SPECS[s]||{}, c=cfg.color||'#3aaa63', ic=cfg.icon||'💊';
+    var lbl=s==='all'?'Todas':s;
+    var active=curFilter===s?'active':'';
+    html+='<button class="sfc '+active+'" style="--cc:'+c+'" onclick="setFilter(\''+s+'\')">'+ic+' '+lbl+'</button>';
+  });
+  el.innerHTML=html;
+}
+
+var ST_MAP = {
+  pending:{lbl:'Pendiente',cls:'cst-p'},
+  done:   {lbl:'Tomado ✓', cls:'cst-d'},
+  late:   {lbl:'Otro horario',cls:'cst-d'},
+  overdue:{lbl:'¡Vencido!', cls:'cst-o'},
+  no:     {lbl:'No usó',    cls:'cst-o'}
+};
+
+function renderCards(){
+  var filtered = curFilter==='all' ? meds : meds.filter(function(r){return r.specialty===curFilter;});
+  var today = todayStr();
+  var grid = document.getElementById('cg'); if(!grid) return;
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty"><div class="empty-c">💊</div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Usa el formulario de arriba.</div></div>';
+    return;
+  }
+  var html='';
+  filtered.forEach(function(med,i){
+    var spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'🩺'};
+    var stKey=getStatus(med), st=ST_MAP[stKey]||ST_MAP.pending;
+    var pt=patients.find(function(p){return p.id===med.patientId;});
+    var rec=adherence.find(function(a){return a.medId===med.id && a.date===today;});
+    var mr=maxReached(med);
+    var stColor=stKey==='done'||stKey==='late'?'#16a34a':'#dc2626';
+    var ptH=pt?'<div class="cpt">👤 '+pt.name+'</div>':'';
+    var dmH=med.maxdose?'<div class="dmr">⚠️ Máx: '+med.maxdose+(mr?' — <strong>ALCANZADA</strong>':'')+'</div>':'';
+    var ltH=rec&&stKey==='late'?'<div style="font-size:11px;color:#2563eb;background:#eff6ff;border-radius:6px;padding:5px 9px;margin-bottom:8px">🕐 Tomado a las '+rec.actualTime+'</div>':'';
+    var ntH=med.notes?'<div class="cn2">📌 '+med.notes+'</div>':'';
+    var ri=RICONS[med.route]||'💊';
+    html+='<div class="mc" style="animation-delay:'+(i*0.04)+'s">'
+      +'<div class="ct" style="background:linear-gradient(160deg,'+spec.color+','+spec.color+'bb)">'
+        +'<div class="cb2">'+spec.icon+' '+med.specialty+'</div>'
+        +'<div class="csb '+st.cls+'">'+st.lbl+'</div>'
+        +'<div class="cn">'+med.name+'</div>'
+        +ptH
+        +'<div class="cr">'+ri+' '+med.route+'</div>'
+      +'</div>'
+      +'<div class="cbd">'
+        +'<div class="tr"><span style="font-size:1.2rem">🕐</span><span class="tv">'+med.time+'</span><span class="tf">'+med.freq+'</span></div>'
+        +dmH
+        +'<div class="mr"><div><span class="ml2">Dosis</span><span class="mv">'+(med.dose||'—')+'</span></div><div><span class="ml2">Estado</span><span class="mv" style="color:'+stColor+'">'+st.lbl+'</span></div></div>'
+        +ltH+ntH
+        +'<div class="ca">'
+          +'<button class="btn-ec" onclick="togEdit('+med.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button>'
+          +'<button class="btn-dc" onclick="delMed('+med.id+')">✕</button>'
+        +'</div>'
+        +'<div class="ei" id="ei-'+med.id+'">'
+          +'<div class="ei-r"><input type="text" id="ein-'+med.id+'" placeholder="Nombre"/></div>'
+          +'<div class="ei-r"><input type="text" id="eid-'+med.id+'" placeholder="Dosis"/></div>'
+          +'<div style="display:flex;gap:6px"><button class="btn-se" onclick="saveEdit('+med.id+')">✅</button><button class="btn-ce" onclick="togEdit('+med.id+')">Cancelar</button></div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  });
+  grid.innerHTML=html;
+  // Set edit values after render
+  filtered.forEach(function(med){
+    var ne=document.getElementById('ein-'+med.id); if(ne) ne.value=med.name;
+    var de=document.getElementById('eid-'+med.id); if(de) de.value=med.dose||'';
+  });
+}
+
+// ── REPORT ────────────────────────────────────────────────────
+function renderRep(){
+  var ptF=document.getElementById('rp-pt'), frF=document.getElementById('rp-f');
+  var toF=document.getElementById('rp-t2'), stF=document.getElementById('rp-st');
+  var data=adherence.slice().sort(function(a,b){return b.ts-a.ts;});
+  if(ptF&&ptF.value) data=data.filter(function(a){return a.patientId===parseInt(ptF.value);});
+  if(frF&&frF.value) data=data.filter(function(a){return a.date>=frF.value;});
+  if(toF&&toF.value) data=data.filter(function(a){return a.date<=toF.value;});
+  if(stF&&stF.value) data=data.filter(function(a){return a.status===stF.value;});
+  var tbody=document.getElementById('rb'); if(!tbody) return;
+  if(!data.length){tbody.innerHTML='<tr><td colspan="6" class="re">Sin registros para los filtros seleccionados.</td></tr>';return;}
+  var clsMap={yes:'rs-y',late:'rs-l',no:'rs-n'};
+  var lblMap={yes:'✅ Usó',late:'🕐 Otro horario',no:'❌ No usó'};
+  var html='';
+  data.forEach(function(a){
+    var pt=patients.find(function(p){return p.id===a.patientId;});
+    html+='<tr>'
+      +'<td>'+a.date+'</td>'
+      +'<td>'+a.scheduledTime+'</td>'
+      +'<td>'+(a.status==='late'?a.actualTime:'—')+'</td>'
+      +'<td style="font-weight:600">'+(a.medName||'—')+'</td>'
+      +'<td>'+(pt?pt.name:'Sin asignar')+'</td>'
+      +'<td><span class="rs '+(clsMap[a.status]||'')+'">'+(lblMap[a.status]||a.status)+'</span></td>'
+    +'</tr>';
+  });
+  tbody.innerHTML=html;
+}
+
+// ── PATIENT CONTEXT ──────────────────────────────────────────
+var activePtId = null;
+
+function setActivePt(id){
+  activePtId = id;
+  var pt=patients.find(function(p){return p.id===id;});
+  if(!pt){clearPtContext();return;}
+  var ini=pt.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+  document.getElementById('pt-bar-av').textContent=ini;
+  document.getElementById('pt-bar-name').textContent=pt.name;
+  var meta=(pt.age!=null?pt.age+' años · ':'')+pt.specialty+(pt.diagnosis?' · '+pt.diagnosis:'')+(pt.phone?' · 📞 '+pt.phone:'');
+  document.getElementById('pt-bar-meta').textContent=meta;
+  document.getElementById('pt-bar').classList.add('show');
+  // Pre-select patient in meds form
+  var fpt=document.getElementById('f-pt');
+  if(fpt){
+    for(var i=0;i<fpt.options.length;i++){
+      if(parseInt(fpt.options[i].value)===id){fpt.selectedIndex=i;break;}
+    }
+    preloadPt();
+  }
+  // Pre-select in report filter
+  var rpt=document.getElementById('rp-pt');
+  if(rpt){
+    for(var i=0;i<rpt.options.length;i++){
+      if(parseInt(rpt.options[i].value)===id){rpt.selectedIndex=i;break;}
+    }
+    renderRep();
+  }
+  toast('👤 Viendo: '+pt.name);
+}
+
+function clearPtContext(){
+  activePtId=null;
+  document.getElementById('pt-bar').classList.remove('show');
+  var fpt=document.getElementById('f-pt'); if(fpt) fpt.selectedIndex=0;
+  var rpt=document.getElementById('rp-pt'); if(rpt) rpt.selectedIndex=0;
+  renderRep(); renderCards(); renderAlerts();
+}
+
+// ── SYNC / EXPORT / IMPORT ───────────────────────────────────
+function exportData(){
+  var data={
+    users:users,
+    patients:patients,
+    meds:meds,
+    adherence:adherence,
+    exportedAt:new Date().toISOString(),
+    version:'mt6'
+  };
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var el=document.getElementById('sync-code');
+  el.textContent=encoded;
+  el.classList.add('show');
+  toast('✅ Código generado. Cópialo y pégalo en el otro dispositivo.');
+}
+
+function copyCode(){
+  var el=document.getElementById('sync-code');
+  if(!el.textContent){exportData();}
+  if(navigator.clipboard && el.textContent){
+    navigator.clipboard.writeText(el.textContent).then(function(){
+      toast('📋 Código copiado al portapapeles.');
+    });
+  } else {
+    toast('Selecciona el código manualmente y cópialo.',true);
+  }
+}
+
+function toggleImport(){
+  var el=document.getElementById('sync-import-area');
+  el.classList.toggle('show');
+}
+
+function importData(){
+  var txt=document.getElementById('sync-import-txt').value.trim();
+  if(!txt){toast('Pega el código primero.',true);return;}
+  try{
+    var decoded=JSON.parse(decodeURIComponent(escape(atob(txt))));
+    if(!decoded.version||decoded.version!=='mt6'){toast('Código inválido o de versión incorrecta.',true);return;}
+    if(!confirm('¿Importar datos desde el código?\n\nEsto REEMPLAZARÁ todos los datos actuales en este dispositivo.\n\nPacientes: '+(decoded.patients?decoded.patients.length:0)+'\nMedicamentos: '+(decoded.meds?decoded.meds.length:0)+'\nRegistros: '+(decoded.adherence?decoded.adherence.length:0))) return;
+    if(decoded.users)  {users=decoded.users;     sU();}
+    if(decoded.patients){patients=decoded.patients; sP();}
+    if(decoded.meds)   {meds=decoded.meds;        sM();}
+    if(decoded.adherence){adherence=decoded.adherence; sA();}
+    // Set session to first matching user or first user
+    if(curUser && users.find(function(u){return u.e===curUser.e;})){
+      localStorage.setItem('mt6_s',JSON.stringify(curUser));
+    } else if(users.length>0){
+      curUser=users[0];
+      localStorage.setItem('mt6_s',JSON.stringify(curUser));
+    }
+    document.getElementById('sync-import-area').classList.remove('show');
+    document.getElementById('sync-import-txt').value='';
+    initApp();
+    toast('✅ Datos importados correctamente. Bienvenido, '+( curUser?curUser.name:'usuario')+'.');
+  } catch(e){
+    toast('Error al leer el código. Verifica que esté completo.',true);
+  }
+}
+
+// ── EXPORT CSV ───────────────────────────────────────────────
+function genQR(){
+  // Generate the data first
+  var data={
+    users:users, patients:patients, meds:meds, adherence:adherence,
+    exportedAt:new Date().toISOString(), version:'mt6'
+  };
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  
+  // Build URL that auto-imports on iPhone
+  var url = window.location.origin + window.location.pathname + '?sync=' + encoded;
+  
+  // Show QR
+  var wrap = document.getElementById('qr-wrap');
+  var canvas = document.getElementById('qr-canvas');
+  canvas.innerHTML = '';
+  wrap.style.display = 'block';
+  
+  try {
+    new QRCode(canvas, {
+      text: url,
+      width: 220,
+      height: 220,
+      colorDark: '#1a4a2e',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    toast('✅ QR generado. Escanéalo con tu iPhone.');
+  } catch(e) {
+    // Fallback if QR fails - just show copy option
+    canvas.innerHTML = '<div style="padding:20px;font-size:12px;color:var(--red)">QR no disponible. Usa "Copiar código texto".</div>';
+    toast('Usa Copiar código texto en su lugar.', true);
+  }
+}
+
+function exportCSV(rows, headers, filename){
+  var csv = headers.join(',') + '\n';
+  rows.forEach(function(row){
+    csv += row.map(function(cell){
+      var val = cell===null||cell===undefined ? '' : String(cell);
+      // Escape quotes and wrap in quotes if contains comma/newline
+      val = val.replace(/"/g,'""');
+      if(val.indexOf(',')>=0||val.indexOf('"')>=0||val.indexOf('\n')>=0) val='"'+val+'"';
+      return val;
+    }).join(',') + '\n';
+  });
+  var blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✅ '+filename+' descargado.');
+}
+
+function exportPatients(){
+  if(!patients.length){toast('Sin pacientes para exportar.',true);return;}
+  var headers=['Nombre','Fecha Nacimiento','Edad','Identificacion','Especialidad','Diagnostico','Telefono','Observaciones','Medicamentos Asignados','Adherencia %','Fecha Registro'];
+  var rows = patients.map(function(p){
+    var mc = meds.filter(function(r){return r.patientId===p.id;}).length;
+    var ptAdh = adherence.filter(function(a){return a.patientId===p.id;});
+    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return a.status!=='no';}).length/ptAdh.length*100) : '';
+    return [
+      p.name, p.dob||'', p.age!=null?p.age+'':'', p.idNum||'',
+      p.specialty||'', p.diagnosis||'', p.phone||'', p.obs||'',
+      mc, pct!==''?pct+'%':'Sin registros',
+      p.createdAt?p.createdAt.split('T')[0]:''
+    ];
+  });
+  exportCSV(rows, headers, 'MedTopix_Pacientes_'+todayStr()+'.csv');
+}
+
+function exportAdherence(){
+  if(!adherence.length){toast('Sin registros de adherencia para exportar.',true);return;}
+  var headers=['Fecha','Hora Programada','Hora Real','Medicamento','Paciente','Especialidad','Estado','Dosis'];
+  var statusLabel={'yes':'Uso la medicacion','late':'Aplico en otro horario','no':'No uso la medicacion'};
+  var sorted = adherence.slice().sort(function(a,b){return b.ts-a.ts;});
+  var rows = sorted.map(function(a){
+    var pt = patients.find(function(p){return p.id===a.patientId;});
+    var med = meds.find(function(m){return m.id===a.medId;});
+    return [
+      a.date, a.scheduledTime, a.status==='late'?a.actualTime:'',
+      a.medName||'', pt?pt.name:'Sin asignar',
+      med?med.specialty:'', statusLabel[a.status]||a.status,
+      med?med.dose||'':''
+    ];
+  });
+  exportCSV(rows, headers, 'MedTopix_Adherencia_'+todayStr()+'.csv');
+}
+
+function exportMeds(){
+  if(!meds.length){toast('Sin medicamentos para exportar.',true);return;}
+  var headers=['Medicamento','Paciente','Especialidad','Dosis','Hora','Frecuencia','Dosis Maxima Diaria','Via','Notas','Tomas Hoy','Estado Hoy'];
+  var today=todayStr();
+  var rows = meds.map(function(m){
+    var pt=patients.find(function(p){return p.id===m.patientId;});
+    var todayRecs=adherence.filter(function(a){return a.medId===m.id&&a.date===today;});
+    var tomasHoy=todayRecs.length;
+    var estadoHoy=tomasHoy>0?{'yes':'Uso','late':'Otro horario','no':'No uso'}[todayRecs[0].status]||'':getStatus(m);
+    return [
+      m.name, pt?pt.name:'Sin asignar', m.specialty||'',
+      m.dose||'', m.time||'', m.freq||'',
+      m.maxdose||'', m.route||'', m.notes||'',
+      tomasHoy, estadoHoy
+    ];
+  });
+  exportCSV(rows, headers, 'MedTopix_Medicamentos_'+todayStr()+'.csv');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg, err){
+  var el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast show'+(err?' err':'');
+  setTimeout(function(){el.className='toast';},3200);
+}
+
+// ── PASSWORD TOGGLE ─────────────────────────────────────────
+function togPw(id, btn){
+  var el=document.getElementById(id);
+  if(!el) return;
+  if(el.type==='password'){
+    el.type='text';
+    btn.textContent='🙈';
+    btn.title='Ocultar contraseña';
+  } else {
+    el.type='password';
+    btn.textContent='👁️';
+    btn.title='Mostrar contraseña';
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+(function(){
+  // Save sync param to sessionStorage immediately (before URL gets cleaned)
+  var urlParams = new URLSearchParams(window.location.search);
+  var syncParam = urlParams.get('sync');
+  if(syncParam){
+    sessionStorage.setItem('mt6_qr', syncParam);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  // Normal session check
+  var saved=localStorage.getItem('mt6_s');
+  if(saved){
+    try{curUser=JSON.parse(saved);initApp();show('sa');}
+    catch(e){localStorage.removeItem('mt6_s');show('sl');}
+    return;
+  }
+
+  // Check if QR data pending - show special button
+  var pendingSync = sessionStorage.getItem('mt6_qr');
+  if(pendingSync){
+    show('sl');
+    var msg=document.getElementById('qr-landing-msg');
+    var btnQR=document.getElementById('btn-start-qr');
+    var btnNorm=document.getElementById('btn-start-normal');
+    if(msg) msg.style.display='block';
+    if(btnQR) btnQR.style.display='block';
+    if(btnNorm) btnNorm.style.display='none';
+    return;
+  }
+
+  show('sl');
+  setInterval(function(){
+    updateStats(); updateNext();
+    if(curTab==='alerts') renderAlerts();
+  }, 30000);
+})();
 </script>
 </body>
 </html>
