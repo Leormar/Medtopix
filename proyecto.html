@@ -409,6 +409,54 @@
   .fases .f.done{background:var(--teal-soft);border-color:var(--teal);color:var(--teal)}
   .fases .f.curso{background:var(--oro-soft);border:2px dashed var(--oro-vivo);color:var(--oro)}
   @media(max-width:700px){.fases{grid-template-columns:1fr}}
+
+  /* ============ Presentación continua por capítulos ============ */
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  .tab{display:block!important;padding:96px 0 104px;position:relative}
+  .tab:nth-of-type(even){background:var(--bg-alt)}
+  @media(max-width:700px){.tab{padding:64px 0 72px}}
+  .tab .anim,.cap .anim{opacity:0}
+  .tab .anim.in,.cap .anim.in{animation:aladino .9s cubic-bezier(.16,.85,.24,1) forwards;animation-delay:var(--d,0s)}
+  .tab-head h2{font-size:clamp(1.9rem,3.6vw,2.9rem)}
+  .prog{position:fixed;left:0;right:0;top:0;height:4px;z-index:90;background:rgba(13,40,24,.08)}
+  .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--oro-vivo));border-radius:0 4px 4px 0}
+  .cap{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden;color:#fff;background:#0d2818;isolation:isolate}
+  .cap>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.55;filter:saturate(.85) blur(1.5px);transform:scale(1.08)}
+  .cap.vis>img{animation:capKen 16s ease-out forwards}
+  @keyframes capKen{from{transform:scale(1.22) translate(2%,2%)}to{transform:scale(1.06)}}
+  .cap::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,#0d2818 12%,rgba(13,40,24,.86) 48%,rgba(30,107,58,.5) 100%)}
+  .cap .wrap{display:grid;gap:26px;align-items:center;width:100%;padding-top:70px;padding-bottom:70px}
+  @media(min-width:900px){.cap .wrap{grid-template-columns:auto 1fr;gap:60px}}
+  .cap-n{font-family:Fraunces,serif;font-weight:900;font-size:clamp(7rem,22vw,17rem);line-height:.8;color:transparent;-webkit-text-stroke:2px var(--oro-vivo);letter-spacing:-.04em}
+  .cap .slide-tag{color:var(--oro-vivo)}
+  .cap h2{font-size:clamp(2.1rem,4.8vw,3.9rem);line-height:1.06;color:#fff;max-width:17em;margin:6px 0 30px}
+  .cap-l{list-style:none;display:flex;flex-wrap:wrap;gap:10px}
+  .cap-l a{display:block;padding:10px 18px;border-radius:999px;border:1.5px solid rgba(255,255,255,.3);color:#fff;text-decoration:none;font-weight:600;font-size:.92rem;backdrop-filter:blur(6px);background:rgba(255,255,255,.06);transition:all .2s ease}
+  .cap-l a:hover{background:var(--oro-vivo);border-color:var(--oro-vivo);color:#0d2818;transform:translateY(-2px)}
+  .cap-d{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.2rem;animation:capBob 2.2s ease-in-out infinite}
+  @keyframes capBob{50%{transform:translate(-50%,8px)}}
+  .rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:80;display:none;flex-direction:column;gap:10px}
+  @media(min-width:1180px){.rail{display:flex}}
+  .rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none}
+  .rail b{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:700;background:var(--card);color:var(--ink-faint);border:1.5px solid var(--line);box-shadow:var(--sh-sm);transition:all .25s ease}
+  .rail span{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:#0d2818;padding:6px 12px;border-radius:8px;opacity:0;transform:translateX(8px);transition:all .2s ease;pointer-events:none;white-space:nowrap}
+  .rail a:hover span{opacity:1;transform:none}
+  .rail a.on b{background:linear-gradient(120deg,#0d2818,#1e6b3a);color:var(--oro-vivo);border-color:#0d2818;transform:scale(1.18)}
+  .ix-btn{position:fixed;right:18px;bottom:18px;z-index:85;display:inline-flex;align-items:center;gap:8px;font:700 .9rem inherit;font-family:inherit;color:#0d2818;background:var(--oro-vivo);border:0;border-radius:999px;padding:13px 20px;cursor:pointer;box-shadow:0 14px 30px -10px rgba(13,40,24,.55)}
+  .ix{position:fixed;inset:0;z-index:100;background:rgba(13,40,24,.96);color:#fff;overflow-y:auto;backdrop-filter:blur(8px)}
+  .ix[hidden]{display:none}
+  .ix-in{max-width:1100px;margin:0 auto;padding:70px 24px 60px;position:relative}
+  .ix h2{color:#fff;font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:34px}
+  .ix-x{position:absolute;right:24px;top:24px;width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);background:none;color:#fff;font-size:1.1rem;cursor:pointer}
+  .ix-grid{display:grid;gap:30px}
+  @media(min-width:760px){.ix-grid{grid-template-columns:repeat(3,1fr)}}
+  .ix-cap>a{display:flex;align-items:baseline;gap:12px;color:#fff;text-decoration:none;font-family:Fraunces,serif;font-weight:700;font-size:1.3rem;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.2);margin-bottom:10px}
+  .ix-cap>a b{color:var(--oro-vivo);font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif}
+  .ix-cap ul{list-style:none}
+  .ix-cap li a{display:block;padding:7px 0;color:#c8dccf;text-decoration:none;font-size:.95rem}
+  .ix-cap li a:hover{color:var(--oro-vivo)}
+  @media(prefers-reduced-motion:reduce){.tab .anim,.cap .anim{opacity:1!important;animation:none!important}.cap.vis>img,.cap-d{animation:none}html{scroll-behavior:auto}}
+  @media print{.prog,.rail,.ix-btn,.ix{display:none!important}.cap{min-height:0;page-break-after:always}.tab .anim,.cap .anim{opacity:1!important}}
 </style>
 </head>
 <body>
@@ -454,33 +502,12 @@
       <li><b>Marco:</b> Ley 1581 de 2012 · la decisión clínica es del profesional.</li></ul></aside>
   </div>
 </header>
-<nav class="tabs" aria-label="Secciones del proyecto">
-  <div class="hint">Recorra el proyecto · cada punto es una pestaña</div>
-  <div class="wrap">
-    <button data-tab="video" class="active"><svg class="ico" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></svg>Video · 2 min</button>
-    <button data-tab="resumen"><svg class="ico"><use href="#i-doc"/></svg>Resumen</button>
-    <button data-tab="dolor"><svg class="ico"><use href="#i-lupa"/></svg>1 · Problema</button>
-    <button data-tab="personas"><svg class="ico"><use href="#i-gente"/></svg>2 · Personas y roles</button>
-    <button data-tab="proceso"><svg class="ico"><use href="#i-flujo"/></svg>3 · Proceso actual</button>
-    <button data-tab="causas"><svg class="ico"><use href="#i-raiz"/></svg>4 · Causas</button>
-    <button data-tab="desafio"><svg class="ico"><use href="#i-target"/></svg>5 · Desafío</button>
-    <button data-tab="solucion"><svg class="ico"><use href="#i-sol"/></svg>6 · Solución</button>
-    <button data-tab="flujo"><svg class="ico"><use href="#i-ruta"/></svg>7 · Flujo</button>
-    <button data-tab="datos"><svg class="ico"><use href="#i-db"/></svg>8 · Datos</button>
-    <button data-tab="prototipo"><svg class="ico"><use href="#i-pantalla"/></svg>9 · Prototipo</button>
-    <button data-tab="etica"><svg class="ico"><use href="#i-escudo"/></svg>10 · Ética y Ley 1581</button>
-    <button data-tab="indicadores"><svg class="ico"><use href="#i-gauge"/></svg>11 · Indicadores</button>
-    <button data-tab="canvas"><svg class="ico"><use href="#i-grid"/></svg>12 · Lean Canvas</button>
-    <button data-tab="trl"><svg class="ico"><use href="#i-ruta"/></svg>13 · TRL</button>
-    <button data-tab="gaits"><svg class="ico"><use href="#i-check"/></svg>14 · GAITS y validación</button>
-    <button data-tab="ia"><svg class="ico"><use href="#i-chip"/></svg>15 · Desarrollo con IA</button>
-    <button data-tab="pasos"><svg class="ico"><use href="#i-brujula"/></svg>16 · Próximos pasos</button>
-    <button data-tab="referencias"><svg class="ico"><use href="#i-libro"/></svg>Referencias</button>
-    <button data-tab="equipo"><svg class="ico"><use href="#i-equipo"/></svg>Equipo</button>
-  </div>
-</nav>
-<main>
-<section class="tab active" id="video">
+<div class="prog" aria-hidden="true"><i id="prog"></i></div>
+<nav class="rail" id="rail" aria-label="Capítulos"><a href="#c0" data-cap="c0"><span>Para empezar</span><b>00</b></a><a href="#c1" data-cap="c1"><span>El problema</span><b>01</b></a><a href="#c2" data-cap="c2"><span>La propuesta</span><b>02</b></a><a href="#c3" data-cap="c3"><span>Responsabilidad</span><b>03</b></a><a href="#c4" data-cap="c4"><span>Modelo y madurez</span><b>04</b></a><a href="#c5" data-cap="c5"><span>El camino</span><b>05</b></a></nav>
+<button class="ix-btn" id="ixBtn" aria-expanded="false" aria-controls="ix"><svg class="ico"><use href="#i-grid"/></svg>Índice</button>
+<div class="ix" id="ix" hidden><div class="ix-in"><button class="ix-x" id="ixX" aria-label="Cerrar índice">✕</button><h2>Recorrido del proyecto</h2><div class="ix-grid"><div class="ix-cap"><a href="#c0"><b>00</b>Para empezar</a><ul><li><a href="#video">Video · 2 min</a></li><li><a href="#resumen">Resumen</a></li></ul></div><div class="ix-cap"><a href="#c1"><b>01</b>El problema</a><ul><li><a href="#dolor">1 · Problema</a></li><li><a href="#personas">2 · Personas y roles</a></li><li><a href="#proceso">3 · Proceso actual</a></li><li><a href="#causas">4 · Causas</a></li></ul></div><div class="ix-cap"><a href="#c2"><b>02</b>La propuesta</a><ul><li><a href="#desafio">5 · Desafío</a></li><li><a href="#solucion">6 · Solución</a></li><li><a href="#flujo">7 · Flujo</a></li><li><a href="#datos">8 · Datos</a></li><li><a href="#prototipo">9 · Prototipo</a></li></ul></div><div class="ix-cap"><a href="#c3"><b>03</b>Responsabilidad</a><ul><li><a href="#etica">10 · Ética y Ley 1581</a></li><li><a href="#indicadores">11 · Indicadores</a></li></ul></div><div class="ix-cap"><a href="#c4"><b>04</b>Modelo y madurez</a><ul><li><a href="#canvas">12 · Lean Canvas</a></li><li><a href="#trl">13 · TRL</a></li><li><a href="#gaits">14 · GAITS y validación</a></li></ul></div><div class="ix-cap"><a href="#c5"><b>05</b>El camino</a><ul><li><a href="#ia">15 · Desarrollo con IA</a></li><li><a href="#pasos">16 · Próximos pasos</a></li><li><a href="#referencias">Referencias</a></li><li><a href="#equipo">Equipo</a></li></ul></div></div></div></div>
+<main id="c0">
+<section class="tab" id="video" data-cap="c0">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">MedTopix en dos minutos</span>
@@ -493,7 +520,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="resumen">
+<section class="tab" id="resumen" data-cap="c0">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Resumen ejecutivo</span>
@@ -514,7 +541,19 @@
     <div class="note anim" style="--d:.26s"><b>Alcance:</b> proyecto académico del Máster en Salud Digital e IA (OBS Business School). Este sitio describe el diseño y el prototipo; <b>no reporta resultados clínicos ni datos de pilotos</b>, porque aún no se han realizado.</div>
   </div>
 </section>
-<section class="tab" id="dolor">
+<section class="cap" id="c1" data-cap="c1">
+  <img src="img/fotos/gotas.jpg" alt="" loading="lazy">
+  <div class="wrap">
+    <div class="cap-n anim">01</div>
+    <div class="cap-t">
+      <span class="slide-tag anim" style="--d:.1s">Capítulo 1 de 5 · El problema</span>
+      <h2 class="anim" style="--d:.18s">Entre una consulta y la siguiente, nadie ve lo que pasa en casa</h2>
+      <ul class="cap-l anim" style="--d:.3s"><li><a href="#dolor">1 · Problema</a></li><li><a href="#personas">2 · Personas y roles</a></li><li><a href="#proceso">3 · Proceso actual</a></li><li><a href="#causas">4 · Causas</a></li></ul>
+    </div>
+  </div>
+  <a class="cap-d" href="#dolor" aria-label="Continuar">↓</a>
+</section>
+<section class="tab" id="dolor" data-cap="c1">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 1 · Problema y evidencia</span>
@@ -539,7 +578,7 @@
     <div class="evid anim" style="--d:.2s"><span class="lab">Evidencia</span>La OMS señala que mejorar la adherencia puede tener un impacto en la salud de la población mayor que cualquier mejora en tratamientos médicos específicos, y que los pacientes necesitan <b>apoyo, no culpa</b>. MedTopix toma esa premisa como punto de partida.</div>
   </div>
 </section>
-<section class="tab" id="personas">
+<section class="tab" id="personas" data-cap="c1">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 2 · Personas y roles</span>
@@ -554,7 +593,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="proceso">
+<section class="tab" id="proceso" data-cap="c1">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 3 · Proceso actual</span>
@@ -577,7 +616,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="causas">
+<section class="tab" id="causas" data-cap="c1">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 4 · Causas</span>
@@ -594,7 +633,19 @@
     </table></div></div>
   </div>
 </section>
-<section class="tab" id="desafio">
+<section class="cap" id="c2" data-cap="c2">
+  <img src="img/fotos/registro-celular.jpg" alt="" loading="lazy">
+  <div class="wrap">
+    <div class="cap-n anim">02</div>
+    <div class="cap-t">
+      <span class="slide-tag anim" style="--d:.1s">Capítulo 2 de 5 · La propuesta</span>
+      <h2 class="anim" style="--d:.18s">Cada dosis se convierte en un dato que todo el equipo puede ver</h2>
+      <ul class="cap-l anim" style="--d:.3s"><li><a href="#desafio">5 · Desafío</a></li><li><a href="#solucion">6 · Solución</a></li><li><a href="#flujo">7 · Flujo</a></li><li><a href="#datos">8 · Datos</a></li><li><a href="#prototipo">9 · Prototipo</a></li></ul>
+    </div>
+  </div>
+  <a class="cap-d" href="#desafio" aria-label="Continuar">↓</a>
+</section>
+<section class="tab" id="desafio" data-cap="c2">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 5 · Desafío</span>
@@ -610,7 +661,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="solucion">
+<section class="tab" id="solucion" data-cap="c2">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 6 · Solución</span>
@@ -632,7 +683,7 @@
     <div class="regla anim" style="--d:.26s"><b>La regla que no se negocia:</b> MedTopix muestra datos de adherencia; <b>no formula, no ajusta dosis y no diagnostica</b>. Toda decisión sobre el tratamiento es del profesional de la salud.</div>
   </div>
 </section>
-<section class="tab" id="flujo">
+<section class="tab" id="flujo" data-cap="c2">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 7 · Flujo</span>
@@ -648,7 +699,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="datos">
+<section class="tab" id="datos" data-cap="c2">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 8 · Datos</span>
@@ -666,7 +717,7 @@
     <div class="evid anim" style="--d:.2s"><span class="lab">Datos sensibles</span>Los datos de salud son <b>datos sensibles</b> según la Ley 1581 de 2012. El diseño contempla autorización expresa, acceso por rol limitado al equipo tratante del caso y contraseñas que nunca se guardan en texto plano.</div>
   </div>
 </section>
-<section class="tab" id="prototipo">
+<section class="tab" id="prototipo" data-cap="c2">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 9 · Prototipo</span>
@@ -691,7 +742,19 @@
     </div>
   </div>
 </section>
-<section class="tab" id="etica">
+<section class="cap" id="c3" data-cap="c3">
+  <img src="img/fotos/consulta-doctora.jpg" alt="" loading="lazy">
+  <div class="wrap">
+    <div class="cap-n anim">03</div>
+    <div class="cap-t">
+      <span class="slide-tag anim" style="--d:.1s">Capítulo 3 de 5 · Responsabilidad</span>
+      <h2 class="anim" style="--d:.18s">Datos sensibles, decisiones del profesional y qué se propone medir</h2>
+      <ul class="cap-l anim" style="--d:.3s"><li><a href="#etica">10 · Ética y Ley 1581</a></li><li><a href="#indicadores">11 · Indicadores</a></li></ul>
+    </div>
+  </div>
+  <a class="cap-d" href="#etica" aria-label="Continuar">↓</a>
+</section>
+<section class="tab" id="etica" data-cap="c3">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 10 · Ética y Ley 1581</span>
@@ -713,7 +776,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="indicadores">
+<section class="tab" id="indicadores" data-cap="c3">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 11 · Indicadores</span>
@@ -733,7 +796,19 @@
     <div class="note anim" style="--d:.2s"><b>Meta de referencia:</b> en la literatura sobre adherencia suele usarse el 80 % como umbral operativo de buena adherencia. El umbral de cada caso lo define el profesional tratante.</div>
   </div>
 </section>
-<section class="tab" id="canvas">
+<section class="cap" id="c4" data-cap="c4">
+  <img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy">
+  <div class="wrap">
+    <div class="cap-n anim">04</div>
+    <div class="cap-t">
+      <span class="slide-tag anim" style="--d:.1s">Capítulo 4 de 5 · Modelo y madurez</span>
+      <h2 class="anim" style="--d:.18s">Lean Canvas, TRL y GAITS: dónde está hoy y qué falta validar</h2>
+      <ul class="cap-l anim" style="--d:.3s"><li><a href="#canvas">12 · Lean Canvas</a></li><li><a href="#trl">13 · TRL</a></li><li><a href="#gaits">14 · GAITS y validación</a></li></ul>
+    </div>
+  </div>
+  <a class="cap-d" href="#canvas" aria-label="Continuar">↓</a>
+</section>
+<section class="tab" id="canvas" data-cap="c4">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 12 · Lean Canvas y Value Proposition Canvas</span>
@@ -807,7 +882,7 @@
   </div>
 </section>
 
-<section class="tab" id="trl">
+<section class="tab" id="trl" data-cap="c4">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 13 · Nivel de madurez tecnológica</span>
@@ -833,7 +908,7 @@
   </div>
 </section>
 
-<section class="tab" id="gaits">
+<section class="tab" id="gaits" data-cap="c4">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 14 · Herramienta GAITS (CIMIT) y validación</span>
@@ -879,7 +954,19 @@
   </div>
 </section>
 
-<section class="tab" id="ia">
+<section class="cap" id="c5" data-cap="c5">
+  <img src="img/fotos/farmacia.jpg" alt="" loading="lazy">
+  <div class="wrap">
+    <div class="cap-n anim">05</div>
+    <div class="cap-t">
+      <span class="slide-tag anim" style="--d:.1s">Capítulo 5 de 5 · El camino</span>
+      <h2 class="anim" style="--d:.18s">Cómo se construyó, qué sigue y quiénes lo hacen</h2>
+      <ul class="cap-l anim" style="--d:.3s"><li><a href="#ia">15 · Desarrollo con IA</a></li><li><a href="#pasos">16 · Próximos pasos</a></li><li><a href="#referencias">Referencias</a></li><li><a href="#equipo">Equipo</a></li></ul>
+    </div>
+  </div>
+  <a class="cap-d" href="#ia" aria-label="Continuar">↓</a>
+</section>
+<section class="tab" id="ia" data-cap="c5">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 15 · Desarrollo con IA</span>
@@ -893,7 +980,7 @@
     </div>
   </div>
 </section>
-<section class="tab" id="pasos">
+<section class="tab" id="pasos" data-cap="c5">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 16 · Próximos pasos</span>
@@ -909,7 +996,7 @@
     <div class="note anim" style="--d:.2s"><b>Antes de un uso asistencial real</b> se requiere revisión jurídica del tratamiento de datos, evaluación de seguridad de la información y validación clínica con los profesionales que la usarían.</div>
   </div>
 </section>
-<section class="tab" id="referencias">
+<section class="tab" id="referencias" data-cap="c5">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Referencias</span>
@@ -926,7 +1013,7 @@
     </ol>
   </div>
 </section>
-<section class="tab" id="equipo">
+<section class="tab" id="equipo" data-cap="c5">
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Equipo creador · Grupo 5</span>
@@ -948,50 +1035,46 @@
 </div></footer>
 <script>
 (function(){
-  const btns = document.querySelectorAll('nav.tabs button');
-  const tabs = document.querySelectorAll('.tab');
-  const nav = document.querySelector('nav.tabs');
-  const ORDEN = Array.from(btns).map(b => ({id: b.dataset.tab, label: b.textContent.trim()}));
-  ORDEN.forEach((o, i) => {
-    const sec = document.getElementById(o.id);
-    if(!sec) return;
-    const wrap = sec.querySelector('.wrap');
-    const pager = document.createElement('div');
-    pager.className = 'pager anim';
-    pager.style.setProperty('--d', '.45s');
-    let html = '';
-    if(i > 0) html += `<button data-go="${ORDEN[i-1].id}"><span class="flecha">←</span> ${ORDEN[i-1].label}</button>`;
-    else html += '<span></span>';
-    html += `<span class="paso">Sección ${i+1} de ${ORDEN.length}</span>`;
-    if(i < ORDEN.length-1) html += `<button class="next" data-go="${ORDEN[i+1].id}">Siguiente: ${ORDEN[i+1].label} <span class="flecha">→</span></button>`;
-    else html += '<span></span>';
-    pager.innerHTML = html;
-    wrap.appendChild(pager);
-  });
-  function show(id, scroll){
-    tabs.forEach(t => t.classList.remove('active'));
-    btns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
-    const el = document.getElementById(id);
-    if(!el) return;
-    void el.offsetWidth;
-    el.classList.add('active');
-    if(history.replaceState) history.replaceState(null,'','#'+id);
-    if(scroll){
-      /* la barra es sticky: usamos la posición real del contenido, no la de la barra */
-      const main = document.querySelector('main');
-      const y = Math.max(main.offsetTop - nav.offsetHeight - 8, 0);
-      window.scrollTo({top:y, behavior:'smooth'});
-    }
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window);
+  var anims = document.querySelectorAll('.tab .anim, .cap .anim');
+  if(still){ anims.forEach(function(a){ a.classList.add('in'); a.style.opacity = 1; }); }
+  else {
+    // cada bloque entra con el efecto aladino la primera vez que aparece en pantalla
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(!e.isIntersecting) return;
+        var t = e.target; t.classList.add('in'); io.unobserve(t);
+        // respaldo: si la animación no llega a pintarse, el bloque queda visible de todos modos
+        setTimeout(function(){ t.style.opacity = 1; }, 2200);
+      });
+    }, {threshold:.08, rootMargin:'0px 0px -5% 0px'});
+    anims.forEach(function(a){ io.observe(a); });
+    var capIo = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('vis'); }); }, {threshold:.2});
+    document.querySelectorAll('.cap').forEach(function(c){ capIo.observe(c); });
   }
-  btns.forEach(b => b.addEventListener('click', () => show(b.dataset.tab, true)));
-  document.querySelectorAll('.pager button').forEach(b => b.addEventListener('click', () => show(b.dataset.go, true)));
-  document.querySelectorAll('[data-goto]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault(); show(a.dataset.goto, true);
-  }));
-  const h = location.hash.replace('#','');
-  if(h && document.getElementById(h) && document.getElementById(h).classList.contains('tab')) show(h,false);
-
-  })();
+  // barra de progreso y capítulo activo en el índice lateral
+  var bar = document.getElementById('prog'), rail = document.querySelectorAll('#rail a');
+  var marks = document.querySelectorAll('[data-cap]:not(a)');
+  function tick(){
+    var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + '%';
+    var cur = 'c0', mid = window.innerHeight * .45;
+    marks.forEach(function(s){ if(s.getBoundingClientRect().top <= mid) cur = s.dataset.cap; });
+    rail.forEach(function(a){ a.classList.toggle('on', a.dataset.cap === cur); });
+  }
+  var queued = false;
+  window.addEventListener('scroll', function(){ if(queued) return; queued = true; requestAnimationFrame(function(){ queued = false; tick(); }); }, {passive:true});
+  window.addEventListener('resize', tick); tick();
+  // índice a pantalla completa
+  var ix = document.getElementById('ix'), btn = document.getElementById('ixBtn');
+  function toggle(open){ ix.hidden = !open; btn.setAttribute('aria-expanded', open ? 'true' : 'false'); document.body.style.overflow = open ? 'hidden' : ''; }
+  btn.addEventListener('click', function(){ toggle(true); });
+  document.getElementById('ixX').addEventListener('click', function(){ toggle(false); });
+  ix.addEventListener('click', function(e){ if(e.target.closest('a') || e.target === ix) toggle(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') toggle(false); });
+  document.querySelectorAll('[data-goto]').forEach(function(a){ a.addEventListener('click', function(e){
+    e.preventDefault(); var el = document.getElementById(a.dataset.goto); if(el) el.scrollIntoView({behavior: still ? 'auto' : 'smooth'});
+  }); });
+})();
 </script>
 </body>
 </html>
