@@ -379,6 +379,36 @@
   .er .t code{font-family:ui-monospace,Menlo,monospace;color:var(--azul);font-size:.82rem}
   table td b{color:var(--azul-osc)}
   @media(max-width:700px){.tbl-wrap table{min-width:600px}.mock .tbl-wrap table{min-width:460px}}
+
+  /* Lean Canvas */
+  .canvas{display:grid;grid-template-columns:repeat(10,1fr);gap:12px;margin-top:28px}
+  .canvas .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px;font-size:.87rem;box-shadow:var(--sh-sm)}
+  .canvas .box h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--azul);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--line);font-weight:600}
+  .canvas .box ul{list-style:none}
+  .canvas .box li{padding:3px 0 3px 15px;position:relative;color:var(--ink-soft)}
+  .canvas .box li::before{content:'–';position:absolute;left:0;color:var(--oro)}
+  .c-problema,.c-uvp,.c-clientes{grid-column:span 2;grid-row:span 2}
+  .c-solucion,.c-ventaja,.c-metricas,.c-canales{grid-column:span 2}
+  .c-costes,.c-ingresos{grid-column:span 5}
+  .c-uvp{background:var(--azul-osc)!important;border-color:var(--azul-osc)!important}
+  .c-uvp h4{color:var(--oro-vivo)!important;border-color:rgba(255,255,255,.18)!important}
+  .c-uvp li{color:#c8dccf!important}
+  .c-uvp li b{color:#fff}
+  @media(max-width:980px){.canvas{grid-template-columns:1fr 1fr}.canvas .box{grid-column:span 2!important;grid-row:auto!important}}
+  /* TRL */
+  .trl-scale{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin:28px 0 12px}
+  .trl-scale .lvl{text-align:center;padding:14px 4px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:.82rem;color:var(--ink-faint)}
+  .trl-scale .lvl small{display:block;font-size:.63rem;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .trl-scale .lvl.on{background:var(--azul-osc);color:#fff;border-color:var(--azul-osc);font-weight:600}
+  .trl-scale .lvl.on small{color:var(--oro-vivo)}
+  @media(max-width:560px){.trl-scale{grid-template-columns:repeat(3,1fr)}}
+  /* GAITS */
+  .fases{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:26px 0}
+  .fases .f{text-align:center;padding:15px 8px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:.88rem;color:var(--ink-faint)}
+  .fases .f b{display:block;font-size:1rem}
+  .fases .f.done{background:var(--teal-soft);border-color:var(--teal);color:var(--teal)}
+  .fases .f.curso{background:var(--oro-soft);border:2px dashed var(--oro-vivo);color:var(--oro)}
+  @media(max-width:700px){.fases{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -440,8 +470,11 @@
     <button data-tab="prototipo"><svg class="ico"><use href="#i-pantalla"/></svg>9 · Prototipo</button>
     <button data-tab="etica"><svg class="ico"><use href="#i-escudo"/></svg>10 · Ética y Ley 1581</button>
     <button data-tab="indicadores"><svg class="ico"><use href="#i-gauge"/></svg>11 · Indicadores</button>
-    <button data-tab="ia"><svg class="ico"><use href="#i-chip"/></svg>12 · Desarrollo con IA</button>
-    <button data-tab="pasos"><svg class="ico"><use href="#i-brujula"/></svg>13 · Próximos pasos</button>
+    <button data-tab="canvas"><svg class="ico"><use href="#i-grid"/></svg>12 · Lean Canvas</button>
+    <button data-tab="trl"><svg class="ico"><use href="#i-ruta"/></svg>13 · TRL</button>
+    <button data-tab="gaits"><svg class="ico"><use href="#i-check"/></svg>14 · GAITS y validación</button>
+    <button data-tab="ia"><svg class="ico"><use href="#i-chip"/></svg>15 · Desarrollo con IA</button>
+    <button data-tab="pasos"><svg class="ico"><use href="#i-brujula"/></svg>16 · Próximos pasos</button>
     <button data-tab="referencias"><svg class="ico"><use href="#i-libro"/></svg>Referencias</button>
     <button data-tab="equipo"><svg class="ico"><use href="#i-equipo"/></svg>Equipo</button>
   </div>
@@ -700,10 +733,156 @@
     <div class="note anim" style="--d:.2s"><b>Meta de referencia:</b> en la literatura sobre adherencia suele usarse el 80 % como umbral operativo de buena adherencia. El umbral de cada caso lo define el profesional tratante.</div>
   </div>
 </section>
+<section class="tab" id="canvas">
+  <div class="wrap">
+    <div class="anim" style="--d:0s">
+      <span class="slide-tag">Punto 12 · Lean Canvas y Value Proposition Canvas</span>
+      <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-grid"/></svg></span><h2>Lean Canvas de MedTopix</h2></div>
+      <p class="lead">El modelo en una página. Lo que aún es <b>hipótesis</b> está marcado como tal: MedTopix es un prototipo académico y ningún bloque ha sido validado con usuarios reales.</p>
+    </div>
+    <div class="canvas anim" style="--d:.1s">
+      <div class="box c-problema"><h4>Problema</h4><ul>
+        <li>Cerca de la mitad de los pacientes con tratamientos de largo plazo no los cumple (OMS, 2004)</li>
+        <li>El médico solo conoce lo que el paciente recuerda el día de la consulta</li>
+        <li>Farmaceuta y nutricionista acompañan al mismo paciente sin ver el mismo caso</li>
+        <li><b>Alternativas hoy:</b> alarma del celular, pastillero, llamadas y autorreporte en consulta</li>
+      </ul></div>
+      <div class="box c-solucion"><h4>Solución</h4><ul>
+        <li>Recordatorio a la hora de cada toma con registro en tres estados: usó · otro horario · no usó</li>
+        <li>Curva de adherencia por caso, visible para el equipo tratante</li>
+        <li>Vínculo por código del caso y notas de seguimiento del equipo</li>
+      </ul></div>
+      <div class="box c-uvp"><h4>Propuesta única de valor</h4><ul>
+        <li><b>«Que el tratamiento se cumpla, y que todo el equipo lo pueda ver.»</b></li>
+        <li>Adherencia farmacológica y nutricional sobre un mismo caso</li>
+        <li>Funciona en el navegador: el paciente no tiene que instalar nada</li>
+      </ul></div>
+      <div class="box c-ventaja"><h4>Ventaja diferencial</h4><ul>
+        <li>Flujo definido por un equipo clínico, no solo técnico</li>
+        <li>Tres roles sobre el mismo caso, con permisos distintos</li>
+        <li>Ley 1581 considerada desde el diseño</li>
+        <li><b>Por demostrar:</b> ninguna ventaja es defendible sin validación con usuarios</li>
+      </ul></div>
+      <div class="box c-clientes"><h4>Segmentos de clientes</h4><ul>
+        <li><b>Usuarios:</b> pacientes con tratamientos de largo plazo; médicos y optómetras tratantes; farmaceutas; nutricionistas</li>
+        <li><b>Beneficiarios:</b> pacientes y sus cuidadores</li>
+        <li><b>Pagador (hipótesis):</b> IPS, programas de pacientes crónicos y farmacias</li>
+        <li><b>Early adopters (hipótesis):</b> consultas con tratamientos tópicos crónicos, el origen de MedTopix</li>
+      </ul></div>
+      <div class="box c-metricas"><h4>Métricas clave</h4><ul>
+        <li>Adherencia (%) y dosis omitidas por semana</li>
+        <li>Persistencia: semanas seguidas con registros</li>
+        <li>Casos con equipo tratante vinculado</li>
+        <li>Usabilidad (SUS) por rol</li>
+      </ul></div>
+      <div class="box c-canales"><h4>Canales</h4><ul>
+        <li>La consulta: el profesional crea la ficha y entrega el código del caso</li>
+        <li>La farmacia, al dispensar</li>
+        <li>Web instalable (PWA) y bot de Telegram @medtopix_bot</li>
+      </ul></div>
+      <div class="box c-costes"><h4>Estructura de costos</h4><ul>
+        <li>Infraestructura en la nube (Vercel + base de datos Neon Postgres) · desarrollo asistido por IA</li>
+        <li>Soporte y capacitación · protección de datos y asesoría legal · evaluación y comité de ética</li>
+      </ul></div>
+      <div class="box c-ingresos"><h4>Ingresos / sostenibilidad</h4><ul>
+        <li><b>Hoy:</b> proyecto académico, sin ingresos</li>
+        <li><b>Hipótesis a validar:</b> gratuito para el paciente; suscripción institucional para IPS, programas de crónicos y farmacias</li>
+      </ul></div>
+    </div>
+    <div class="grid2 anim" style="--d:.2s;margin-top:26px">
+      <div class="card">
+        <span class="pill azul">VPC · Perfil A</span>
+        <h3 style="margin:12px 0 10px">Equipo tratante: médico, farmaceuta y nutricionista</h3>
+        <p><b>Dolores:</b> decidir con el recuerdo del paciente; no saber si un mal resultado es falla del tratamiento o falta de adherencia; cada profesional con su propio registro; sin tiempo para llamar a preguntar.</p>
+        <p style="margin-top:10px"><b>Aliviadores:</b> la curva de adherencia llega hecha a la consulta; el registro lo hace el paciente, no el profesional; las notas de seguimiento quedan en el caso y las ve todo el equipo; cada rol ve solo los casos que le compartieron.</p>
+      </div>
+      <div class="card">
+        <span class="pill teal">VPC · Perfil B</span>
+        <h3 style="margin:12px 0 10px">Paciente con tratamiento de largo plazo</h3>
+        <p><b>Dolores:</b> olvidar dosis; no recordar si ya se la aplicó; varios tratamientos con horarios distintos; sentirse juzgado cuando confiesa que no cumplió.</p>
+        <p style="margin-top:10px"><b>Aliviadores:</b> alarma a la hora exacta con opción de posponer; registrar toma un toque; ve su propia curva; «no usó» es un dato para ajustar el tratamiento, no una falta: apoyo, no culpa.</p>
+      </div>
+    </div>
+    <div class="note anim" style="--d:.3s"><b>Encaje problema–solución:</b> el esfuerzo nuevo recae en un solo gesto del paciente —confirmar la toma— y todo lo demás se genera solo. El equipo no digita adherencia y el paciente no instala nada. Que ese gesto se sostenga durante meses es justamente la hipótesis que la validación debe poner a prueba.</div>
+  </div>
+</section>
+
+<section class="tab" id="trl">
+  <div class="wrap">
+    <div class="anim" style="--d:0s">
+      <span class="slide-tag">Punto 13 · Nivel de madurez tecnológica</span>
+      <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-ruta"/></svg></span><h2>TRL 4: prototipo funcional probado en laboratorio, aún sin usuarios reales</h2></div>
+      <p class="lead">El TRL no depende de que la tecnología «funcione», sino de <b>dónde se ha probado, con quién y con qué evidencia</b>.</p>
+    </div>
+    <div class="trl-scale anim" style="--d:.1s">
+      <div class="lvl">TRL 1<small>Idea</small></div><div class="lvl">TRL 2<small>Idea</small></div><div class="lvl">TRL 3<small>Concepto</small></div>
+      <div class="lvl on">TRL 4<small>Actual</small></div><div class="lvl">TRL 5<small>Prototipo</small></div><div class="lvl">TRL 6<small>Validación</small></div>
+      <div class="lvl">TRL 7<small>Validación</small></div><div class="lvl">TRL 8<small>Producción</small></div><div class="lvl">TRL 9<small>Producción</small></div>
+    </div>
+    <div class="grid2 anim" style="--d:.2s">
+      <div class="card"><h3>Por qué no TRL 5</h3><p style="margin-top:10px">Ningún paciente ni profesional ha usado MedTopix en su práctica real. Lo probado hasta hoy son recorridos hechos por el propio equipo y pruebas automatizadas de cuentas, roles y permisos. Eso es laboratorio, no entorno relevante.</p></div>
+      <div class="card"><h3>Por qué no TRL 3</h3><p style="margin-top:10px">Ya no es un concepto: hay una aplicación en línea con cuentas por rol, base de datos, recordatorios, registro de adherencia en tres estados, curva por paciente y notas de seguimiento del caso.</p></div>
+    </div>
+    <h3 class="anim" style="--d:.3s;margin-top:34px">Ruta de madurez</h3>
+    <div class="ruta anim" style="--d:.35s">
+      <div class="r"><b>TRL 5</b><p>Pruebas de usabilidad con al menos cinco personas por rol (pensar en voz alta + escala SUS) y corrección de lo que encuentren.</p></div>
+      <div class="r"><b>TRL 6</b><p>Piloto en una consulta real con pacientes, consentimiento informado y aval de un comité de ética (GAITS 3).</p></div>
+      <div class="r"><b>TRL 7</b><p>Piloto con la cadena completa: consulta, farmacia y nutrición siguiendo los mismos casos (GAITS 4).</p></div>
+      <div class="r"><b>TRL 8–9</b><p>Evaluación de impacto sobre la adherencia, seguridad de la información auditada y operación sostenida (GAITS 5).</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="gaits">
+  <div class="wrap">
+    <div class="anim" style="--d:0s">
+      <span class="slide-tag">Punto 14 · Herramienta GAITS (CIMIT) y validación</span>
+      <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-check"/></svg></span><h2>GAITS: la tecnología va adelante; lo clínico y el mercado siguen en fase Idea</h2></div>
+      <p class="lead">GAITS (Guidance and Impact Tracking System) organiza el ciclo de innovación en salud del CIMIT en fases y entregables por cuatro dominios: clínico, mercado, regulatorio y tecnológico. Una fase se cumple cuando están sus entregables en <b>los cuatro</b>; por eso MedTopix está en fase Idea aunque ya exista un prototipo.</p>
+    </div>
+    <div class="fases anim" style="--d:.1s">
+      <div class="f done"><b>1 · Need</b>Completada</div>
+      <div class="f curso"><b>2 · Idea</b>En curso</div>
+      <div class="f"><b>3 · Proof of Concept</b></div>
+      <div class="f"><b>4 · Proof of Feasibility</b></div>
+      <div class="f"><b>5 · Proof of Value</b></div>
+    </div>
+    <div class="card anim" style="--d:.2s;padding:12px 18px">
+      <h3 style="padding:10px 0 6px">Checklist GAITS aplicada: estado por entregable</h3>
+      <div class="tbl-wrap"><table>
+        <tr><th>Dominio</th><th>Entregable GAITS</th><th>Estado</th><th>Qué nos exige ahora</th></tr>
+        <tr><td><b>Clínico</b></td><td>Unmet need · Envisioned benefit</td><td><span class="chip ok">Completo</span></td><td>Necesidad sustentada en el informe de la OMS (2004); beneficio esperado: adherencia visible para todo el equipo tratante.</td></tr>
+        <tr><td><b>Clínico</b></td><td>Workflow characterization</td><td><span class="chip parcial">Parcial</span></td><td>El proceso actual (punto 3) está descrito desde la experiencia del equipo. Falta observarlo y medirlo en una consulta real.</td></tr>
+        <tr><td><b>Clínico</b></td><td>Feedback de 5+ stakeholders clínicos</td><td><span class="chip pend">Pendiente</span></td><td>Entrevistas a médico, optómetra, farmaceuta, nutricionista y pacientes. <b>Primera tarea.</b></td></tr>
+        <tr><td><b>Mercado</b></td><td>Existing solutions · Competitive landscape</td><td><span class="chip parcial">Parcial</span></td><td>Existen alarmas y aplicaciones personales de recordatorio. Falta un análisis sistemático de las que comparten la adherencia con el equipo tratante.</td></tr>
+        <tr><td><b>Mercado</b></td><td>Path-to-payment</td><td><span class="chip pend">Pendiente</span></td><td>Quién paga es una hipótesis (IPS, programas de crónicos, farmacias). Se contrasta en las mismas entrevistas.</td></tr>
+        <tr><td><b>Regulatorio</b></td><td>Regulatory familiarization · MD determination</td><td><span class="chip parcial">Preliminar</span></td><td>Datos sensibles bajo la Ley 1581 de 2012. Determinación preliminar: recordatorio y registro, sin diagnóstico ni recomendación de dosis; debe confirmarse frente a los criterios del INVIMA para software en salud.</td></tr>
+        <tr><td><b>Tecnológico</b></td><td>State-of-the-art · Idea screening</td><td><span class="chip ok">Completo</span></td><td>Aplicación web instalable, cuentas por rol y base de datos en la nube; sin hardware ni integraciones obligatorias.</td></tr>
+        <tr><td><b>Tecnológico</b></td><td>Prototipo (entregable de Proof of Concept)</td><td><span class="chip ok">Adelantado</span></td><td>El prototipo ya está en línea. Se construyó antes de cerrar los entregables clínicos y de mercado: es el riesgo que esta checklist deja a la vista.</td></tr>
+      </table></div>
+    </div>
+    <h3 class="anim" style="--d:.3s;margin-top:34px">¿Hay que validarla? Sí, y son tres validaciones distintas</h3>
+    <div class="ruta anim" style="--d:.35s;grid-template-columns:repeat(3,1fr)">
+      <div class="r"><b>1 · Necesidad y usabilidad</b><p>Entrevistas y pruebas de uso con personas de cada rol. No requiere datos de pacientes y puede empezar ya. Cierra la fase Idea de GAITS y lleva a TRL 5.</p></div>
+      <div class="r"><b>2 · La medida</b><p>El registro es autorreporte, y el autorreporte tiende a sobrestimar la adherencia (OMS, 2004). Hay que contrastarlo con recuento de dosis o con los registros de dispensación de la farmacia.</p></div>
+      <div class="r"><b>3 · El efecto</b><p>Demostrar que usar MedTopix mejora la adherencia exige un piloto con pacientes reales: consentimiento informado, aval de comité de ética (Resolución 8430 de 1993) y comparación antes–después o con grupo control.</p></div>
+    </div>
+    <div class="note anim" style="--d:.4s"><b>Mientras tanto:</b> MedTopix se presenta como lo que es, un prototipo académico no validado que no reemplaza el criterio del profesional. Los indicadores del punto 11 son propuestos, no resultados.</div>
+    <div class="grid2 anim" style="--d:.45s;margin-top:26px">
+      <div class="card"><h3>Justificación del momento de aplicación</h3><p style="margin-top:10px">Aplicamos GAITS <b>después</b> de tener prototipo, y eso es en sí un hallazgo: el desarrollo asistido por IA hizo tan barato construir que la tecnología se adelantó a la evidencia. La lección del ciclo CIMIT —no partir de una tecnología buscando un problema— nos obliga a volver a las voces clínicas antes de seguir agregando funciones.</p></div>
+      <div class="card"><h3>Dificultades y aprendizajes</h3><ul class="clean" style="margin-top:6px">
+        <li>GAITS está pensada para el ecosistema comercial de EE. UU.: reembolso y propiedad intelectual se reinterpretan como <b>sostenibilidad institucional</b>.</li>
+        <li>Exige evidencia, no relatos: nuestro proceso actual está descrito, <b>no medido</b>. Ese vacío es el primer entregable.</li>
+        <li>Separar lo que la app hace (recordar y registrar) de lo que no hace (diagnosticar o recomendar dosis) mantiene acotada la pregunta regulatoria.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
 <section class="tab" id="ia">
   <div class="wrap">
     <div class="anim" style="--d:0s">
-      <span class="slide-tag">Punto 12 · Desarrollo con IA</span>
+      <span class="slide-tag">Punto 15 · Desarrollo con IA</span>
       <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-chip"/></svg></span><h2>Ocho iteraciones de prompts: la IA como codesarrolladora, el equipo como criterio clínico</h2></div>
       <p class="lead">MedTopix fue desarrollada mediante prompts iterativos al modelo Claude (Anthropic), sin escribir código manualmente. Estas son las iteraciones documentadas en la propia aplicación.</p>
     </div>
@@ -717,7 +896,7 @@
 <section class="tab" id="pasos">
   <div class="wrap">
     <div class="anim" style="--d:0s">
-      <span class="slide-tag">Punto 13 · Próximos pasos</span>
+      <span class="slide-tag">Punto 16 · Próximos pasos</span>
       <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-brujula"/></svg></span><h2>De prototipo en un dispositivo a plataforma de seguimiento</h2></div>
       
     </div>
