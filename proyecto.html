@@ -430,30 +430,42 @@
   .t2-pts button:hover{border-color:var(--oro-vivo);background:var(--oro-soft)}
   .t2-pts button.active{background:linear-gradient(120deg,#0d2818,#1e6b3a);color:#fff;border-color:#0d2818;box-shadow:0 8px 20px -8px rgba(13,40,24,.5)}
   @media(max-width:700px){.t2-caps button{font-size:.78rem;padding:7px 9px 8px}.t2-pts button{font-size:.78rem;padding:7px 13px}}
-  /* banner de borde a borde; tres fotos que van pasando con movimiento lento */
+  /* banner de borde a borde: cinta de fotos, una al lado de la otra, que cruza toda la página */
   .tab{padding-top:0!important}
-  .tbn{position:relative;height:clamp(230px,30vw,400px);overflow:hidden;margin-bottom:46px;background:#0d2818;isolation:isolate}
-  .tbn img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;z-index:-2;opacity:0;filter:saturate(.92)}
-  .tab.active .tbn img{animation:tbnPass 21s linear infinite}
-  .tab.active .tbn img:nth-child(2){animation-delay:7s}
-  .tab.active .tbn img:nth-child(3){animation-delay:14s}
-  @keyframes tbnPass{0%{opacity:0;transform:scale(1.16) translateX(2.5%)}5%{opacity:1}33.3%{opacity:1}39%{opacity:0;transform:scale(1.03) translateX(-1%)}100%{opacity:0;transform:scale(1.03)}}
-  .tbn::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(95deg,rgba(13,40,24,.95) 0%,rgba(13,40,24,.74) 40%,rgba(30,107,58,.2) 100%)}
+  .tbn{position:relative;height:clamp(230px,25vw,330px);overflow:hidden;margin-bottom:46px;background:linear-gradient(100deg,#0d2818,#1a4a2e);isolation:isolate}
+  .tbn-track{position:absolute;top:0;bottom:0;left:0;display:flex;align-items:center;gap:16px;padding:0 8px;width:max-content;z-index:-2;animation:tbnMove 55s linear infinite}
+  .tbn:hover .tbn-track{animation-play-state:paused}
+  @keyframes tbnMove{to{transform:translateX(calc(-50% - 8px))}}
+  .tbn-track img{flex:none;height:66%;aspect-ratio:3/2;object-fit:cover;border-radius:18px;box-shadow:0 18px 40px -18px rgba(0,0,0,.7);outline:1px solid rgba(240,184,98,.45);outline-offset:-1px}
+  .tbn-track img:nth-child(odd){transform:translateY(-4%)}
+  .tbn-track img:nth-child(even){transform:translateY(4%)}
+  /* el velo solo cubre la zona del título; el resto de las fotos queda a la vista */
+  .tbn::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#0d2818 0%,rgba(13,40,24,.96) 26%,rgba(13,40,24,.55) 46%,rgba(13,40,24,0) 64%)}
   .tbn::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--oro-vivo),rgba(240,184,98,.15))}
   .tbn-w{position:relative;max-width:1120px;height:100%;margin:0 auto;padding:0 24px}
-  .tbn-in{position:absolute;left:24px;right:32%;bottom:clamp(24px,3.6vw,48px);color:#fff}
-  .tab.active .tbn-in{animation:aladino 1s cubic-bezier(.16,.85,.24,1) both}
+  .tbn-in{position:absolute;left:24px;width:min(46%,520px);top:50%;transform:translateY(-50%);color:#fff}
+  .tab.active .tbn-in{animation:aladinoT 1s cubic-bezier(.16,.85,.24,1) both}
+  @keyframes aladinoT{0%{opacity:0;transform:translateY(calc(-50% + 60px)) scale(.92);filter:blur(12px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:translateY(-50%);filter:none}}
   .tbn-in span{display:block;font-size:.76rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--oro-vivo);margin-bottom:12px}
-  .tbn-in b{display:block;font-family:Fraunces,serif;font-weight:900;font-size:clamp(1.9rem,4.6vw,3.6rem);line-height:1.04}
-  .tbn i{position:absolute;right:24px;top:50%;transform:translateY(-50%);font:900 clamp(5.5rem,15vw,12rem)/1 Fraunces,serif;font-style:normal;color:transparent;-webkit-text-stroke:2px rgba(240,184,98,.8);letter-spacing:-.04em}
-  .tab.active .tbn i{animation:aladinoN 1.2s cubic-bezier(.16,.85,.24,1) .15s both}
-  @keyframes aladinoN{0%{opacity:0;transform:translateY(-50%) translateX(80px) scale(.85);filter:blur(14px)}100%{opacity:1;transform:translateY(-50%);filter:none}}
-  @media(max-width:700px){.tbn-in{right:24px}.tbn i{opacity:.32}}
-  /* aladino también en las pestañas: entran una tras otra al cambiar de capítulo, y en todo el contenido */
-  .t2-caps button,.t2-pts button.pop{animation:aladino .7s cubic-bezier(.16,.85,.24,1) both;animation-delay:var(--d,0s)}
+  .tbn-in b{display:block;font-family:Fraunces,serif;font-weight:900;font-size:clamp(1.9rem,4.2vw,3.4rem);line-height:1.04}
+  .tbn-in em{display:block;font-style:normal;font:900 clamp(1rem,1.6vw,1.25rem) Fraunces,serif;color:rgba(240,184,98,.9);margin-top:14px;letter-spacing:.04em}
+  .tbn i{display:none}
+  @media(max-width:700px){
+    .tbn{height:auto}
+    .tbn-track{position:relative;height:170px;padding-top:18px}
+    .tbn::before{background:linear-gradient(180deg,rgba(13,40,24,0) 0%,rgba(13,40,24,0) 50%,#0d2818 72%)}
+    .tbn-w{height:auto;padding:6px 24px 26px}
+    .tbn-in{position:static;width:auto;transform:none}
+    .tab.active .tbn-in{animation-name:aladino}
+  }
+  /* aladino en las pestañas: entran una tras otra, con espacio para que la animación no se recorte */
+  .t2-caps,.t2-pts{justify-content:center;flex-wrap:wrap;overflow:visible}
+  @media(max-width:900px){.t2-caps,.t2-pts{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-bottom:22px;margin-bottom:-22px}}
+  @keyframes aladinoTab{0%{opacity:0;transform:translateY(20px) scale(.72);filter:blur(9px)}60%{opacity:1;filter:blur(0)}80%{transform:translateY(-3px) scale(1.04)}100%{opacity:1;transform:none;filter:none}}
+  .t2-caps button,.t2-pts button.pop{animation:aladinoTab .85s cubic-bezier(.16,.85,.24,1) both;animation-delay:var(--d,0s)}
   .tab.active .wrap>*:not(.anim){animation:aladino 1s cubic-bezier(.16,.85,.24,1) .3s both}
   .pager{display:flex;justify-content:space-between;gap:14px;margin-top:48px;padding-top:28px;border-top:1px solid var(--line);flex-wrap:wrap}
-  @media(prefers-reduced-motion:reduce){.tab.active .anim{opacity:1!important;animation:none!important}.tab.active .tbn img{animation:none}.tab.active .tbn img:first-child{opacity:1}.tab.active .tbn-in,.tab.active .tbn i,.t2-caps button,.t2-pts button.pop,.tab.active .wrap>*:not(.anim){animation:none}html{scroll-behavior:auto}}
+  @media(prefers-reduced-motion:reduce){.tab.active .anim{opacity:1!important;animation:none!important}.tbn-track{animation:none}.tab.active .tbn-in,.tab.active .tbn i,.t2-caps button,.t2-pts button.pop,.tab.active .wrap>*:not(.anim){animation:none}html{scroll-behavior:auto}}
   @media print{.tabs2{display:none!important}.tab{display:block!important;page-break-after:always}.tab .anim{opacity:1!important;animation:none!important}}
 </style>
 </head>
@@ -507,7 +519,7 @@
 </nav>
 <main>
 <section class="tab active" id="video" data-cap="c0">
-  <div class="tbn"><img src="img/fotos/consulta-equipo.jpg" alt=""><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Inicio</span><b>Video · 2 min</b></div><i>00</i></div></div>
+  <div class="tbn" data-foto="consulta-equipo"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Inicio</span><b>Video · 2 min</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">MedTopix en dos minutos</span>
@@ -521,7 +533,7 @@
   </div>
 </section>
 <section class="tab" id="resumen" data-cap="c0">
-  <div class="tbn"><img src="img/fotos/registro-celular.jpg" alt=""><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy"><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Inicio</span><b>Resumen</b></div><i>00</i></div></div>
+  <div class="tbn" data-foto="registro-celular"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Inicio</span><b>Resumen</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Resumen ejecutivo</span>
@@ -543,7 +555,7 @@
   </div>
 </section>
  <section class="tab" id="dolor" data-cap="c1">
-  <div class="tbn"><img src="img/fotos/medicamentos.jpg" alt=""><img src="img/fotos/gotas.jpg" alt="" loading="lazy"><img src="img/fotos/farmacia.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>1 · Problema</b></div><i>01</i></div></div>
+  <div class="tbn" data-foto="medicamentos"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>1 · Problema</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 1 · Problema y evidencia</span>
@@ -569,7 +581,7 @@
   </div>
 </section>
 <section class="tab" id="personas" data-cap="c1">
-  <div class="tbn"><img src="img/fotos/consulta-equipo.jpg" alt=""><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>2 · Personas y roles</b></div><i>01</i></div></div>
+  <div class="tbn" data-foto="consulta-equipo"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>2 · Personas y roles</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 2 · Personas y roles</span>
@@ -585,7 +597,7 @@
   </div>
 </section>
 <section class="tab" id="proceso" data-cap="c1">
-  <div class="tbn"><img src="img/fotos/consulta-doctora.jpg" alt=""><img src="img/fotos/paciente-celular.jpg" alt="" loading="lazy"><img src="img/fotos/nutricion.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>3 · Proceso actual</b></div><i>01</i></div></div>
+  <div class="tbn" data-foto="consulta-doctora"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>3 · Proceso actual</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 3 · Proceso actual</span>
@@ -609,7 +621,7 @@
   </div>
 </section>
 <section class="tab" id="causas" data-cap="c1">
-  <div class="tbn"><img src="img/fotos/gotas.jpg" alt=""><img src="img/fotos/farmacia.jpg" alt="" loading="lazy"><img src="img/fotos/medicamentos.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>4 · Causas</b></div><i>01</i></div></div>
+  <div class="tbn" data-foto="gotas"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 1 · El problema</span><b>4 · Causas</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 4 · Causas</span>
@@ -627,7 +639,7 @@
   </div>
 </section>
  <section class="tab" id="desafio" data-cap="c2">
-  <div class="tbn"><img src="img/fotos/paciente-celular.jpg" alt=""><img src="img/fotos/nutricion.jpg" alt="" loading="lazy"><img src="img/fotos/consulta-doctora.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>5 · Desafío</b></div><i>02</i></div></div>
+  <div class="tbn" data-foto="paciente-celular"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>5 · Desafío</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 5 · Desafío</span>
@@ -644,7 +656,7 @@
   </div>
 </section>
 <section class="tab" id="solucion" data-cap="c2">
-  <div class="tbn"><img src="img/fotos/registro-celular.jpg" alt=""><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy"><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>6 · Solución</b></div><i>02</i></div></div>
+  <div class="tbn" data-foto="registro-celular"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>6 · Solución</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 6 · Solución</span>
@@ -667,7 +679,7 @@
   </div>
 </section>
 <section class="tab" id="flujo" data-cap="c2">
-  <div class="tbn"><img src="img/fotos/medico-tableta.jpg" alt=""><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>7 · Flujo</b></div><i>02</i></div></div>
+  <div class="tbn" data-foto="medico-tableta"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>7 · Flujo</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 7 · Flujo</span>
@@ -684,7 +696,7 @@
   </div>
 </section>
 <section class="tab" id="datos" data-cap="c2">
-  <div class="tbn"><img src="img/fotos/medico-tableta.jpg" alt=""><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>8 · Datos</b></div><i>02</i></div></div>
+  <div class="tbn" data-foto="medico-tableta"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>8 · Datos</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 8 · Datos</span>
@@ -703,7 +715,7 @@
   </div>
 </section>
 <section class="tab" id="prototipo" data-cap="c2">
-  <div class="tbn"><img src="img/fotos/paciente-celular.jpg" alt=""><img src="img/fotos/nutricion.jpg" alt="" loading="lazy"><img src="img/fotos/consulta-doctora.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>9 · Prototipo</b></div><i>02</i></div></div>
+  <div class="tbn" data-foto="paciente-celular"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 2 · La propuesta</span><b>9 · Prototipo</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 9 · Prototipo</span>
@@ -729,7 +741,7 @@
   </div>
 </section>
  <section class="tab" id="etica" data-cap="c3">
-  <div class="tbn"><img src="img/fotos/consulta-doctora.jpg" alt=""><img src="img/fotos/paciente-celular.jpg" alt="" loading="lazy"><img src="img/fotos/nutricion.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 3 · Responsabilidad</span><b>10 · Ética y Ley 1581</b></div><i>03</i></div></div>
+  <div class="tbn" data-foto="consulta-doctora"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 3 · Responsabilidad</span><b>10 · Ética y Ley 1581</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 10 · Ética y Ley 1581</span>
@@ -752,7 +764,7 @@
   </div>
 </section>
 <section class="tab" id="indicadores" data-cap="c3">
-  <div class="tbn"><img src="img/fotos/medico-tableta.jpg" alt=""><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 3 · Responsabilidad</span><b>11 · Indicadores</b></div><i>03</i></div></div>
+  <div class="tbn" data-foto="medico-tableta"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 3 · Responsabilidad</span><b>11 · Indicadores</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 11 · Indicadores</span>
@@ -773,7 +785,7 @@
   </div>
 </section>
  <section class="tab" id="canvas" data-cap="c4">
-  <div class="tbn"><img src="img/fotos/farmacia.jpg" alt=""><img src="img/fotos/medicamentos.jpg" alt="" loading="lazy"><img src="img/fotos/gotas.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 4 · Modelo y madurez</span><b>12 · Lean Canvas</b></div><i>04</i></div></div>
+  <div class="tbn" data-foto="farmacia"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 4 · Modelo y madurez</span><b>12 · Lean Canvas</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 12 · Lean Canvas y Value Proposition Canvas</span>
@@ -848,7 +860,7 @@
 </section>
 
 <section class="tab" id="trl" data-cap="c4">
-  <div class="tbn"><img src="img/fotos/medicamentos.jpg" alt=""><img src="img/fotos/gotas.jpg" alt="" loading="lazy"><img src="img/fotos/farmacia.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 4 · Modelo y madurez</span><b>13 · TRL</b></div><i>04</i></div></div>
+  <div class="tbn" data-foto="medicamentos"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 4 · Modelo y madurez</span><b>13 · TRL</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 13 · Nivel de madurez tecnológica</span>
@@ -875,7 +887,7 @@
 </section>
 
 <section class="tab" id="gaits" data-cap="c4">
-  <div class="tbn"><img src="img/fotos/consulta-doctora.jpg" alt=""><img src="img/fotos/paciente-celular.jpg" alt="" loading="lazy"><img src="img/fotos/nutricion.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 4 · Modelo y madurez</span><b>14 · GAITS y validación</b></div><i>04</i></div></div>
+  <div class="tbn" data-foto="consulta-doctora"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 4 · Modelo y madurez</span><b>14 · GAITS y validación</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 14 · Herramienta GAITS (CIMIT) y validación</span>
@@ -922,7 +934,7 @@
 </section>
 
  <section class="tab" id="ia" data-cap="c5">
-  <div class="tbn"><img src="img/fotos/registro-celular.jpg" alt=""><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy"><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>15 · Desarrollo con IA</b></div><i>05</i></div></div>
+  <div class="tbn" data-foto="registro-celular"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>15 · Desarrollo con IA</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 15 · Desarrollo con IA</span>
@@ -937,7 +949,7 @@
   </div>
 </section>
 <section class="tab" id="pasos" data-cap="c5">
-  <div class="tbn"><img src="img/fotos/consulta-equipo.jpg" alt=""><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>16 · Próximos pasos</b></div><i>05</i></div></div>
+  <div class="tbn" data-foto="consulta-equipo"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>16 · Próximos pasos</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 16 · Próximos pasos</span>
@@ -954,7 +966,7 @@
   </div>
 </section>
 <section class="tab" id="referencias" data-cap="c5">
-  <div class="tbn"><img src="img/fotos/nutricion.jpg" alt=""><img src="img/fotos/consulta-doctora.jpg" alt="" loading="lazy"><img src="img/fotos/paciente-celular.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>Referencias</b></div><i>05</i></div></div>
+  <div class="tbn" data-foto="nutricion"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>Referencias</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Referencias</span>
@@ -972,7 +984,7 @@
   </div>
 </section>
 <section class="tab" id="equipo" data-cap="c5">
-  <div class="tbn"><img src="img/fotos/consulta-equipo.jpg" alt=""><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy"><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy"><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>Equipo</b></div><i>05</i></div></div>
+  <div class="tbn" data-foto="consulta-equipo"><div class="tbn-track" aria-hidden="true"></div><div class="tbn-w"><div class="tbn-in"><span>Capítulo 5 · El camino</span><b>Equipo</b></div></div></div>
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Equipo creador · Grupo 5</span>
@@ -1012,6 +1024,15 @@
     wrap.appendChild(pager);
   });
 
+  var FOTOS = ['consulta-equipo','gotas','paciente-celular','medico-tableta','farmacia','nutricion','registro-celular','medicamentos','consulta-doctora'];
+  // La cinta del banner: todas las fotos una al lado de la otra, empezando cerca de la foto del tema, dos veces para que el giro no tenga corte.
+  function fillBanner(sec){
+    var bn = sec.querySelector('.tbn'), track = bn && bn.querySelector('.tbn-track'); if(!track || track.childElementCount) return;
+    var k = Math.max(FOTOS.indexOf(bn.dataset.foto), 0), html = '';
+    for(var r = 0; r < 2; r++) for(var i = 0; i < FOTOS.length; i++) html += '<img src="img/fotos/' + FOTOS[(k + i + 6) % FOTOS.length] + '.jpg" alt="">';
+    track.innerHTML = html;
+  }
+
   function show(id, scroll){
     var o = order.filter(function(x){ return x.id === id; })[0]; if(!o) return;
     tabs.forEach(function(t){ t.classList.remove('active'); });
@@ -1026,6 +1047,7 @@
       if(mine && changed){ b.style.setProperty('--d', (k++ * 0.07) + 's'); void b.offsetWidth; b.classList.add('pop'); }
     });
     var el = document.getElementById(id);
+    fillBanner(el);
     void el.offsetWidth;               // reinicia la animación aladino
     el.classList.add('active');
     // respaldo: si la animación no llega a pintarse, el bloque queda visible de todos modos
