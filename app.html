@@ -8,9 +8,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="MedTopix"/>
-<link rel="manifest" href="manifest.json"/>
+<link rel="manifest" href="/manifest.json"/>
 <!-- Apple touch icons -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a4a2e'/><circle cx='50' cy='50' r='30' fill='%23f0f7f2' stroke='%232d8a4e' stroke-width='2'/><line x1='50' y1='50' x2='50' y2='28' stroke='%231a4a2e' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='50' x2='65' y2='58' stroke='%23c97a20' stroke-width='2.5' stroke-linecap='round'/></svg>"/>
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/img/icon-192.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -357,6 +358,19 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .sync-title{font-family:Fraunces,serif;font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:6px;}
 .sync-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
 .sync-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.ta-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:12px;padding:14px 16px;margin-bottom:18px;}
+.ta-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800;color:#9a3412;font-size:13px;margin-bottom:8px;}
+.ta-head button{background:none;border:1px solid #fdba74;border-radius:7px;padding:4px 10px;font:700 11px 'Plus Jakarta Sans',sans-serif;color:#9a3412;cursor:pointer;}
+.ta-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid #fed7aa;font-size:12px;color:var(--ink);cursor:pointer;}
+.ta-item small{display:block;color:var(--muted);font-size:10px;margin-top:2px;}
+.tb .tb-n{display:inline-block;min-width:16px;padding:1px 5px;margin-left:5px;border-radius:9px;background:#dc2626;color:#fff;font-size:10px;font-weight:800;line-height:14px;text-align:center;}
+.dev-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+.dev-ok{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;color:#15803d;}
+.dev-off{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;color:#b45309;}
+.key-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--border);font-size:12px;flex-wrap:wrap;}
+.key-row code,.key-new code{font-family:monospace;background:var(--g100);border-radius:5px;padding:2px 6px;}
+.key-row button{margin-left:auto;background:none;border:1px solid #fca5a5;color:#b91c1c;border-radius:7px;padding:4px 10px;font:700 11px 'Plus Jakarta Sans',sans-serif;cursor:pointer;}
+.key-new{background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;word-break:break-all;}
 .case-code{font-family:monospace;font-size:1.5rem;font-weight:800;letter-spacing:3px;color:var(--g700);background:var(--g100);border:1.5px dashed var(--g300);border-radius:10px;padding:12px 16px;text-align:center;user-select:all;}
 .link-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .link-row input{flex:1;min-width:160px;text-transform:uppercase;font-family:monospace;font-size:15px;letter-spacing:2px;}
@@ -602,6 +616,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 
 <!-- ALERTAS -->
 <div class="tp active" id="tp-alerts">
+  <div id="team-alerts"></div>
   <div class="sr">
     <div class="sc" style="--cc:var(--g600)"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><div class="sc-v" id="s0">0</div><div class="sc-l">Total</div></div>
     <div class="sc" style="--cc:#d97706"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="sc-v" id="s1">0</div><div class="sc-l">Pendientes</div></div>
@@ -652,6 +667,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="fg2">
       <div class="fg" style="grid-column:span 2"><label class="fl">Medicamento o indicación nutricional</label><input type="text" id="f-n" placeholder="Ej: Tobramicina 0.3% colirio"/></div>
       <div class="fg"><label class="fl">Tipo de tratamiento</label><select id="f-k"><option value="farmacologico">💊 Farmacológico</option><option value="nutricional">🥗 Nutricional</option></select></div>
+      <div class="fg" id="f-es-wrap"><label class="fl">Avisar al equipo tratante</label><select id="f-es"><option value="streak">Si falla dos dosis seguidas</option><option value="always">En cada dosis sin cumplir (tratamiento crítico)</option><option value="never">No avisar</option></select></div>
       <div class="fg" id="f-pt-wrap"><label class="fl">Paciente asignado</label><select id="f-pt" onchange="preloadPt()"><option value="">— Sin asignar —</option></select></div>
       <div class="fg"><label class="fl">Especialidad</label>
         <select id="f-sp"><option>General</option><option>Dermatología</option><option>Oftalmología</option><option>Traumatología</option><option>ORL</option><option>Ginecología</option><option>Neurología</option><option>Cardiología</option><option>Gastroenterología</option></select>
@@ -692,6 +708,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
         <option value="yes">✅ Usó la medicación</option>
         <option value="late">🕐 Otro horario</option>
         <option value="no">❌ No usó</option>
+        <option value="none">⚠️ Sin respuesta</option>
       </select>
     </div>
   </div>
@@ -833,8 +850,26 @@ var RICONS = {
   'Tópica cutánea':'🩹','Colirio / ocular':'👁️','Ótica':'👂',
   'Nasal':'👃','Vaginal':'💊','Transdérmica':'🔵','Oral':'💊','Inhalada':'💨'
 };
-var ADH_LABELS = {yes:'✅ Usó la medicación', late:'🕐 Otro horario', no:'❌ No usó'};
+var ADH_LABELS = {yes:'✅ Usó la medicación', late:'🕐 Otro horario', no:'❌ No usó', none:'⚠️ Sin respuesta'};
 var ADH_COLORS = {yes:'#16a34a', late:'#2563eb', no:'#dc2626'};
+// Horas del día en que toca cada tratamiento. La misma regla vive en api/_lib/doses.js.
+var EVERY = {'Cada 4 horas':4,'Cada 6 horas':6,'Cada 8 horas':8,'Cada 12 horas':12,'Una vez al día':24};
+function isPrn(med){ return !EVERY[med.freq]; }
+function doseTimes(med){
+  var ev=EVERY[med.freq], p=(med.time||'').split(':');
+  if(!ev||p.length!==2) return [med.time];
+  var start=parseInt(p[0])*60+parseInt(p[1]), out=[];
+  for(var k=0;k<24/ev;k++){ var t=(start+k*ev*60)%1440; out.push(pad(Math.floor(t/60))+':'+pad(t%60)); }
+  return out.sort();
+}
+function doseKey(medId,time){ return medId+'_'+time.replace(':',''); }
+function recFor(medId,time,date){ return adherence.find(function(a){return a.medId===medId && a.date===date && a.scheduledTime===time;}); }
+function todayDoses(){
+  var out=[];
+  meds.forEach(function(med){ doseTimes(med).forEach(function(t){ out.push({med:med, time:t, key:doseKey(med.id,t)}); }); });
+  return out.sort(function(a,b){return a.time.localeCompare(b.time);});
+}
+function adherent(a){ return a.status==='yes'||a.status==='late'; }
 var FREQ_COUNT  = {'Cada 4 horas':6,'Cada 6 horas':4,'Cada 8 horas':3,'Cada 12 horas':2,'Una vez al día':1,'Según necesidad':1};
 
 // ── STATE ─────────────────────────────────────────────────────
@@ -846,6 +881,8 @@ var curUser   = null;
 var curFilter = 'all';
 var curTab    = 'alerts';
 var curAlarm  = null;
+var pushOn    = false; // este dispositivo recibe los avisos del servidor
+var unreadAlerts = 0;
 var snoozed   = {};
 
 function api(method, path, body){
@@ -868,12 +905,15 @@ function ageFrom(dob){
   return age;
 }
 function applyState(s){
-  curUser=s.user; patients=s.patients; meds=s.meds; adherence=s.adherence;
+  curUser=s.user; patients=s.patients; meds=s.meds; adherence=s.adherence; unreadAlerts=s.unreadAlerts||0;
   patients.forEach(function(p){p.age=ageFrom(p.dob);});
 }
-function loadState(){ return api('GET','/api/state').then(applyState); }
+function loadState(){
+  var tz=''; try{ tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){}
+  return api('GET','/api/state'+(tz?'?tz='+encodeURIComponent(tz):'')).then(applyState);
+}
 function refreshAll(){
-  applyRoleUI(); renderAlerts(); updateStats(); refreshPtSel(); renderAccount();
+  applyRoleUI(); renderAlerts(); updateStats(); refreshPtSel(); renderAccount(); renderTeamAlerts();
   if(curTab==='patients') renderPatients();
   if(curTab==='meds'){renderSF(); renderCards();}
   if(curTab==='report') renderRep();
@@ -950,6 +990,11 @@ function doLogin(){
 
 
 function doLogout(){
+  // el dispositivo deja de recibir avisos de esta cuenta
+  if(window._swReg) window._swReg.pushManager.getSubscription().then(function(sub){
+    if(sub){ fetch('/api/push?action=unsubscribe',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({endpoint:sub.endpoint}),keepalive:true}); sub.unsubscribe(); }
+  }).catch(function(){});
+  pushOn=false;
   api('POST','/api/auth?action=logout').catch(function(){});
   curUser = null; meds=[]; patients=[]; adherence=[]; snoozed={};
   show('sl');
@@ -966,38 +1011,56 @@ function initApp(){
   // Register service worker for background notifications
   registerSW();
   // Auto-request notifications if not yet decided
-  if(Notification.permission==='default'){
-    setTimeout(askNotifPermission, 1500);
-  }
+  if(canNotify() && Notification.permission==='default') setTimeout(askNotifPermission, 1500);
+  else if(isIOS() && !isStandalone()) setTimeout(showInstallTip, 1500);
+  syncPush();
 }
 
+function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
+function isStandalone(){ return window.navigator.standalone===true || window.matchMedia('(display-mode: standalone)').matches; }
+function canNotify(){ return ('Notification' in window) && ('serviceWorker' in navigator) && ('PushManager' in window); }
+
 function registerSW(){
-  if(!('serviceWorker' in navigator)) return;
-  // Inline service worker as blob
-  var swCode = [
-    'self.addEventListener("push", function(e){',
-    '  var data=e.data?e.data.json():{title:"MedTopix",body:"Hora de tu medicamento"};',
-    '  e.waitUntil(self.registration.showNotification(data.title,{',
-    '    body:data.body,icon:"/icon.png",badge:"/icon.png",',
-    '    vibrate:[200,100,200],tag:"medtopix-alarm",renotify:true',
-    '  }));',
-    '});',
-    'self.addEventListener("notificationclick",function(e){',
-    '  e.notification.close();',
-    '  e.waitUntil(clients.openWindow("/"));',
-    '});'
-  ].join("\n");
-  var blob = new Blob([swCode], {type:"application/javascript"});
-  var swUrl = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl).then(function(reg){
-    console.log("MedTopix SW registered");
-    window._swReg = reg;
-  }).catch(function(e){console.log("SW error:",e);});
+  if(!('serviceWorker' in navigator)) return Promise.resolve(null);
+  if(window._swReg) return Promise.resolve(window._swReg);
+  return navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(function(reg){ window._swReg = reg; return reg; })
+    .catch(function(e){ console.log('SW error:',e); return null; });
+}
+if('serviceWorker' in navigator){
+  // el service worker avisa cuando llegó un push o se registró una dosis desde la notificación
+  navigator.serviceWorker.addEventListener('message', function(){ if(curUser) loadState().then(refreshAll).catch(function(){}); });
+}
+
+function b64ToBytes(s){
+  var pad='='.repeat((4-s.length%4)%4), raw=atob((s+pad).replace(/-/g,'+').replace(/_/g,'/')), out=new Uint8Array(raw.length);
+  for(var i=0;i<raw.length;i++) out[i]=raw.charCodeAt(i);
+  return out;
+}
+// Deja este dispositivo suscrito a los avisos del servidor si ya hay permiso. Devuelve true si quedó activo.
+function syncPush(){
+  if(!curUser || !canNotify() || Notification.permission!=='granted'){ pushOn=false; return Promise.resolve(false); }
+  return registerSW().then(function(reg){
+    if(!reg) return false;
+    return navigator.serviceWorker.ready.then(function(ready){
+      return ready.pushManager.getSubscription().then(function(sub){
+        if(sub) return sub;
+        return api('GET','/api/push?action=key').then(function(r){
+          if(!r.key) throw new Error('El servidor no tiene configurados los avisos.');
+          return ready.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64ToBytes(r.key)});
+        });
+      });
+    }).then(function(sub){ return api('POST','/api/push?action=subscribe',{subscription:sub.toJSON()}); })
+      .then(function(){ pushOn=true; renderAccount(); return true; });
+  }).catch(function(e){ console.log('push:',e); pushOn=false; return false; });
+}
+function testPush(){
+  api('POST','/api/push?action=test',{}).then(function(r){
+    toast(r.sent>0 ? '🔔 Aviso de prueba enviado a '+r.sent+' dispositivo(s).' : 'Este usuario no tiene dispositivos con avisos activos.', r.sent===0);
+  }).catch(apiFail);
 }
 
 function askNotifPermission(){
-  if(Notification.permission!=='default') return;
-  // Show in-app banner instead of direct browser prompt
+  if(!canNotify() || Notification.permission!=='default') return;
   showNotifBanner();
 }
 
@@ -1007,19 +1070,18 @@ function showNotifBanner(){
 }
 
 function requestNotif(){
+  var banner=document.getElementById('notif-banner');
+  if(banner) banner.style.display='none';
+  if(!canNotify()){
+    if(isIOS() && !isStandalone()) showInstallTip();
+    else toast('Este navegador no admite avisos con la app cerrada.', true);
+    return;
+  }
   Notification.requestPermission().then(function(result){
-    var banner=document.getElementById('notif-banner');
-    if(banner) banner.style.display='none';
-    if(result==='granted'){
-      toast('✅ Notificaciones activadas. Recibirás alertas en tu dispositivo y Apple Watch.');
-      // Show install PWA tip on iOS
-      var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-      if(isIOS && !window.navigator.standalone){
-        setTimeout(showInstallTip, 1000);
-      }
-    } else {
-      toast('Las alarmas sonarán solo si la app está abierta.', true);
-    }
+    if(result!=='granted'){ toast('Sin permiso, las alarmas solo suenan con la app abierta.', true); renderAccount(); return; }
+    syncPush().then(function(ok){
+      toast(ok ? '✅ Avisos activados en este dispositivo. Si usa reloj, también vibrará allí.' : 'No se pudo activar el aviso en este dispositivo.', !ok);
+    });
   });
 }
 
@@ -1080,43 +1142,44 @@ function checkAlarms(){
   var now = new Date();
   var nm = now.getHours()*60 + now.getMinutes();
   var today = todayStr();
-  for(var i=0; i<meds.length; i++){
-    var med = meds[i];
-    if(!alarmApplies(med)) continue;
-    if(snoozed[med.id] && snoozed[med.id]>Date.now()) continue;
-    var already = adherence.some(function(a){return a.medId===med.id && a.date===today;});
-    if(already) continue;
-    var parts = med.time.split(':');
-    var h = parseInt(parts[0]); var m = parseInt(parts[1]);
-    var diff = nm - (h*60+m);
-    if(diff>=0 && diff<=2){ triggerAlarm(med); return; }
+  var doses = todayDoses();
+  for(var i=0; i<doses.length; i++){
+    var d = doses[i];
+    if(isPrn(d.med) || !alarmApplies(d.med)) continue;
+    if(snoozed[d.key] && snoozed[d.key]>Date.now()) continue;
+    if(recFor(d.med.id, d.time, today)) continue;
+    var parts = d.time.split(':');
+    var diff = nm - (parseInt(parts[0])*60+parseInt(parts[1]));
+    if(diff>=0 && diff<=2){ triggerAlarm(d); return; }
   }
 }
 
-function triggerAlarm(med){
-  curAlarm = med;
+function triggerAlarm(d){
+  curAlarm = d;
+  var med = d.med;
   var pt = patients.find(function(p){return p.id===med.patientId;});
   document.getElementById('al-med').textContent = med.name;
-  document.getElementById('al-t').textContent = med.time;
+  document.getElementById('al-t').textContent = d.time;
   document.getElementById('al-d').textContent = (med.dose?'Dosis: '+med.dose+' · ':'')+med.route;
   document.getElementById('al-pt').textContent = pt ? '👤 '+pt.name : '👤 Sin paciente asignado';
   document.getElementById('lp').classList.remove('show');
   document.getElementById('alo').classList.remove('hidden');
   beep();
-  sendNotification('💊 Hora de tu medicamento', med.name+(pt?' — 👤 '+pt.name:'')+' | '+med.time+(med.dose?' · '+med.dose:''));
+  // con push activo el servidor ya envía la notificación; así no llega dos veces al celular y al reloj
+  if(!pushOn) sendNotification('💊 Hora de tu medicamento', med.name+(pt?' — 👤 '+pt.name:'')+' | '+d.time+(med.dose?' · '+med.dose:''));
 }
 
 function showLP(){ document.getElementById('lp').classList.toggle('show'); }
 
 function doAlarm(status){
   if(!curAlarm) return;
-  var actual = curAlarm.time;
+  var med = curAlarm.med, actual = curAlarm.time;
   if(status==='late'){
     var v = document.getElementById('lp-t').value;
     if(!v){toast('Ingresa la hora real.',true);return;}
     actual = v;
   }
-  saveAdh(curAlarm.id, curAlarm.patientId, status, curAlarm.time, actual, curAlarm.name);
+  saveAdh(med.id, med.patientId, status, curAlarm.time, actual, med.name);
   document.getElementById('alo').classList.add('hidden');
   curAlarm = null;
   renderAlerts(); updateStats();
@@ -1124,26 +1187,17 @@ function doAlarm(status){
 
 function snooze(){
   if(!curAlarm) return;
-  snoozed[curAlarm.id] = Date.now()+10*60*1000;
+  snoozed[curAlarm.key] = Date.now()+10*60*1000;
   document.getElementById('alo').classList.add('hidden');
   curAlarm = null;
   toast('⏰ Pospuesto 10 minutos.');
 }
 
 function sendNotification(title, body){
-  if(Notification.permission!=='granted') return;
-  // Try via service worker first (works in background + Apple Watch)
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
   if(window._swReg && window._swReg.showNotification){
-    window._swReg.showNotification(title,{
-      body:body,
-      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%231a4a2e"/><text y="70" font-size="60" text-anchor="middle" x="50">💊</text></svg>',
-      vibrate:[300,100,300,100,300],
-      tag:'medtopix-alarm',
-      renotify:true,
-      requireInteraction:true
-    });
+    window._swReg.showNotification(title,{body:body, icon:'/img/icon-192.png', badge:'/img/badge-96.png', vibrate:[300,100,300,100,300], tag:'medtopix-alarm', renotify:true, requireInteraction:true});
   } else {
-    // Fallback to basic notification
     var n=new Notification(title,{body:body});
     setTimeout(function(){n.close();},8000);
   }
@@ -1167,25 +1221,32 @@ function beep(){
 function dateStr(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
 function todayStr(){ return dateStr(new Date()); }
 
+function doseStatus(med, time){
+  var rec = recFor(med.id, time, todayStr());
+  if(rec) return rec.status==='no'?'no': rec.status==='none'?'none': rec.status==='late'?'late':'done';
+  var parts=time.split(':'), t=new Date(); t.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);
+  return new Date()>t ? 'overdue' : 'pending';
+}
+// Resumen del día para la tarjeta del tratamiento: manda lo más urgente.
 function getStatus(med){
-  var today = todayStr();
-  var rec = adherence.find(function(a){return a.medId===med.id && a.date===today;});
-  if(rec) return rec.status==='no'?'no': rec.status==='late'?'late':'done';
-  var now=new Date(), parts=med.time.split(':');
-  var t=new Date(); t.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);
-  return now>t ? 'overdue' : 'pending';
+  var sts = doseTimes(med).map(function(t){return doseStatus(med,t);});
+  var has = function(k){return sts.indexOf(k)>=0;};
+  if(has('overdue')||has('none')) return 'overdue';
+  if(has('no')) return 'no';
+  if(has('pending')) return 'pending';
+  return has('late') ? 'late' : 'done';
 }
 
 function maxReached(med){
   if(!med.maxdose) return false;
   var today = todayStr();
-  var cnt = adherence.filter(function(a){return a.medId===med.id && a.date===today && a.status!=='no';}).length;
-  return cnt >= (FREQ_COUNT[med.freq]||1);
+  var cnt = adherence.filter(function(a){return a.medId===med.id && a.date===today && adherent(a);}).length;
+  return cnt >= Math.max(FREQ_COUNT[med.freq]||1, doseTimes(med).length);
 }
 
 function saveAdh(medId, patientId, status, scheduled, actual, medName){
   var today = todayStr();
-  adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today);});
+  adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today && a.scheduledTime===scheduled);});
   adherence.push({medId:medId, patientId:patientId||null, date:today, status:status, scheduledTime:scheduled, actualTime:actual, ts:Date.now(), medName:medName});
   var lbl = {yes:'✅ Usó la medicación registrado.', late:'🕐 Horario alternativo registrado.', no:'❌ No uso registrado.'};
   api('POST','/api/adherence',{medId:medId, date:today, status:status, scheduledTime:scheduled, actualTime:actual})
@@ -1198,11 +1259,11 @@ function updateNext(){
   var nb = document.getElementById('nb'); if(!nb) return;
   var now = new Date(), today = todayStr();
   var pending = [];
-  meds.forEach(function(r){
-    if(adherence.some(function(a){return a.medId===r.id && a.date===today;})) return;
-    var parts=r.time.split(':'), t=new Date();
+  todayDoses().forEach(function(d){
+    if(recFor(d.med.id, d.time, today)) return;
+    var parts=d.time.split(':'), t=new Date();
     t.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);
-    if(t>now) pending.push({r:r, t:t});
+    if(t>now) pending.push({r:d.med, t:t});
   });
   pending.sort(function(a,b){return a.t-b.t;});
   if(!pending.length){nb.classList.add('hidden');return;}
@@ -1214,16 +1275,17 @@ function updateNext(){
   document.getElementById('nb-m').textContent = (pt?'👤 '+pt.name+' · ':'')+(best.r.dose?best.r.dose+' · ':'')+best.r.route;
   document.getElementById('nb-cd').textContent = hh>0 ? hh+'h '+pad(mm)+'m' : pad(mm)+':'+pad(ss);
 }
+
 function pad(n){return String(n).padStart(2,'0');}
 
 // ── STATS ─────────────────────────────────────────────────────
 function updateStats(){
-  var today = todayStr();
-  var done = adherence.filter(function(a){return a.date===today && (a.status==='yes'||a.status==='late');}).length;
-  document.getElementById('s0').textContent = meds.length;
-  document.getElementById('s1').textContent = meds.filter(function(r){return getStatus(r)==='pending';}).length;
-  document.getElementById('s2').textContent = done;
-  document.getElementById('s3').textContent = meds.filter(function(r){var s=getStatus(r);return s==='overdue'||s==='no';}).length;
+  var sts = todayDoses().map(function(d){return doseStatus(d.med,d.time);});
+  var n = function(keys){return sts.filter(function(s){return keys.indexOf(s)>=0;}).length;};
+  document.getElementById('s0').textContent = sts.length;
+  document.getElementById('s1').textContent = n(['pending']);
+  document.getElementById('s2').textContent = n(['done','late']);
+  document.getElementById('s3').textContent = n(['overdue','no','none']);
 }
 
 // ── ALERTS ────────────────────────────────────────────────────
@@ -1232,49 +1294,51 @@ function renderAlerts(){
   var el = document.getElementById('ap-d');
   if(el) el.textContent = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   var list = document.getElementById('al'); if(!list) return;
-  var sorted = meds.slice().sort(function(a,b){return a.time.localeCompare(b.time);});
+  var sorted = todayDoses();
   if(!sorted.length){
     list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🔕</div><div style="font-weight:600">Sin medicamentos. Ve a <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos.</div></div>';
     return;
   }
   var today = todayStr();
   var html = '';
-  sorted.forEach(function(med){
+  sorted.forEach(function(d){
+    var med = d.med, arg = med.id+",'"+d.time+"'";
     var spec = SPECS[med.specialty]||{color:'#3aaa63',icon:'💊'};
     var pt   = patients.find(function(p){return p.id===med.patientId;});
-    var rec  = adherence.find(function(a){return a.medId===med.id && a.date===today;});
-    var st   = getStatus(med);
+    var rec  = recFor(med.id, d.time, today);
+    var st   = doseStatus(med, d.time);
+    var open = !rec || rec.status==='none'; // una dosis sin respuesta todavía se puede registrar
     var mr   = maxReached(med);
 
     var stPill = '';
     if(st==='pending') stPill='<span class="sp sp-p">⏳ Pendiente</span>';
     else if(st==='done') stPill='<span class="sp sp-d">✅ Usó med.</span>';
     else if(st==='late') stPill='<span class="sp sp-l">🕐 '+(rec?rec.actualTime:'')+'</span>';
-    else stPill='<span class="sp sp-o">'+(st==='no'?'❌ No usó':'⚠️ Vencido')+'</span>';
+    else stPill='<span class="sp sp-o">'+(st==='no'?'❌ No usó':st==='none'?'⚠️ Sin respuesta':'⚠️ Vencido')+'</span>';
 
     var actionHtml = '';
-    if(!rec && !mr){
+    if(open && !mr){
       actionHtml = '<div class="abtns">'
-        +'<button class="abtn abtn-y" onclick="recManY('+med.id+')">✅ Usó</button>'
-        +'<button class="abtn abtn-l" onclick="togLate('+med.id+')">🕐 Otro</button>'
-        +'<button class="abtn abtn-n" onclick="recManN('+med.id+')">❌ No</button>'
+        +'<button class="abtn abtn-y" onclick="recManY('+arg+')">✅ Usó</button>'
+        +'<button class="abtn abtn-l" onclick="togLate(\''+d.key+'\')">🕐 Otro</button>'
+        +'<button class="abtn abtn-n" onclick="recManN('+arg+')">❌ No</button>'
         +'</div>'
-        +'<div class="late-in" id="li-'+med.id+'">'
-        +'<input type="time" id="lt-'+med.id+'"/>'
-        +'<button onclick="recManL('+med.id+')">OK</button>'
+        +'<div class="late-in" id="li-'+d.key+'">'
+        +'<input type="time" id="lt-'+d.key+'"/>'
+        +'<button onclick="recManL('+arg+')">OK</button>'
         +'</div>';
-    } else if(rec){
-      actionHtml = '<button class="abtn abtn-u" onclick="undoRec('+med.id+')">↩ Deshacer</button>';
+    } else if(!open){
+      actionHtml = '<button class="abtn abtn-u" onclick="undoRec('+arg+')">↩ Deshacer</button>';
     } else {
       actionHtml = '<span style="font-size:10px;color:var(--red);font-weight:700">🚫 Dosis máx.</span>';
     }
 
-    var doseWarnHtml = (mr&&!rec) ? '<div class="dose-warn">⚠️ Dosis máxima: '+med.maxdose+'</div>' : '';
+    var doseWarnHtml = (mr&&open) ? '<div class="dose-warn">⚠️ Dosis máxima: '+med.maxdose+'</div>' : '';
     var ptHtml  = pt ? '<div class="apt">👤 '+pt.name+'</div>' : '';
     var maxHtml = med.maxdose ? ' · Máx: '+med.maxdose : '';
 
     html += '<div class="ar">'
-      +'<div class="at"><div class="at-v">'+med.time+'</div><div class="at-f">'+med.freq.split(' ')[0]+'</div></div>'
+      +'<div class="at"><div class="at-v">'+d.time+'</div><div class="at-f">'+med.freq.split(' ')[0]+'</div></div>'
       +'<div class="abar" style="background:'+spec.color+'"></div>'
       +'<div class="ai">'
         +'<div class="an">'+spec.icon+' '+med.name+(med.kind==='nutricional'?'<span class="kind-n">Nutricional</span>':'')+'</div>'
@@ -1290,26 +1354,31 @@ function renderAlerts(){
   list.innerHTML = html;
 }
 
-function recManY(id){ recMan(id,'yes'); }
-function recManN(id){ recMan(id,'no'); }
-function recManL(id){
-  var v = document.getElementById('lt-'+id); if(!v||!v.value){toast('Ingresa la hora real.',true);return;}
-  recMan(id,'late',v.value);
+function recManY(id,time){ recMan(id,time,'yes'); }
+
+function recManN(id,time){ recMan(id,time,'no'); }
+
+function recManL(id,time){
+  var v = document.getElementById('lt-'+doseKey(id,time)); if(!v||!v.value){toast('Ingresa la hora real.',true);return;}
+  recMan(id,time,'late',v.value);
 }
-function togLate(id){
-  var el = document.getElementById('li-'+id); if(el) el.classList.toggle('show');
+
+function togLate(key){
+  var el = document.getElementById('li-'+key); if(el) el.classList.toggle('show');
 }
-function recMan(medId, status, actual){
+
+function recMan(medId, time, status, actual){
   var med = meds.find(function(m){return m.id===medId;}); if(!med) return;
   if(maxReached(med)&&status!=='no'){toast('⚠️ Dosis máxima diaria alcanzada.',true);return;}
-  saveAdh(medId, med.patientId, status, med.time, actual||med.time, med.name);
+  saveAdh(medId, med.patientId, status, time, actual||time, med.name);
   renderAlerts(); updateStats();
 }
-function undoRec(medId){
+
+function undoRec(medId, time){
   var today = todayStr();
-  adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today);});
+  adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today && a.scheduledTime===time);});
   renderAlerts(); updateStats();
-  api('DELETE','/api/adherence?medId='+medId+'&date='+today).then(function(){toast('↩ Registro deshecho.');}).catch(resync);
+  api('DELETE','/api/adherence?medId='+medId+'&date='+today+'&scheduledTime='+encodeURIComponent(time)).then(function(){toast('↩ Registro deshecho.');}).catch(resync);
 }
 
 // ── PATIENTS ──────────────────────────────────────────────────
@@ -1362,7 +1431,7 @@ function renderPatients(){
     var mc = meds.filter(function(r){return r.patientId===p.id;}).length;
     var ini = p.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
     var ptAdh = adherence.filter(function(a){return a.patientId===p.id;});
-    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return a.status!=='no';}).length/ptAdh.length*100) : null;
+    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return adherent(a);}).length/ptAdh.length*100) : null;
     var pctHtml='';
     if(pct!==null){
       var pc=pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626';
@@ -1410,14 +1479,14 @@ function renderAdhPanel(ptId){
   if(!ptAdh.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">Sin registros aún. Confirma las tomas en Alertas.</div>';return;}
   var yC=ptAdh.filter(function(a){return a.status==='yes';}).length;
   var lC=ptAdh.filter(function(a){return a.status==='late';}).length;
-  var nC=ptAdh.filter(function(a){return a.status==='no';}).length;
+  var nC=ptAdh.filter(function(a){return a.status==='no'||a.status==='none';}).length; // sin respuesta cuenta como no cumplida
   var tot=ptAdh.length, pct=Math.round((yC+lC)/tot*100);
   var days=[];
   for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(dateStr(d));}
   var dayData=days.map(function(d){
     var recs=ptAdh.filter(function(a){return a.date===d;});
     if(!recs.length) return {d:d,val:null};
-    var ok=recs.filter(function(a){return a.status!=='no';}).length;
+    var ok=recs.filter(function(a){return adherent(a);}).length;
     return {d:d,val:Math.round(ok/recs.length*100)};
   });
   var pctColor=pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626';
@@ -1558,6 +1627,7 @@ function addMed(){
   api('POST','/api/treatments',{
     name:n, patientId:parseInt(document.getElementById('f-pt').value)||null,
     kind:document.getElementById('f-k').value,
+    escalate:document.getElementById('f-es').value,
     specialty:document.getElementById('f-sp').value,
     dose:document.getElementById('f-d').value.trim(),
     time:t, freq:document.getElementById('f-fr').value,
@@ -1647,7 +1717,7 @@ function renderCards(){
     var spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'🩺'};
     var stKey=getStatus(med), st=ST_MAP[stKey]||ST_MAP.pending;
     var pt=patients.find(function(p){return p.id===med.patientId;});
-    var rec=adherence.find(function(a){return a.medId===med.id && a.date===today;});
+    var rec=adherence.find(function(a){return a.medId===med.id && a.date===today && a.status==='late';});
     var mr=maxReached(med);
     var stColor=stKey==='done'||stKey==='late'?'#16a34a':'#dc2626';
     var ptH=pt?'<div class="cpt">👤 '+pt.name+'</div>':'';
@@ -1699,8 +1769,8 @@ function renderRep(){
   if(stF&&stF.value) data=data.filter(function(a){return a.status===stF.value;});
   var tbody=document.getElementById('rb'); if(!tbody) return;
   if(!data.length){tbody.innerHTML='<tr><td colspan="6" class="re">Sin registros para los filtros seleccionados.</td></tr>';return;}
-  var clsMap={yes:'rs-y',late:'rs-l',no:'rs-n'};
-  var lblMap={yes:'✅ Usó',late:'🕐 Otro horario',no:'❌ No usó'};
+  var clsMap={yes:'rs-y',late:'rs-l',no:'rs-n',none:'rs-n'};
+  var lblMap={yes:'✅ Usó',late:'🕐 Otro horario',no:'❌ No usó',none:'⚠️ Sin respuesta'};
   var html='';
   data.forEach(function(a){
     var pt=patients.find(function(p){return p.id===a.patientId;});
@@ -1780,7 +1850,76 @@ function renderAccount(){
       +'<div class="link-row"><input type="text" id="lk-code" placeholder="Ej: ABCD-2345" maxlength="9" autocapitalize="characters"/>'
       +'<button class="btn-add" onclick="linkCase()">Vincular caso</button></div></div>';
   }
+  html+=deviceHtml();
+  if(curUser.role!=='paciente') html+='<div class="sync-panel"><div class="sync-title">🏥 Integración con historia clínica</div>'
+    +'<div class="sync-sub">Una llave permite que la historia clínica electrónica de su institución cree pacientes y tratamientos y consulte la adherencia por la API FHIR de MedTopix, con acceso a los mismos casos que usted ve. <a href="/integracion" target="_blank" rel="noopener" style="color:var(--g600);font-weight:700">Cómo se integra →</a></div>'
+    +'<div class="link-row"><input type="text" id="key-name" placeholder="Nombre del sistema (ej: HCE de la clínica)" maxlength="80" style="text-transform:none;font-family:inherit;letter-spacing:0;font-size:13px"/>'
+    +'<button class="btn-add" onclick="createKey()">Crear llave</button></div><div id="key-list"></div></div>';
   el.innerHTML=html;
+  if(curUser.role!=='paciente') loadKeys();
+}
+
+function deviceHtml(){
+  var body, st;
+  if(!canNotify()){
+    st='<span class="dev-off">⚠️ Avisos no disponibles aquí</span>';
+    body = isIOS() && !isStandalone()
+      ? 'En iPhone los avisos con la app cerrada solo funcionan si instala MedTopix: toque <b>Compartir</b> y luego <b>Añadir a pantalla de inicio</b>, ábrala desde el ícono y active los avisos.'
+      : 'Este navegador no admite avisos con la app cerrada. Las alarmas sonarán solo con MedTopix abierto.';
+  } else if(Notification.permission==='denied'){
+    st='<span class="dev-off">⚠️ Avisos bloqueados</span>'; body='Los avisos están bloqueados para MedTopix en los ajustes del navegador o del sistema. Permítalos allí y vuelva a abrir la app.';
+  } else if(pushOn){
+    st='<span class="dev-ok">✅ Avisos activos en este dispositivo</span>'; body='El servidor avisa a la hora de cada dosis aunque la app esté cerrada, y repite a los 15 minutos si no hay respuesta. Si usa Apple Watch o un reloj Wear OS enlazado, el aviso también llega a la muñeca.';
+  } else {
+    st='<span class="dev-off">🔕 Avisos sin activar</span>'; body='Active los avisos para que la alarma llegue aunque MedTopix esté cerrado, en el celular y en el reloj enlazado.';
+  }
+  var btns = pushOn ? '<button class="btn-add" onclick="testPush()">Enviar aviso de prueba</button>'
+    : (canNotify() && Notification.permission!=='denied' ? '<button class="btn-add" onclick="requestNotif()">Activar avisos</button>' : '');
+  return '<div class="sync-panel"><div class="sync-title">🔔 Avisos en este dispositivo</div><div class="sync-sub">'+body+'</div><div class="dev-row">'+st+btns+'</div></div>';
+}
+
+function paintKeys(r){
+  var el=document.getElementById('key-list'); if(!el) return;
+  var html='';
+  if(r.created) html+='<div class="key-new"><b>Copie la llave ahora: no se volverá a mostrar.</b><br><code>'+esc(r.created)+'</code></div>';
+  r.keys.forEach(function(k){
+    html+='<div class="key-row"><b>'+k.name+'</b><code>'+esc(k.prefix)+'…</code><span style="color:var(--muted)">'+(k.last_used_at?'último uso '+new Date(k.last_used_at).toLocaleDateString('es-CO'):'sin usar')+'</span><button onclick="revokeKey('+k.id+')">Revocar</button></div>';
+  });
+  el.innerHTML=html;
+}
+function loadKeys(){ api('GET','/api/keys').then(paintKeys).catch(function(){}); }
+function createKey(){
+  var inp=document.getElementById('key-name'); if(!inp||!inp.value.trim()){toast('Póngale un nombre a la llave.',true);return;}
+  api('POST','/api/keys',{name:inp.value.trim()}).then(function(r){inp.value='';paintKeys(r);toast('✅ Llave creada.');}).catch(apiFail);
+}
+function revokeKey(id){
+  if(!confirm('¿Revocar esta llave? El sistema que la use dejará de tener acceso de inmediato.')) return;
+  api('DELETE','/api/keys?id='+id).then(function(r){paintKeys(r);toast('Llave revocada.');}).catch(apiFail);
+}
+
+// Bandeja del equipo tratante: dosis sin cumplir de los casos que sigue.
+function renderTeamAlerts(){
+  var tab=document.querySelector('.tb'); // la primera pestaña es Alertas
+  if(tab){ var old=tab.querySelector('.tb-n'); if(old) old.remove(); if(unreadAlerts>0){ var n=document.createElement('span'); n.className='tb-n'; n.textContent=unreadAlerts; tab.appendChild(n); } }
+  var box=document.getElementById('team-alerts'); if(!box) return;
+  if(!curUser || curUser.role==='paciente' || !unreadAlerts){ box.innerHTML=''; return; }
+  api('GET','/api/alerts').then(function(r){
+    var items=r.alerts.filter(function(a){return !a.read_at;});
+    if(!items.length){ box.innerHTML=''; return; }
+    var html='<div class="ta-box"><div class="ta-head"><span>⚠️ Dosis sin cumplir en sus casos ('+items.length+')</span><button onclick="readAlerts()">Marcar todo como visto</button></div>';
+    items.forEach(function(a){
+      html+='<div class="ta-item" onclick="openAlert('+a.id+','+a.patient_id+')"><span>'+(a.kind==='streak'?'🔁':'⏰')+'</span><div>'+a.message
+        +'<small>'+new Date(a.created_at).toLocaleString('es-CO',{dateStyle:'medium',timeStyle:'short'})+' · toque para ver el caso</small></div></div>';
+    });
+    box.innerHTML=html+'</div>';
+  }).catch(function(){});
+}
+function readAlerts(id){
+  api('POST','/api/alerts',id?{id:id}:{}).then(function(r){ unreadAlerts=r.unread; renderTeamAlerts(); }).catch(apiFail);
+}
+function openAlert(id, patientId){
+  readAlerts(id);
+  if(patients.some(function(p){return p.id===patientId;})) setActivePt(patientId);
 }
 
 function teamHtml(p){
@@ -1830,6 +1969,7 @@ function applyRoleUI(){
   });
   if(ptTab) ptTab.lastChild.textContent = role==='paciente'?' Mi ficha':' Pacientes';
   var fpt=document.getElementById('f-pt-wrap'); if(fpt) fpt.style.display = role==='paciente'?'none':'';
+  var fes=document.getElementById('f-es-wrap'); if(fes) fes.style.display = role==='profesional'?'':'none';
 }
 
 // ── EXPORT CSV ───────────────────────────────────────────────
@@ -1861,7 +2001,7 @@ function exportPatients(){
   var rows = patients.map(function(p){
     var mc = meds.filter(function(r){return r.patientId===p.id;}).length;
     var ptAdh = adherence.filter(function(a){return a.patientId===p.id;});
-    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return a.status!=='no';}).length/ptAdh.length*100) : '';
+    var pct = ptAdh.length ? Math.round(ptAdh.filter(function(a){return adherent(a);}).length/ptAdh.length*100) : '';
     return [
       p.name, p.dob||'', p.age!=null?p.age+'':'', p.idNum||'',
       p.specialty||'', p.diagnosis||'', p.phone||'', p.obs||'',
@@ -1875,7 +2015,7 @@ function exportPatients(){
 function exportAdherence(){
   if(!adherence.length){toast('Sin registros de adherencia para exportar.',true);return;}
   var headers=['Fecha','Hora Programada','Hora Real','Medicamento','Paciente','Especialidad','Estado','Dosis'];
-  var statusLabel={'yes':'Uso la medicacion','late':'Aplico en otro horario','no':'No uso la medicacion'};
+  var statusLabel={'yes':'Uso la medicacion','late':'Aplico en otro horario','no':'No uso la medicacion','none':'Sin respuesta'};
   var sorted = adherence.slice().sort(function(a,b){return b.ts-a.ts;});
   var rows = sorted.map(function(a){
     var pt = patients.find(function(p){return p.id===a.patientId;});
@@ -1898,7 +2038,7 @@ function exportMeds(){
     var pt=patients.find(function(p){return p.id===m.patientId;});
     var todayRecs=adherence.filter(function(a){return a.medId===m.id&&a.date===today;});
     var tomasHoy=todayRecs.length;
-    var estadoHoy=tomasHoy>0?{'yes':'Uso','late':'Otro horario','no':'No uso'}[todayRecs[0].status]||'':getStatus(m);
+    var estadoHoy=tomasHoy>0?{'yes':'Uso','late':'Otro horario','no':'No uso','none':'Sin respuesta'}[todayRecs[0].status]||'':getStatus(m);
     return [
       m.name, pt?pt.name:'Sin asignar', m.specialty||'',
       m.dose||'', m.time||'', m.freq||'',

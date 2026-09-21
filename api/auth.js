@@ -18,10 +18,15 @@ export default handler(async function (req, res) {
 
   if (action === 'login') {
     const email = String(b.email || '').trim().toLowerCase();
+    // 8 fallos en 15 minutos bloquean ese correo por el resto de la ventana
+    const fails = await sql`select count(*)::int as n from login_attempts where email = ${email} and at > now() - interval '15 minutes'`;
+    if (fails[0].n >= 8) return res.status(429).json({ error: 'Demasiados intentos. Espere 15 minutos e intente de nuevo.' });
     const rows = await sql`select * from users where email = ${email}`;
     if (!rows.length || !verifyPassword(String(b.password || ''), rows[0].password_hash)) {
+      await sql`insert into login_attempts (email) values (${email.slice(0, 200)})`;
       return res.status(401).json({ error: 'Correo o contraseña incorrectos.' });
     }
+    await sql`delete from login_attempts where email = ${email} or at < now() - interval '1 day'`;
     setSession(res, rows[0].id);
     return res.json({ user: publicUser(rows[0]) });
   }

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MedTopix · Integración con historia clínica electrónica</title>
+<meta name="description" content="API FHIR R4 de MedTopix: la historia clínica crea al paciente y sus tratamientos, y lee de vuelta la adherencia dosis por dosis."/>
+<meta name="theme-color" content="#1a4a2e"/>
+<meta property="og:title" content="MedTopix · Integración con historia clínica electrónica"/>
+<meta property="og:description" content="La historia clínica envía el tratamiento; MedTopix devuelve la adherencia. API FHIR R4 de un prototipo académico."/>
+<meta property="og:url" content="https://medtopix.vercel.app/integracion"/>
+<meta property="og:image" content="https://medtopix.vercel.app/img/video-poster.jpg"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f7f2;--white:#fff;--border:#c8e6d0;--ink:#0d2818;--soft:#3d6350;--muted:#6b9278;
+  --g900:#0d2818;--g800:#1a4a2e;--g700:#1e6b3a;--g600:#2d8a4e;--g500:#3aaa63;--g300:#8fdeaa;--g200:#c2f0d1;--g100:#e8f8ee;
+  --gold:#c97a20;--goldf:#f0b862;--golds:#fdf1dd;--red:#dc2626;
+  --r:20px;--sh:0 2px 8px rgba(13,40,24,.08);--shm:0 18px 44px -18px rgba(13,40,24,.28);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+a{color:var(--g700)}
+svg{max-width:100%}
+h1,h2{font-family:'Fraunces',Georgia,serif;font-weight:900;letter-spacing:-.01em;line-height:1.08}
+h2{font-size:clamp(1.8rem,4.4vw,2.8rem);margin-bottom:16px}
+h2 em,h1 em{font-style:normal;color:var(--gold)}
+.dark h2 em,.dark h1 em{color:var(--goldf)}
+h3{font-size:1.08rem;margin-bottom:6px}
+.eyebrow{display:flex;align-items:center;gap:12px;font-size:.76rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.eyebrow::before{content:'';width:32px;height:2px;background:var(--goldf)}
+.dark .eyebrow{color:var(--goldf)}
+p.lead{font-size:1.1rem;color:var(--soft);max-width:780px}
+.dark p.lead{color:var(--g200)}
+section{padding:72px 0}
+@media(min-width:800px){section{padding:96px 0}}
+section.alt{background:var(--white)}
+.top{position:sticky;top:0;z-index:50;background:rgba(13,40,24,.94);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:66px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Fraunces',serif;font-weight:900;font-size:1.35rem}
+.logo b span{color:var(--goldf)}
+.logo i{display:flex;width:40px;height:40px;border-radius:11px;background:var(--bg);padding:3px;flex-shrink:0}
+.logo svg{width:100%;height:100%}
+.top nav{display:flex;align-items:center;gap:6px}
+.top nav a{white-space:nowrap;color:#d7eadd;text-decoration:none;font-size:.92rem;font-weight:600;padding:8px 12px;border-radius:10px}
+.top nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+.top nav a.hide-s{display:none}
+@media(min-width:720px){.top nav a.hide-s{display:inline-block}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:700;border-radius:14px;padding:14px 26px;font-size:1rem;transition:transform .18s ease,box-shadow .18s ease;border:2px solid transparent;cursor:pointer}
+.btn:hover{transform:translateY(-2px)}
+.btn.gold{background:var(--goldf);color:var(--g900);box-shadow:0 12px 30px -10px rgba(240,184,98,.6)}
+.btn.ghost{border-color:rgba(255,255,255,.35);color:#fff}
+.btn.line{border-color:var(--g600);color:var(--g800);background:#fff}
+.top nav a.btn{padding:9px 18px;font-size:.9rem;color:var(--g900);border-radius:11px}
+.hero{background:radial-gradient(900px 600px at 85% 10%,#1e6b3a 0%,#1a4a2e 40%,#0d2818 100%);color:#fff;padding:64px 0 76px}
+@media(min-width:800px){.hero{padding:92px 0 104px}}
+.hero .chip{display:inline-block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--g200);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 16px;margin-bottom:22px}
+.hero h1{font-size:clamp(2.1rem,5vw,3.3rem);margin-bottom:20px;max-width:16em}
+.hero p.sub{font-size:1.12rem;color:var(--g200);max-width:680px;margin-bottom:30px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.hero .fine{margin-top:22px;font-size:.84rem;color:var(--g300)}
+.grid3{display:grid;gap:18px;margin-top:38px}
+@media(min-width:860px){.grid3{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:26px;box-shadow:var(--sh)}
+section.alt .card{background:var(--bg)}
+.card p{color:var(--soft);font-size:.96rem}
+.card .n{font-family:'Fraunces',serif;font-weight:900;font-size:1.9rem;color:var(--gold);line-height:1;margin-bottom:10px}
+.flow{margin-top:40px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shm);overflow-x:auto}
+.flow svg{display:block;min-width:720px;width:100%;height:auto}
+.swipe{display:none;margin-top:26px;font-size:.8rem;font-weight:700;color:var(--muted)}
+@media(max-width:780px){.swipe{display:block}.swipe+.flow{margin-top:10px}}
+.flow text{font-family:'Plus Jakarta Sans',sans-serif}
+.tblw{overflow-x:auto;margin-top:34px;border-radius:var(--r);border:1px solid var(--border);background:var(--white);box-shadow:var(--sh)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.93rem}
+th{text-align:left;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:14px 18px;border-bottom:1px solid var(--border);background:var(--g100)}
+td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--soft)}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--g100);color:var(--g800);padding:2px 7px;border-radius:6px;white-space:nowrap}
+.tag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:2px 9px;margin:1px 3px 1px 0}
+.tag.r{background:var(--g100);color:var(--g700)}.tag.w{background:var(--golds);color:#9a5b0e}
+.ex{display:grid;gap:18px;margin-top:36px}
+@media(min-width:960px){.ex{grid-template-columns:1fr 1fr}}
+.ex>*{min-width:0}
+.code{background:var(--g900);border-radius:var(--r);overflow:hidden;box-shadow:var(--shm)}
+.code .bar{display:flex;align-items:center;gap:10px;padding:12px 18px;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--g300);border-bottom:1px solid rgba(255,255,255,.1)}
+.code .bar i{width:9px;height:9px;border-radius:50%;background:var(--goldf);font-style:normal}
+.code pre{margin:0;padding:18px;overflow-x:auto;font:.82rem/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d7eadd}
+.code .k{color:var(--goldf)}.code .s{color:#9fe3b6}.code .c{color:#7fa08c}
+.not{margin-top:36px;background:var(--golds);border:1.5px solid #eccf9a;border-radius:var(--r);padding:30px}
+.not h3{font-family:'Fraunces',serif;font-size:1.5rem;margin-bottom:14px}
+.not ul{list-style:none;display:grid;gap:10px}
+@media(min-width:860px){.not ul{grid-template-columns:1fr 1fr;gap:12px 34px}}
+.not li{position:relative;padding-left:26px;font-size:.96rem;color:#5b3c0c}
+.not li::before{content:'✕';position:absolute;left:0;top:0;font-weight:800;color:var(--gold)}
+.not li b{color:#3d2807}
+.dark{background:var(--g900);color:#fff}
+footer{background:var(--g900);color:#9fc4ac;padding:40px 0;font-size:.88rem;border-top:1px solid rgba(255,255,255,.08)}
+footer a{color:var(--g200);text-decoration:none}footer a:hover{color:var(--goldf)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="mt-logo" viewBox="0 0 100 100"><circle cx="50" cy="58" r="36" fill="#1a4a2e"/><circle cx="50" cy="58" r="30" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="2"/><line x1="50" y1="30" x2="50" y2="36" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/><line x1="50" y1="80" x2="50" y2="86" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="58" x2="28" y2="58" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/><line x1="72" y1="58" x2="78" y2="58" stroke="#1e6b3a" stroke-width="2.5" stroke-linecap="round"/><line x1="50" y1="58" x2="50" y2="38" stroke="#1a4a2e" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="58" x2="64" y2="65" stroke="#c97a20" stroke-width="2.5" stroke-linecap="round"/><circle cx="50" cy="58" r="3.5" fill="#1a4a2e"/><ellipse cx="36" cy="26" rx="8" ry="5" fill="#f0b862"/><ellipse cx="64" cy="26" rx="8" ry="5" fill="#f0b862"/><line x1="36" y1="30" x2="36" y2="36" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/><line x1="64" y1="30" x2="64" y2="36" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/></symbol></defs></svg>
+
+<div class="top"><div class="wrap">
+  <a class="logo" href="/" aria-label="MedTopix, inicio"><i><svg viewBox="0 0 100 100"><use href="#mt-logo"/></svg></i><b>Med<span>Topix</span></b></a>
+  <nav aria-label="Principal">
+    <a class="hide-s" href="#flujo">Cómo se conecta</a>
+    <a class="hide-s" href="#recursos">Recursos</a>
+    <a class="hide-s" href="#limites">Qué no es</a>
+    <a href="/proyecto">El proyecto</a>
+    <a class="btn gold" href="/app#login">Ingresar</a>
+  </nav>
+</div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="chip">Integración · API FHIR R4</span>
+    <h1>La historia clínica envía el tratamiento. MedTopix devuelve <em>la adherencia</em>.</h1>
+    <p class="sub">El médico formula en su historia clínica electrónica, como siempre. La historia le pasa a MedTopix el paciente y el tratamiento, el paciente recibe sus recordatorios, y la adherencia vuelve a la historia, dosis por dosis, sin que nadie digite dos veces.</p>
+    <div class="cta">
+      <a class="btn gold" href="https://github.com/Leormar/Medtopix/blob/main/docs/api-hce.md">Guía técnica de la API</a>
+      <a class="btn ghost" href="/api/fhir/metadata">Ver las capacidades (JSON)</a>
+    </div>
+    <p class="fine">Prototipo académico en desarrollo · Máster Salud Digital e IA · OBS Business School · no validado ni certificado</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Qué resuelve</div>
+    <h2>Que la adherencia llegue <em>a donde se decide</em></h2>
+    <p class="lead">Una aplicación aparte es una pantalla más que el profesional tiene que abrir. Si la adherencia aparece dentro de la historia clínica, junto a la fórmula, está ahí el día de la consulta.</p>
+    <div class="grid3">
+      <div class="card"><div class="n">1</div><h3>Sin doble digitación</h3><p>El paciente y el tratamiento se crean desde la historia clínica. El profesional no vuelve a escribirlos en MedTopix.</p></div>
+      <div class="card"><div class="n">2</div><h3>El dato vuelve a la historia</h3><p>Cada dosis —usada, en otro horario, no usada o sin respuesta— y el porcentaje de los últimos 30 días se leen por la API.</p></div>
+      <div class="card"><div class="n">3</div><h3>En un lenguaje estándar</h3><p>Recursos FHIR R4, el estándar hacia el que apunta la interoperabilidad de la historia clínica en Colombia (Ley 2015 de 2020, Resolución 866 de 2021).</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="flujo">
+  <div class="wrap">
+    <div class="eyebrow">Cómo se conecta</div>
+    <h2>Tres actores, <em>un mismo caso</em></h2>
+    <p class="lead">La historia clínica habla con MedTopix por la API. El paciente solo ve su aplicación. El puente entre los dos es el código del caso.</p>
+    <p class="swipe">Deslice el diagrama hacia los lados →</p>
+    <div class="flow" role="img" aria-label="Flujo: la historia clínica crea al paciente y envía el tratamiento a MedTopix; MedTopix devuelve el código del caso, que la institución entrega al paciente; el paciente recibe recordatorios y registra sus dosis; la historia clínica consulta la adherencia.">
+      <svg viewBox="0 0 960 430" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2d8a4e"/></marker>
+        <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c97a20"/></marker></defs>
+        <g font-weight="800" font-size="17" text-anchor="middle">
+          <rect x="20" y="20" width="250" height="64" rx="16" fill="#0d2818"/><text x="145" y="48" fill="#fff">Historia clínica</text><text x="145" y="68" fill="#8fdeaa" font-size="12" font-weight="600">de la institución</text>
+          <rect x="355" y="20" width="250" height="64" rx="16" fill="#1e6b3a"/><text x="480" y="48" fill="#fff">MedTopix</text><text x="480" y="68" fill="#c2f0d1" font-size="12" font-weight="600">API FHIR R4 · /api/fhir</text>
+          <rect x="690" y="20" width="250" height="64" rx="16" fill="#f0b862"/><text x="815" y="48" fill="#0d2818">Paciente</text><text x="815" y="68" fill="#5b3c0c" font-size="12" font-weight="600">celular y reloj</text>
+        </g>
+        <g stroke="#c8e6d0" stroke-width="2" stroke-dasharray="5 6"><line x1="145" y1="84" x2="145" y2="415"/><line x1="480" y1="84" x2="480" y2="415"/><line x1="815" y1="84" x2="815" y2="415"/></g>
+        <g font-size="13.5" font-weight="700" fill="#0d2818">
+          <line x1="150" y1="125" x2="474" y2="125" stroke="#2d8a4e" stroke-width="2.5" marker-end="url(#ah)"/><text x="162" y="116">① POST Patient</text>
+          <line x1="474" y1="170" x2="150" y2="170" stroke="#c97a20" stroke-width="2.5" marker-end="url(#ag)"/><text x="162" y="161" fill="#9a5b0e">② ficha creada + código del caso</text>
+          <path d="M150 214H470M490 214H809" stroke="#c97a20" stroke-width="2.5" stroke-dasharray="7 6" fill="none" marker-end="url(#ag)"/><text x="162" y="205" fill="#9a5b0e">③ la institución entrega el código</text><text x="500" y="205" fill="#9a5b0e">y el paciente crea su cuenta</text>
+          <line x1="150" y1="260" x2="474" y2="260" stroke="#2d8a4e" stroke-width="2.5" marker-end="url(#ah)"/><text x="162" y="251">④ POST MedicationRequest · NutritionOrder</text>
+          <line x1="486" y1="305" x2="809" y2="305" stroke="#2d8a4e" stroke-width="2.5" marker-end="url(#ah)"/><text x="498" y="296">⑤ recordatorio a la hora de la dosis</text>
+          <line x1="809" y1="350" x2="486" y2="350" stroke="#c97a20" stroke-width="2.5" marker-end="url(#ag)"/><text x="498" y="341" fill="#9a5b0e">⑥ usó · otro horario · no usó</text>
+          <path d="M150 396H474" stroke="#2d8a4e" stroke-width="2.5" fill="none" marker-start="url(#ah)" marker-end="url(#ah)"/><text x="162" y="387">⑦ GET MedicationAdministration · Observation</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="recursos">
+  <div class="wrap">
+    <div class="eyebrow">Recursos soportados</div>
+    <h2>Cinco recursos FHIR, <em>lo justo</em> para el caso</h2>
+    <p class="lead">Cada llave de API pertenece a un profesional y ve exactamente los casos que él ve en la aplicación. Se crea y se revoca en <b>Mi cuenta → Integración con historia clínica</b>.</p>
+    <div class="tblw"><table>
+      <tr><th>Recurso</th><th>Qué es en MedTopix</th><th>Operaciones</th></tr>
+      <tr><td><b><code>Patient</code></b></td><td>La ficha del paciente. Al crearla devuelve el código del caso. Reenviar el mismo documento no duplica la ficha.</td><td><span class="tag r">leer</span><span class="tag r">buscar</span><span class="tag w">crear</span></td></tr>
+      <tr><td><b><code>MedicationRequest</code></b></td><td>Tratamiento farmacológico: medicamento, dosis, vía, hora y frecuencia del recordatorio.</td><td><span class="tag r">leer</span><span class="tag r">buscar</span><span class="tag w">crear</span></td></tr>
+      <tr><td><b><code>NutritionOrder</code></b></td><td>Tratamiento nutricional, con la misma lógica de recordatorio y registro.</td><td><span class="tag r">leer</span><span class="tag r">buscar</span><span class="tag w">crear</span></td></tr>
+      <tr><td><b><code>MedicationAdministration</code></b></td><td>Cada dosis: <code>completed</code> si la usó (a tiempo o en otro horario), <code>not-done</code> si reportó que no la usó o si no respondió.</td><td><span class="tag r">leer</span><span class="tag r">buscar</span></td></tr>
+      <tr><td><b><code>Observation</code></b></td><td>Porcentaje de adherencia de los últimos 30 días por tratamiento, con los conteos por estado. «Sin respuesta» cuenta como no adherente.</td><td><span class="tag r">leer</span><span class="tag r">buscar</span></td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="eyebrow">Un ejemplo</div>
+    <h2>Se envía una fórmula, <em>se lee una dosis</em></h2>
+    <p class="lead">Peticiones HTTPS con una llave en la cabecera. Los errores llegan siempre como <code>OperationOutcome</code>, con un mensaje que dice qué falta.</p>
+    <div class="ex">
+      <div class="code"><div class="bar"><i></i>Petición · la historia envía el tratamiento</div><pre><span class="c"># POST https://medtopix.vercel.app/api/fhir/MedicationRequest</span>
+<span class="c"># Authorization: Bearer mtx_…   Content-Type: application/json</span>
+{
+  <span class="k">"resourceType"</span>: <span class="s">"MedicationRequest"</span>,
+  <span class="k">"status"</span>: <span class="s">"active"</span>, <span class="k">"intent"</span>: <span class="s">"order"</span>,
+  <span class="k">"subject"</span>: { <span class="k">"reference"</span>: <span class="s">"Patient/12"</span> },
+  <span class="k">"medicationCodeableConcept"</span>: {
+    <span class="k">"text"</span>: <span class="s">"Timolol 0,5 % solución oftálmica"</span> },
+  <span class="k">"dosageInstruction"</span>: [{
+    <span class="k">"text"</span>: <span class="s">"1 gota en cada ojo"</span>,
+    <span class="k">"timing"</span>: { <span class="k">"repeat"</span>: {
+      <span class="k">"frequency"</span>: 1, <span class="k">"period"</span>: 12, <span class="k">"periodUnit"</span>: <span class="s">"h"</span>,
+      <span class="k">"timeOfDay"</span>: [<span class="s">"08:00:00"</span>] } },
+    <span class="k">"route"</span>: { <span class="k">"text"</span>: <span class="s">"Colirio / ocular"</span> }
+  }]
+}</pre></div>
+      <div class="code"><div class="bar"><i></i>Respuesta · una dosis registrada por el paciente</div><pre><span class="c"># GET …/api/fhir/MedicationAdministration?patient=12</span>
+<span class="c">#     &amp;effective-time=ge2026-09-01     (ejemplo ilustrativo)</span>
+{
+  <span class="k">"resourceType"</span>: <span class="s">"MedicationAdministration"</span>,
+  <span class="k">"id"</span>: <span class="s">"348"</span>,
+  <span class="k">"status"</span>: <span class="s">"completed"</span>,
+  <span class="k">"medicationCodeableConcept"</span>: {
+    <span class="k">"text"</span>: <span class="s">"Timolol 0,5 % solución oftálmica"</span> },
+  <span class="k">"subject"</span>: { <span class="k">"reference"</span>: <span class="s">"Patient/12"</span> },
+  <span class="k">"effectiveDateTime"</span>: <span class="s">"2026-09-18T22:15:00-05:00"</span>,
+  <span class="k">"request"</span>: { <span class="k">"reference"</span>: <span class="s">"MedicationRequest/41"</span> },
+  <span class="k">"note"</span>: [{ <span class="k">"text"</span>:
+    <span class="s">"Aplicada en otro horario (programada para las 20:00)."</span> }]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<section id="limites">
+  <div class="wrap">
+    <div class="eyebrow">Con franqueza</div>
+    <h2>Qué <em>no es</em> todavía</h2>
+    <p class="lead">Es la integración de un prototipo académico: sirve para demostrar el flujo de punta a punta y para conversar con el área de TI de una institución. No es un producto listo para conectarse a una historia clínica en producción.</p>
+    <div class="not">
+      <h3>Antes de planear una integración, téngalo presente</h3>
+      <ul>
+        <li><b>No es un servidor FHIR completo ni certificado.</b> Cinco recursos, lectura y creación; sin actualización, borrado ni paginación.</li>
+        <li><b>Sin SMART on FHIR ni OAuth 2.0.</b> Solo una llave de API revocable por profesional.</li>
+        <li><b>Sin suscripciones ni webhooks.</b> La historia clínica debe consultar; MedTopix no avisa.</li>
+        <li><b>Sin terminologías estándar.</b> Medicamentos, vías y diagnósticos son texto libre: sin CUM, ATC, SNOMED CT ni LOINC.</li>
+        <li><b>No declara cumplimiento</b> de la Ley 2015 de 2020 ni de la Resolución 866 de 2021: es la dirección del diseño.</li>
+        <li><b>El dato es autorreporte del paciente,</b> que tiende a sobrestimar la adherencia (OMS, 2004), y no ha sido validado.</li>
+        <li><b>Datos sensibles (Ley 1581 de 2012)</b> en una base de datos en la nube, fuera de Colombia. Exige autorización del titular y revisión legal.</li>
+        <li><b>Sin acuerdos de servicio ni auditoría de seguridad externa.</b> No se ha probado con pacientes reales.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Siguiente paso</div>
+    <h2>Pruébelo con <em>un caso ficticio</em></h2>
+    <p class="lead">Cree una cuenta de profesional, genere una llave en Mi cuenta y siga la guía: en diez minutos se ve el recorrido completo con un paciente de prueba.</p>
+    <div class="cta" style="margin-top:28px">
+      <a class="btn gold" href="/app#registro">Crear cuenta de profesional</a>
+      <a class="btn ghost" href="https://github.com/Leormar/Medtopix/blob/main/docs/api-hce.md">Abrir la guía técnica</a>
+      <a class="btn ghost" href="/proyecto">Conocer el proyecto</a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <span>© MedTopix · Grupo 5 · Máster Salud Digital e IA · OBS Business School · uso académico</span>
+  <span><a href="/">Inicio</a> · <a href="/proyecto">El proyecto</a> · <a href="/app">La aplicación</a> · <a href="https://github.com/Leormar/Medtopix/blob/main/docs/api-hce.md">Guía de la API</a></span>
+</div></footer>
+</body>
+</html>

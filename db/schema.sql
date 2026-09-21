@@ -85,3 +85,80 @@ create table if not exists case_notes (
   created_at  timestamptz not null default now()
 );
 create index if not exists case_notes_patient_idx on case_notes(patient_id, created_at desc);
+
+-- ───────────── Evolución para el piloto (idempotente) ─────────────
+
+-- Zona horaria del usuario: las horas de las dosis son hora local del paciente.
+alter table users add column if not exists tz text;
+
+-- Cuándo se avisa al equipo tratante si una dosis no se cumple:
+-- always = cada dosis perdida · streak = dos seguidas · never = nunca.
+alter table treatments add column if not exists escalate text not null default 'streak';
+alter table treatments drop constraint if exists treatments_escalate_check;
+alter table treatments add constraint treatments_escalate_check check (escalate in ('always','streak','never'));
+
+-- Varias dosis por día: un registro por tratamiento, fecha y hora programada.
+-- none = sin respuesta (lo marca el servidor cuando nadie confirma la dosis).
+update adherence set scheduled_time = '' where scheduled_time is null;
+alter table adherence alter column scheduled_time set default '';
+alter table adherence alter column scheduled_time set not null;
+alter table adherence drop constraint if exists adherence_treatment_id_date_key;
+alter table adherence drop constraint if exists adherence_dose_key;
+alter table adherence add constraint adherence_dose_key unique (treatment_id, date, scheduled_time);
+alter table adherence drop constraint if exists adherence_status_check;
+alter table adherence add constraint adherence_status_check check (status in ('yes','late','no','none'));
+
+-- Dispositivos suscritos a notificaciones push (celular; el reloj replica las del celular).
+create table if not exists push_subscriptions (
+  id          serial primary key,
+  user_id     integer not null references users(id) on delete cascade,
+  endpoint    text not null unique,
+  p256dh      text not null,
+  auth        text not null,
+  ua          text,
+  created_at  timestamptz not null default now(),
+  last_ok_at  timestamptz
+);
+create index if not exists push_subscriptions_user_idx on push_subscriptions(user_id);
+
+-- Qué aviso ya se envió para cada dosis, para no repetirlo: remind1, remind2, missed.
+create table if not exists dose_events (
+  treatment_id   integer not null references treatments(id) on delete cascade,
+  date           date not null,
+  scheduled_time text not null,
+  kind           text not null,
+  sent_at        timestamptz not null default now(),
+  primary key (treatment_id, date, scheduled_time, kind)
+);
+
+-- Bandeja de alertas del equipo tratante.
+create table if not exists alerts (
+  id           serial primary key,
+  user_id      integer not null references users(id) on delete cascade,
+  patient_id   integer not null references patients(id) on delete cascade,
+  treatment_id integer references treatments(id) on delete set null,
+  kind         text not null,
+  message      text not null,
+  created_at   timestamptz not null default now(),
+  read_at      timestamptz
+);
+create index if not exists alerts_user_idx on alerts(user_id, read_at, created_at desc);
+
+-- Llaves de API para integrar una historia clínica electrónica. Solo se guarda el hash.
+create table if not exists api_keys (
+  id           serial primary key,
+  user_id      integer not null references users(id) on delete cascade,
+  name         text not null,
+  prefix       text not null,
+  key_hash     text not null unique,
+  created_at   timestamptz not null default now(),
+  last_used_at timestamptz,
+  revoked_at   timestamptz
+);
+
+-- Intentos fallidos de inicio de sesión, para frenar el tanteo de contraseñas.
+create table if not exists login_attempts (
+  email text not null,
+  at    timestamptz not null default now()
+);
+create index if not exists login_attempts_idx on login_attempts(email, at);

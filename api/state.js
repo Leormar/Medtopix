@@ -7,6 +7,10 @@ export default handler(async function (req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido.' });
   const u = await requireUser(req, res); if (!u) return;
 
+  // la zona horaria del dispositivo fija a qué hora local suenan los avisos del servidor
+  const tz = String(req.query.tz || '');
+  if (/^[A-Za-z_]+\/[A-Za-z_\/+-]+$/.test(tz) && tz.length < 64 && tz !== u.tz) await sql`update users set tz = ${tz} where id = ${u.id}`;
+
   const patients = await sql`
     select p.id, p.user_id, p.name, to_char(p.dob, 'YYYY-MM-DD') as dob, p.id_num, p.diagnosis,
            p.specialty, p.phone, p.obs, p.link_code, p.created_by, p.created_at
@@ -28,6 +32,8 @@ export default handler(async function (req, res) {
     from adherence where treatment_id = any(${tids})
     order by ts`;
 
+  const unread = await sql`select count(*)::int as n from alerts where user_id = ${u.id} and read_at is null`;
+
   const team = await sql`
     select c.patient_id, us.name, us.role, us.profession
     from care_team c join users us on us.id = c.user_id
@@ -46,6 +52,7 @@ export default handler(async function (req, res) {
       return out;
     }),
     meds: treatments.map(function (t) { return treatmentOut(t, u.id); }),
-    adherence: adherence.map(adherenceOut)
+    adherence: adherence.map(adherenceOut),
+    unreadAlerts: unread[0].n
   });
 });

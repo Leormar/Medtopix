@@ -1,4 +1,13 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/api/fhir/:path*", "destination": "/api/fhir?path=:path*" }
+  ],
+  "crons": [
+    { "path": "/api/cron", "schedule": "* * * * *" }
+  ],
+  "headers": [
+    { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+  ]
 }

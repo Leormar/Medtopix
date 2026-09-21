@@ -3,6 +3,7 @@ import { handler, requireUser } from './_lib/auth.js';
 import { treatmentOut, clean } from './_lib/shape.js';
 
 const KINDS = ['farmacologico', 'nutricional'];
+const ESCALATE = ['always', 'streak', 'never'];
 
 // El paciente solo modifica los recordatorios que él mismo creó; el farmaceuta solo consulta.
 async function canModify(u, t) {
@@ -30,9 +31,10 @@ export default handler(async function (req, res) {
       return res.status(404).json({ error: 'Paciente no encontrado.' });
     }
     const rows = await sql`
-      insert into treatments (owner_id, patient_id, kind, name, specialty, dose, time, freq, maxdose, route, notes)
+      insert into treatments (owner_id, patient_id, kind, name, specialty, dose, time, freq, maxdose, route, notes, escalate)
       values (${u.id}, ${patientId}, ${KINDS.includes(b.kind) ? b.kind : 'farmacologico'}, ${name}, ${clean(b.specialty, 80)},
-              ${clean(b.dose, 160)}, ${b.time}, ${clean(b.freq, 60)}, ${clean(b.maxdose, 60)}, ${clean(b.route, 60)}, ${clean(b.notes, 1000)})
+              ${clean(b.dose, 160)}, ${b.time}, ${clean(b.freq, 60)}, ${clean(b.maxdose, 60)}, ${clean(b.route, 60)}, ${clean(b.notes, 1000)},
+              ${ESCALATE.includes(b.escalate) ? b.escalate : 'streak'})
       returning *`;
     return res.status(201).json({ med: treatmentOut(rows[0], u.id) });
   }
@@ -50,7 +52,8 @@ export default handler(async function (req, res) {
     const rows = await sql`
       update treatments set name = ${name}, time = ${time}, dose = ${pick('dose', 'dose')}, freq = ${pick('freq', 'freq')},
         maxdose = ${pick('maxdose', 'maxdose')}, route = ${pick('route', 'route')}, notes = ${pick('notes', 'notes')},
-        specialty = ${pick('specialty', 'specialty')}, kind = ${KINDS.includes(b.kind) ? b.kind : t.kind}
+        specialty = ${pick('specialty', 'specialty')}, kind = ${KINDS.includes(b.kind) ? b.kind : t.kind},
+        escalate = ${ESCALATE.includes(b.escalate) ? b.escalate : t.escalate}
       where id = ${id} returning *`;
     return res.json({ med: treatmentOut(rows[0], u.id) });
   }

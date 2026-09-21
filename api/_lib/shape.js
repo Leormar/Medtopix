@@ -18,7 +18,7 @@ export function treatmentOut(t, userId) {
   return {
     id: t.id, name: t.name, patientId: t.patient_id, kind: t.kind, specialty: t.specialty || '',
     dose: t.dose || '', time: t.time, freq: t.freq || '', maxdose: t.maxdose || '', route: t.route || '',
-    notes: t.notes || '', createdAt: t.created_at, mine: t.owner_id === userId
+    notes: t.notes || '', escalate: t.escalate || 'streak', createdAt: t.created_at, mine: t.owner_id === userId
   };
 }
 
