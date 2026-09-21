@@ -158,6 +158,71 @@ footer a{color:var(--g200);text-decoration:none}footer a:hover{color:var(--goldf
 footer ul{list-style:none}footer li{padding:3px 0}
 .copy{border-top:1px solid rgba(255,255,255,.1);margin-top:34px;padding-top:20px;font-size:.78rem;text-align:center}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- banner con fotos ---------- */
+.hero{padding-bottom:0!important}
+.bn{display:grid;gap:40px;align-items:center}
+@media(min-width:960px){.bn{grid-template-columns:1fr 1.08fr;gap:56px}}
+.bn>*{min-width:0}
+.bn-texts{display:grid}
+.bn-text{grid-area:1/1;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease,visibility 0s .7s}
+.bn-text.on{opacity:1;visibility:visible;transform:none;transition:opacity .7s ease .15s,transform .7s ease .15s}
+.bn-text .h1{font-family:Fraunces,serif;font-weight:900;line-height:1.08;font-size:clamp(2.2rem,5.2vw,3.4rem);margin-bottom:22px}
+.bn-text .h1 em,.bn-text h1 em{font-style:normal;color:var(--goldf)}
+.bn-stage{position:relative;aspect-ratio:3/2.25;max-width:640px;width:100%;margin:0 auto}
+.bn-slide{position:absolute;inset:0;opacity:0;transition:opacity 1s ease;pointer-events:none}
+.bn-slide.on{opacity:1;pointer-events:auto}
+.bn-main{position:absolute;inset:0 0 9% 8%;border-radius:28px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.65);outline:1px solid rgba(240,184,98,.55);outline-offset:-1px}
+.bn-main img,.bn-mini img{width:100%;height:100%;object-fit:cover;display:block}
+.bn-main::after{content:'';position:absolute;inset:0;background:linear-gradient(200deg,rgba(13,40,24,0) 45%,rgba(13,40,24,.55) 100%)}
+.bn-slide.on .bn-main img{animation:bnKen 8s ease-out both}
+.bn-slide.on:nth-child(even) .bn-main img{animation-name:bnKen2}
+@keyframes bnKen{from{transform:scale(1.16) translate(2%,1.5%)}to{transform:scale(1.02)}}
+@keyframes bnKen2{from{transform:scale(1.02)}to{transform:scale(1.15) translate(-2%,-1.5%)}}
+.bn-mini{position:absolute;left:0;bottom:0;width:40%;aspect-ratio:4/3;border-radius:20px;overflow:hidden;border:4px solid #fff;box-shadow:0 24px 50px -18px rgba(0,0,0,.7);transform:translateY(30px) rotate(-3deg);opacity:0;transition:transform .9s cubic-bezier(.2,.8,.2,1) .35s,opacity .9s ease .35s}
+.bn-slide.on .bn-mini{transform:rotate(-3deg);opacity:1;animation:bnFloat 6s ease-in-out 1.3s infinite}
+@keyframes bnFloat{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-10px)}}
+.bn-tag{position:absolute;z-index:2;background:#fff;color:var(--ink);font-weight:700;font-size:.82rem;padding:10px 15px;border-radius:14px;box-shadow:0 16px 36px -14px rgba(0,0,0,.55);display:flex;align-items:center;gap:8px;white-space:nowrap;opacity:0;transform:translateY(12px) scale(.94);transition:opacity .6s ease .8s,transform .6s cubic-bezier(.2,.9,.3,1.3) .8s}
+.bn-tag.t2{transition-delay:1.15s}
+.bn-slide.on .bn-tag{opacity:1;transform:none}
+.bn-tag i{width:9px;height:9px;border-radius:50%;background:var(--g500);box-shadow:0 0 0 4px rgba(58,170,99,.22);font-style:normal}
+.bn-tag.gold i{background:var(--gold);box-shadow:0 0 0 4px rgba(201,122,32,.22)}
+.bn-tag.t1{top:7%;right:-2%}
+.bn-tag.t2{bottom:17%;right:3%}
+@media(max-width:520px){.bn-tag{font-size:.72rem;padding:8px 11px}.bn-tag.t1{right:2%}}
+.bn-glow{position:absolute;inset:12% 4% 4% 20%;background:radial-gradient(closest-side,rgba(240,184,98,.35),transparent);filter:blur(40px);z-index:-1}
+.bn-nav{display:flex;gap:10px;margin-top:34px;flex-wrap:wrap}
+.bn-nav button{flex:1 1 90px;min-width:0;background:none;border:0;padding:0;cursor:pointer;text-align:left;color:var(--g300);font:700 .7rem/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;transition:color .3s}
+.bn-nav button span{display:block;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin-bottom:9px;overflow:hidden}
+.bn-nav button span b{display:block;height:100%;width:0;background:var(--goldf);border-radius:4px}
+.bn-nav button.on{color:#fff}
+.bn-nav button.on span b{animation:bnBar var(--bn-ms,6500ms) linear forwards}
+.bn-nav button.done span b{width:100%}
+.bn.paused .bn-nav button.on span b{animation-play-state:paused}
+@keyframes bnBar{to{width:100%}}
+@media(max-width:959px){.bn>div:last-child{order:-1}.bn{gap:30px}.bn-stage{max-width:520px}}
+@media(max-width:520px){.bn-nav{gap:6px;flex-wrap:nowrap}.bn-nav button{flex:1 1 0;font-size:.56rem;letter-spacing:.03em}.hero{padding-top:30px!important}}
+/* cinta de fotos */
+.ribbon{margin-top:70px;padding:0 0 46px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ribbon-track{display:flex;gap:18px;width:max-content;animation:rbMove 60s linear infinite}
+.ribbon:hover .ribbon-track{animation-play-state:paused}
+.ribbon figure{margin:0;width:clamp(200px,24vw,300px);aspect-ratio:3/2;border-radius:18px;overflow:hidden;position:relative;flex:none;box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
+.ribbon figure:nth-child(odd){transform:translateY(14px)}
+.ribbon img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.ribbon figure:hover img{transform:scale(1.08)}
+.ribbon figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;font-size:.74rem;font-weight:700;letter-spacing:.06em;color:#fff;background:linear-gradient(transparent,rgba(13,40,24,.85))}
+@keyframes rbMove{to{transform:translateX(calc(-50% - 9px))}}
+.vidsec .vid{max-width:920px;margin:34px auto 0}
+.vidsec{text-align:center}
+.vidsec .lead{margin-left:auto;margin-right:auto}
+.credit{font-size:.78rem;opacity:.75;margin-top:10px}
+@media(prefers-reduced-motion:reduce){.bn-slide.on .bn-main img,.bn-slide.on .bn-mini,.ribbon-track{animation:none!important}}
+
+/* ---------- entrada tipo aladino al hacer scroll (mismo efecto de las pestañas del proyecto) ---------- */
+@keyframes aladino{0%{opacity:0;transform:translateY(70px) scale(.9);filter:blur(14px)}55%{opacity:1;filter:blur(0)}75%{transform:translateY(-6px) scale(1.005)}100%{opacity:1;transform:none;filter:none}}
+.js .rv{opacity:0}
+.js .rv.in{animation:aladino .9s cubic-bezier(.16,.85,.24,1) forwards;animation-delay:var(--d,0s)}
+@media(prefers-reduced-motion:reduce){.js .rv{opacity:1!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -179,25 +244,99 @@ footer ul{list-style:none}footer li{padding:3px 0}
 </div></div>
 
 <header class="hero">
-  <div class="wrap hero-grid">
+  <div class="wrap bn" id="bn">
     <div>
-      <span class="chip">Seguimiento farmacológico a largo plazo</span>
-      <h1>Que el tratamiento se cumpla, y que <em>todo el equipo</em> lo pueda ver.</h1>
-      <p class="sub">MedTopix le recuerda al paciente cada dosis y convierte sus respuestas en una curva de adherencia que su médico, su farmaceuta y su nutricionista siguen en el tiempo, sobre el mismo caso.</p>
+      <div class="bn-texts" aria-live="polite">
+        <div class="bn-text on">
+          <span class="chip">Seguimiento farmacológico a largo plazo</span>
+          <h1>Que el tratamiento se cumpla, y que <em>todo el equipo</em> lo pueda ver.</h1>
+          <p class="sub">MedTopix le recuerda al paciente cada dosis y convierte sus respuestas en una curva de adherencia que su médico, su farmaceuta y su nutricionista siguen en el tiempo, sobre el mismo caso.</p>
+        </div>
+        <div class="bn-text">
+          <span class="chip">Para el paciente</span>
+          <div class="h1">Cada dosis a su hora, y <em>un toque</em> para registrarla.</div>
+          <p class="sub">Suena la alarma, el paciente marca si usó la medicación, si la aplicó en otro horario o si no la usó, y ve su propia curva de adherencia.</p>
+        </div>
+        <div class="bn-text">
+          <span class="chip">Para el médico tratante</span>
+          <div class="h1">La adherencia <em>real</em> de su paciente, antes de la consulta.</div>
+          <p class="sub">Meses de seguimiento en una curva, no en el recuerdo del paciente. Para distinguir un tratamiento que no funciona de uno que no se está cumpliendo.</p>
+        </div>
+        <div class="bn-text">
+          <span class="chip">Para el farmaceuta</span>
+          <div class="h1">¿Se está adhiriendo al tratamiento? <em>Ahora se puede ver.</em></div>
+          <p class="sub">Con el código del caso, el farmaceuta ve las dosis registradas, las omisiones y los cambios de horario, y deja su nota de seguimiento para el equipo.</p>
+        </div>
+        <div class="bn-text">
+          <span class="chip">Para el nutricionista</span>
+          <div class="h1">El plan nutricional, con <em>el mismo seguimiento</em>.</div>
+          <p class="sub">Las indicaciones nutricionales se programan y se registran igual que un medicamento, sobre el mismo caso que ven el médico y el farmaceuta.</p>
+        </div>
+      </div>
       <div class="cta">
         <a class="btn gold" href="/app#registro">Crear cuenta</a>
         <a class="btn ghost" href="/app#login">Ingresar</a>
       </div>
+      <div class="bn-nav" role="tablist" aria-label="Recorrido por roles">
+        <button class="on" role="tab"><span><b></b></span>El equipo</button>
+        <button role="tab"><span><b></b></span>Paciente</button>
+        <button role="tab"><span><b></b></span>Médico</button>
+        <button role="tab"><span><b></b></span>Farmaceuta</button>
+        <button role="tab"><span><b></b></span>Nutricionista</button>
+      </div>
       <p class="fine">Proyecto académico · Máster Salud Digital e IA · OBS Business School · <a href="/proyecto">Conozca el proyecto →</a></p>
     </div>
     <div>
-      <div class="vid">
-        <video controls playsinline preload="metadata" poster="img/video-poster.jpg"><source src="video/medtopix.mp4" type="video/mp4">Su navegador no reproduce video HTML5.</video>
+      <div class="bn-stage">
+        <div class="bn-glow"></div>
+        <div class="bn-slide on" data-i="0">
+          <div class="bn-main"><img src="img/fotos/consulta-equipo.jpg" alt="Médico y enfermera conversan con una paciente en el consultorio" width="960" height="640" fetchpriority="high"></div>
+          <div class="bn-mini"><img src="img/fotos/registro-celular.jpg" alt="Persona registrando una toma en el celular" width="960" height="640"></div>
+          <div class="bn-tag t1"><i></i>Un mismo caso para todo el equipo</div>
+          <div class="bn-tag t2 gold"><i></i>Adherencia visible en el tiempo</div>
+        </div>
+        <div class="bn-slide" data-i="1">
+          <div class="bn-main"><img src="img/fotos/paciente-celular.jpg" alt="Hombre mayor sonriendo mientras mira su celular" width="960" height="640" loading="lazy"></div>
+          <div class="bn-mini"><img src="img/fotos/gotas.jpg" alt="Aplicación de gotas oftálmicas" width="960" height="640" loading="lazy"></div>
+          <div class="bn-tag t1"><i></i>08:00 · Hora de su medicación</div>
+          <div class="bn-tag t2 gold"><i></i>Usó la medicación · registrado</div>
+        </div>
+        <div class="bn-slide" data-i="2">
+          <div class="bn-main"><img src="img/fotos/medico-tableta.jpg" alt="Médico revisando información en una tableta" width="960" height="640" loading="lazy"></div>
+          <div class="bn-mini"><img src="img/fotos/consulta-doctora.jpg" alt="Médica conversando con su paciente" width="960" height="640" loading="lazy"></div>
+          <div class="bn-tag t1"><i></i>Curva de adherencia del caso</div>
+          <div class="bn-tag t2 gold"><i></i>Antes de la consulta, no después</div>
+        </div>
+        <div class="bn-slide" data-i="3">
+          <div class="bn-main"><img src="img/fotos/farmacia.jpg" alt="Farmaceuta atendiendo a una usuaria en el mostrador" width="960" height="640" loading="lazy"></div>
+          <div class="bn-mini"><img src="img/fotos/medicamentos.jpg" alt="Blísteres de medicamentos" width="960" height="640" loading="lazy"></div>
+          <div class="bn-tag t1"><i></i>Dosis omitidas y cambios de horario</div>
+          <div class="bn-tag t2 gold"><i></i>Nota de seguimiento en el caso</div>
+        </div>
+        <div class="bn-slide" data-i="4">
+          <div class="bn-main"><img src="img/fotos/nutricion.jpg" alt="Alimentos frescos: aguacate, kiwi, limón y menta" width="960" height="640" loading="lazy"></div>
+          <div class="bn-mini"><img src="img/fotos/consulta-doctora.jpg" alt="Profesional conversando con su paciente" width="960" height="640" loading="lazy"></div>
+          <div class="bn-tag t1"><i></i>Tratamiento nutricional</div>
+          <div class="bn-tag t2 gold"><i></i>Mismo registro, mismo caso</div>
+        </div>
       </div>
-      <p class="vidcap">Qué es MedTopix, en menos de dos minutos.</p>
     </div>
   </div>
+  <div class="ribbon" aria-hidden="true"><div class="ribbon-track">
+    <figure><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La consulta</figcaption></figure><figure><img src="img/fotos/gotas.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El tratamiento tópico</figcaption></figure><figure><img src="img/fotos/paciente-celular.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El paciente</figcaption></figure><figure><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El médico</figcaption></figure><figure><img src="img/fotos/farmacia.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La farmacia</figcaption></figure><figure><img src="img/fotos/nutricion.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La nutrición</figcaption></figure><figure><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El registro</figcaption></figure><figure><img src="img/fotos/medicamentos.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La medicación</figcaption></figure><figure><img src="img/fotos/consulta-doctora.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El seguimiento</figcaption></figure><figure><img src="img/fotos/consulta-equipo.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La consulta</figcaption></figure><figure><img src="img/fotos/gotas.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El tratamiento tópico</figcaption></figure><figure><img src="img/fotos/paciente-celular.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El paciente</figcaption></figure><figure><img src="img/fotos/medico-tableta.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El médico</figcaption></figure><figure><img src="img/fotos/farmacia.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La farmacia</figcaption></figure><figure><img src="img/fotos/nutricion.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La nutrición</figcaption></figure><figure><img src="img/fotos/registro-celular.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El registro</figcaption></figure><figure><img src="img/fotos/medicamentos.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>La medicación</figcaption></figure><figure><img src="img/fotos/consulta-doctora.jpg" alt="" loading="lazy" width="300" height="200"><figcaption>El seguimiento</figcaption></figure>
+  </div></div>
 </header>
+
+<section id="video" class="alt vidsec">
+  <div class="wrap">
+    <div class="eyebrow">En dos minutos</div>
+    <h2>Qué es MedTopix y <em>cómo acompaña</em> el tratamiento</h2>
+    <p class="lead">El paciente, el médico, el farmaceuta y el nutricionista sobre el mismo caso.</p>
+    <div class="vid">
+      <video controls playsinline preload="metadata" poster="img/video-poster.jpg"><source src="video/medtopix.mp4" type="video/mp4">Su navegador no reproduce video HTML5.</video>
+    </div>
+  </div>
+</section>
 
 <section id="problema">
   <div class="wrap prob">
@@ -357,6 +496,55 @@ footer ul{list-style:none}footer li{padding:3px 0}
     </div>
     <div class="copy">© 2025–2026 MedTopix · Grupo 5 · Máster Salud Digital e IA · OBS Business School · Uso académico</div>
   </div>
+  <div class="wrap"><p class="credit">Fotografías ilustrativas de licencia libre (StockSnap, rawpixel, Wikimedia Commons · BCIT, CC BY 4.0 · U.S. Navy, dominio público). Las personas que aparecen no son pacientes ni usuarios de MedTopix. <a href="/img/fotos/CREDITOS.txt">Créditos completos</a>.</p></div>
 </footer>
+<script>
+// Banner: avanza solo, se pausa al pasar el mouse o al enfocar, y acepta toque, flechas y deslizamiento.
+(function(){
+  var root=document.getElementById('bn'); if(!root) return;
+  var slides=root.querySelectorAll('.bn-slide'), texts=root.querySelectorAll('.bn-text'), tabs=root.querySelectorAll('.bn-nav button');
+  var MS=6500, cur=0, timer=null, left=MS, started=0;
+  var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.style.setProperty('--bn-ms',MS+'ms');
+  function go(n){
+    cur=(n+slides.length)%slides.length;
+    for(var i=0;i<slides.length;i++){
+      slides[i].classList.toggle('on',i===cur); texts[i].classList.toggle('on',i===cur);
+      tabs[i].classList.remove('on'); tabs[i].classList.toggle('done',i<cur);
+      tabs[i].setAttribute('aria-selected',i===cur?'true':'false');
+    }
+    void tabs[cur].offsetWidth; tabs[cur].classList.add('on');
+    left=MS; play();
+  }
+  function play(){ clearTimeout(timer); if(still) return; started=Date.now(); root.classList.remove('paused'); timer=setTimeout(function(){go(cur+1);},left); }
+  function pause(){ if(still||root.classList.contains('paused')) return; clearTimeout(timer); left=Math.max(600,left-(Date.now()-started)); root.classList.add('paused'); }
+  tabs.forEach(function(b,i){ b.addEventListener('click',function(){go(i);}); });
+  root.addEventListener('mouseenter',pause); root.addEventListener('mouseleave',play);
+  root.addEventListener('focusin',pause); root.addEventListener('focusout',play);
+  root.addEventListener('keydown',function(e){ if(e.key==='ArrowRight') go(cur+1); if(e.key==='ArrowLeft') go(cur-1); });
+  var x0=null, stage=root.querySelector('.bn-stage');
+  stage.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;},{passive:true});
+  stage.addEventListener('touchend',function(e){ if(x0===null) return; var dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>40) go(cur+(dx<0?1:-1)); },{passive:true});
+  document.addEventListener('visibilitychange',function(){ document.hidden?pause():play(); });
+  go(0);
+})();
+</script>
+<script>
+// Cada bloque de cada sección entra con el efecto aladino la primera vez que aparece en pantalla.
+(function(){
+  if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('js');
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12, rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('section .wrap').forEach(function(w){
+    var kids=[]; Array.prototype.forEach.call(w.children,function(c){
+      // las rejillas de tarjetas entran tarjeta por tarjeta
+      if(c.children.length>1 && /steps|roles|feats|pains|grid/.test(c.className)) Array.prototype.push.apply(kids,c.children); else kids.push(c);
+    });
+    kids.forEach(function(k,n){ k.classList.add('rv'); k.style.setProperty('--d',(Math.min(n,5)*0.09)+'s'); io.observe(k); });
+  });
+})();
+</script>
 </body>
 </html>
