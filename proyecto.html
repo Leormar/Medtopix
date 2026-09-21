@@ -467,6 +467,12 @@
   .pager{display:flex;justify-content:space-between;gap:14px;margin-top:48px;padding-top:28px;border-top:1px solid var(--line);flex-wrap:wrap}
   @media(prefers-reduced-motion:reduce){.tab.active .anim{opacity:1!important;animation:none!important}.tbn-track{animation:none}.tab.active .tbn-in,.tab.active .tbn i,.t2-caps button,.t2-pts button.pop,.tab.active .wrap>*:not(.anim){animation:none}html{scroll-behavior:auto}}
   @media print{.tabs2{display:none!important}.tab{display:block!important;page-break-after:always}.tab .anim{opacity:1!important;animation:none!important}}
+  .prompt{background:#0d2818;color:#dff3e6;border-radius:14px;padding:18px 20px;font:.84rem/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;margin-top:12px}
+  .prompt b{color:var(--oro-vivo);font-weight:600}
+  .prompt.long{max-height:440px;overflow:auto;border:1px solid rgba(240,184,98,.35)}
+  .copy-btn{margin-top:12px;font:700 .88rem 'Plus Jakarta Sans',sans-serif;color:#0d2818;background:var(--oro-vivo);border:0;border-radius:10px;padding:11px 18px;cursor:pointer}
+  .copy-btn:hover{filter:brightness(1.06)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg-alt);border-radius:5px;padding:1px 6px;font-size:.9em}
 </style>
 </head>
 <body>
@@ -938,13 +944,104 @@
   <div class="wrap">
     <div class="anim" style="--d:0s">
       <span class="slide-tag">Punto 15 · Desarrollo con IA</span>
-      <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-chip"/></svg></span><h2>Ocho iteraciones de prompts: la IA como codesarrolladora, el equipo como criterio clínico</h2></div>
-      <p class="lead">MedTopix fue desarrollada mediante prompts iterativos al modelo Claude (Anthropic), sin escribir código manualmente. Estas son las iteraciones documentadas en la propia aplicación.</p>
+      <div class="tab-head"><span class="badge"><svg class="ico"><use href="#i-chip"/></svg></span><h2>De ocho prompts sueltos a un desarrollo con condiciones</h2></div>
+      <p class="lead">MedTopix se construyó con prompts al modelo Claude (Anthropic), sin escribir código a mano. La primera etapa fueron pedidos sueltos en un chat; la segunda, un agente que lee el repositorio, prueba y despliega. Lo que cambió el resultado no fue pedir más, sino <b>pedir con condiciones</b>.</p>
     </div>
+    <h3 class="anim" style="--d:.05s;margin:8px 0 14px">Etapa 1 · El prototipo en un solo archivo (iteraciones 1–8)</h3>
     <div class="iter anim" style="--d:.1s"><div class="it"><span class="n">1</span><div><b>Guía interactiva</b> — HTML con 10 categorías farmacológicas en 6 especialidades.<q>«Para esta actividad debo hacer para medicamentos tópicos. Guía interactiva para múltiples especialidades médicas.»</q></div></div><div class="it"><span class="n">2</span><div><b>App de recordatorio</b> — localStorage, hora, dosis, frecuencia.<q>«Quiero volverlo una app de recordatorio de medicamentos por especialidad. Solo en el navegador con localStorage.»</q></div></div><div class="it"><span class="n">3</span><div><b>Diseño verde salud</b> — Logo MedTopix, colores por especialidad, equipo.<q>«El frontend está muy básico. Verde salud moderno. Logo y cocreadores del Grupo 5.»</q></div></div><div class="it"><span class="n">4</span><div><b>Alarma real + paciente</b> — AudioContext, panel de alertas, formulario de paciente.<q>«La funcionalidad de horario no genera alerta. Además debe tener formulario de entrada del paciente.»</q></div></div><div class="it"><span class="n">5</span><div><b>Adherencia en 3 estados</b> — Usó / Otro horario / No usó + curva de 14 días.<q>«El botón debe decir: Usó la medicación / La aplicó en otro horario / No usó. Y sacar curva de adherencia.»</q></div></div><div class="it"><span class="n">6</span><div><b>Logotipo SVG</b> — Reloj + cápsula en verde y dorado.<q>«Hagámosle un logotipo para la app. Reloj y medicación. Verde y dorado.»</q></div></div><div class="it"><span class="n">7</span><div><b>OpenClaw + Telegram</b> — Agente clínico con Claude en Telegram (@medtopix_bot).<q>«¿Cómo uso OpenClaw con Claude?»</q></div></div><div class="it"><span class="n">8</span><div><b>Versión completa</b> — Landing, T&C Ley 1581, login, edad por fecha de nacimiento, dosis máxima, alarma animada, reporte, fuentes OMS.<q>«Página de inicio, política datos Ley 1581, checklist T&C con documento, login email, fecha nacimiento, dosis máxima diaria con alerta, alarma animada reloj bailando, reporte, fuentes OMS.»</q></div></div></div>
-    <div class="grid2 anim" style="--d:.2s;margin-top:22px">
+    <h3 class="anim" style="--d:.15s;margin:34px 0 14px">Etapa 2 · De prototipo a piloto, con un agente (iteraciones 9–16)</h3>
+    <div class="iter anim" style="--d:.2s"><div class="it"><span class="n">9</span><div><b>Migración de alojamiento</b> — el sitio pasa de Netlify a Vercel, conectado al repositorio, con despliegue automático.<q>«Busca en GitHub MedTopix y llévalo a Vercel porque se me desconectó de Netlify.»</q></div></div><div class="it"><span class="n">10</span><div><b>Cuentas por rol y base de datos</b> — profesional de la salud, paciente y farmaceuta sobre el mismo caso, en Postgres; página de venta, página del proyecto y video.<q>«Hacer bases de datos para profesionales de la salud, paciente y farmaceuta para el seguimiento de cada caso; una página de venta antes de ingresar; y una página del proyecto con video, como en PREALTA IA.»</q></div></div><div class="it"><span class="n">11</span><div><b>Método de innovación</b> — Lean Canvas, TRL y GAITS, y la pregunta de fondo: qué hay que validar.<q>«¿A esta hay que hacerle validación? Ponle la metodología Lean Canvas y GAITS, la de PREALTA IA.»</q></div></div><div class="it"><span class="n">12</span><div><b>Identidad visual con fotografía real</b> — banner con fotos de licencia libre, video con entorno real, presentación por pestañas con efecto aladino.<q>«Debe haber fotos de entorno real en el video y la página debe mostrar las fotos con movilidad tipo banner; el banner debe ser vistoso.»</q></div></div><div class="it"><span class="n">13</span><div><b>Estado real del prototipo</b> — las páginas dejan de decir «funciona» y pasan a «existe, aún incompleto y sin validar»; TRL 3 en transición a 4.<q>«Hoy es un prototipo que aún no funciona completo, pero sí existe.»</q></div></div><div class="it"><span class="n">14</span><div><b>Piloto: alarmas, reloj, aviso al profesional e historia clínica</b> — avisos push desde el servidor, escalamiento al equipo tratante, varias dosis por día, API FHIR con llaves revocables, instalación en iPhone y Android.<q>«Actúa como especialista en apps y termina de desarrollar la app piloto: revisa lo que hay y lo que falta; que se pueda conectar por una API a una historia clínica electrónica, que tenga las alarmas y que se pueda usar en iPhone, Android y smartwatch.»</q></div></div><div class="it"><span class="n">15</span><div><b>Interfaz profesional</b> — 48 iconos de línea en lugar de emojis, paleta sobria, textos limpios en notificaciones.<q>«Los iconos y demás del prototipo bien profesionales y modernos, nada de juego ni iconos de smartphone; eso se ve mal.»</q></div></div><div class="it"><span class="n">16</span><div><b>Condiciones permanentes</b> — las lecciones de todo lo anterior se convierten en reglas que la IA lee sola al empezar cada sesión.<q>«En la parte de uso de la IA pon las condiciones nuevas que creas que pueden mejorar todo; trabaja en modo de ingeniero de prompts para hacer todo funcional.»</q></div></div></div>
+    <p class="anim" style="--d:.22s;font-size:.86rem;color:var(--ink-faint);margin-top:10px">Los prompts de la etapa 2 se transcriben corregidos de ortografía; el sentido es el original.</p>
+
+    <h3 class="anim" style="--d:.25s;margin:40px 0 6px">Lo que falló, y la condición que lo evita</h3>
+    <p class="anim" style="--d:.25s;color:var(--ink-soft);margin-bottom:14px">Cada condición nueva nace de un error real de este proyecto, no de una lista genérica de buenas prácticas.</p>
+    <div class="card anim" style="--d:.3s;padding:12px 18px"><div class="tbl-wrap"><table>
+      <tr><th>Qué pasó</th><th>Por qué pasó</th><th>Condición que quedó</th></tr>
+      <tr><td>La alarma solo sonaba con la app abierta.</td><td>El prompt pedía «que genere alerta», sin decir en qué situación.</td><td><b>Criterios de aceptación con el caso límite:</b> app cerrada, sin conexión, iPhone sin instalar.</td></tr>
+      <tr><td>La app se rompía al abrirla en iPhone.</td><td>Se probó en un solo navegador.</td><td><b>Compatibilidad declarada:</b> iPhone, Android y escritorio; toda función del navegador se comprueba antes de usarse.</td></tr>
+      <tr><td>Las páginas decían «se puede usar hoy» y «prototipo funcional».</td><td>La IA describe con optimismo lo que acaba de construir.</td><td><b>Honestidad:</b> prototipo no validado; no inventar cifras ni resultados; decir qué no se pudo verificar.</td></tr>
+      <tr><td>Un nombre escrito con HTML se ejecutaba en el navegador del médico.</td><td>Al pasar de datos locales a datos compartidos cambió el riesgo, y nadie lo pidió revisar.</td><td><b>Seguridad por defecto:</b> todo texto entrante se sanea; acceso por rol y por caso; secretos fuera del código.</td></tr>
+      <tr><td>Se entendió «acordeón» donde se pedía el efecto «aladino».</td><td>El término era de otro proyecto del equipo.</td><td><b>Ante un término desconocido, buscar primero</b> en el proyecto y sus hermanos; preguntar solo si cambia lo que se construye.</td></tr>
+      <tr><td>La interfaz se veía «de juego».</td><td>Los emojis son el atajo por defecto de la IA.</td><td><b>Diseño:</b> iconos de línea, paleta de la marca, nada de emojis.</td></tr>
+      <tr><td>Avisar al médico por cada olvido lo habría saturado.</td><td>El pedido decía «que le llegue al profesional», sin regla.</td><td><b>Criterio clínico:</b> toda alerta lleva una regla (cada dosis · dos seguidas · nunca).</td></tr>
+    </table></div></div>
+
+    <div class="grid2 anim" style="--d:.35s;margin-top:26px">
+      <div class="card"><h3>Antes · iteración 4</h3><div class="prompt">La funcionalidad de horario no genera alerta. Además debe tener formulario de entrada del paciente.</div><p style="font-size:.9rem;color:var(--ink-soft);margin-top:12px">Funcionó… con la app abierta y en el computador donde se probó.</p></div>
+      <div class="card"><h3>Después · el mismo pedido, con condiciones</h3><div class="prompt"><b>Objetivo:</b> que el paciente reciba el aviso de cada dosis a su hora.
+<b>Rol afectado:</b> paciente (y su equipo tratante si no responde).
+<b>Condiciones:</b> no recomendar dosis; hora local del paciente; sin emojis.
+<b>Criterios de aceptación:</b> llega con la app cerrada en Android y en iPhone instalado; repite a los 15 min; a los 60 min queda «sin respuesta» y se avisa al equipo según la regla del tratamiento; no se repite un aviso ya enviado.
+<b>Fuera de alcance:</b> app nativa de reloj.
+<b>Verificación:</b> prueba automatizada del ciclo 0-15-60 min y revisión del cron en producción.</div></div>
+    </div>
+
+    <h3 class="anim" style="--d:.4s;margin:40px 0 6px">El prompt maestro del proyecto</h3>
+    <p class="anim" style="--d:.4s;color:var(--ink-soft);margin-bottom:14px">Estas condiciones viven en el repositorio como <code>CLAUDE.md</code>: el agente las lee sola al comenzar cada sesión, así que se aplican aunque nadie se acuerde de escribirlas. También sirven para pegarlas al inicio de cualquier chat con otra IA.</p>
+    <div class="anim" style="--d:.45s"><div class="prompt long" id="promptMaestro"># MedTopix — condiciones permanentes para desarrollar con IA
+
+Estas condiciones aplican a TODO pedido sobre este repositorio. Si un pedido las contradice, dilo antes de actuar.
+
+## Contexto
+- MedTopix es un **prototipo académico clínico** (Máster Salud Digital e IA, OBS Business School, Grupo 5): seguimiento de adherencia a tratamientos farmacológicos y nutricionales con tres roles (profesional de la salud, paciente, farmaceuta) sobre un mismo caso.
+- Existe y está en línea, pero **no está validado con usuarios ni con pacientes**. Nada en la app, el sitio o el video puede afirmar lo contrario.
+- Usuarios en Colombia: español neutro, trato de «usted» en la app, hora local del paciente, datos de salud = datos sensibles (Ley 1581 de 2012).
+- Arquitectura: sin framework ni build. `index.html` (venta), `proyecto.html`, `integracion.html`, `app.html` (PWA de un solo archivo) + `sw.js`; funciones Vercel en `api/`; Postgres en Neon (`db/schema.sql`, idempotente); pruebas en `tests/`.
+
+## Definición de terminado
+Un cambio está terminado solo si:
+1. Funciona de punta a punta para el rol que lo usa (no basta con que «se vea»).
+2. `npm test` pasa completo, y lo nuevo tiene su propia prueba.
+3. Se verificó en el despliegue real (preview de Vercel y luego producción), no solo en local.
+4. El informe final dice qué se verificó, cómo, y **qué no se pudo verificar**.
+
+## Honestidad
+- No inventar cifras, testimonios, clientes, precios ni resultados clínicos. La única cifra dura del proyecto es el ≈ 50 % de adherencia (OMS, 2004).
+- Lo que sea hipótesis se rotula como hipótesis. Los datos de ejemplo se rotulan como ficticios.
+- No afirmar cumplimiento normativo ni certificaciones (Ley 1581, Ley 2015 de 2020, Res. 866 de 2021, FHIR): se citan como marco, no como sello.
+
+## Seguridad y datos
+- Contraseñas solo con hash; sesión en cookie httpOnly firmada; secretos solo en variables de entorno, nunca en el código ni en el chat.
+- Acceso siempre por rol **y** por caso: un usuario ve únicamente los pacientes que creó, su propia ficha o los casos donde está en el equipo tratante. Un recurso ajeno responde 404, no 403.
+- Todo texto que entra al servidor pasa por `clean()` (`api/_lib/shape.js`): la app pinta con `innerHTML`.
+- Datos de prueba solo con correos `…@test.medtopix.invalid`, y se borran al terminar. No correr `tests/alarmas.mjs` contra una base con pacientes reales.
+
+## Criterio clínico
+- MedTopix recuerda y registra. **No diagnostica, no recomienda dosis, no reemplaza al profesional.**
+- Las alertas al equipo tratante siguen una regla por tratamiento (cada dosis · dos seguidas · nunca) para evitar fatiga de alertas. No agregar avisos que suenen por cada evento sin una regla así.
+- «Sin respuesta» no es lo mismo que «no usó»: se registran y se muestran distinto, y ambos cuentan como no adherencia.
+
+## Diseño
+- Iconos SVG de línea del sprite `ic-*`; **nunca emojis** como iconos. Donde no cabe SVG (`&lt;option&gt;`, `confirm()`, notificaciones push, CSV) va texto limpio.
+- Paleta de la marca (verdes `#0d2818`–`#2d8a4e`, dorado `#c97a20`/`#f0b862`); sin colores saturados sueltos. Tipografías Plus Jakarta Sans y Fraunces.
+- Móvil primero, sin desborde horizontal, respeta `prefers-reduced-motion`. El efecto de entrada del sitio es `aladino` (el mismo de PREALTA IA).
+- Las fotos son de licencia libre con créditos en `img/fotos/CREDITOS.txt`; las personas no se presentan como pacientes ni usuarios reales.
+
+## Compatibilidad
+- Debe funcionar en iPhone (Safari e instalada), Android y escritorio. En iPhone `Notification` no existe fuera de la app instalada: toda API del navegador se comprueba antes de usarla.
+- El reloj (Apple Watch, Wear OS) solo replica la notificación del celular; no prometer una app de reloj.
+
+## Proceso
+- Rama → preview de Vercel → verificación → `main` (producción). Commits pequeños, en inglés, que expliquen el porqué.
+- La regla de horarios de dosis vive duplicada en `api/_lib/doses.js` y en `doseTimes` de `app.html`: si cambia una, cambia la otra.
+- Si un término del pedido no se reconoce, **buscarlo primero en el proyecto y en los proyectos hermanos** (p. ej. «aladino» era una animación de PREALTA IA). Preguntar solo cuando la respuesta cambia lo que se va a construir.
+
+## Cómo pedir un cambio (plantilla)
+```
+Objetivo: qué debe poder hacer quién, y para qué.
+Rol afectado: paciente / profesional / farmaceuta / institución.
+Condiciones: lo que no se puede romper ni afirmar.
+Criterios de aceptación: comprobaciones concretas, incluida la situación límite
+  (app cerrada, sin conexión, iPhone sin instalar, caso ajeno, dato inválido).
+Fuera de alcance: lo que NO se debe tocar.
+Verificación: qué prueba automatizada y qué revisión en producción lo demuestran.
+```
+</div>
+    <button class="copy-btn" type="button" onclick="(function(b){var t=document.getElementById('promptMaestro').innerText;navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){b.textContent='Copiado';setTimeout(function(){b.textContent='Copiar el prompt maestro';},1800);});})(this)">Copiar el prompt maestro</button></div>
+
+    <div class="grid2 anim" style="--d:.5s;margin-top:26px">
       <div class="card"><h3>Metodología de minería de conocimiento</h3><p style="font-size:.93rem;color:var(--ink-soft)">Extracción de categorías farmacológicas tópicas por especialidad a partir de documentos oficiales de la OMS, el INVIMA y el Ministerio de Salud de Colombia; identificación de mecanismos de acción e indicaciones; y validación clínica por un optometrista del equipo.</p></div>
-      <div class="card"><h3>Reflexión</h3><p style="font-size:.93rem;color:var(--ink-soft)">La ingeniería de prompts resultó ser una habilidad clínica y técnica a la vez. Cada iteración aportó funcionalidad; la IA actuó como codesarrolladora mientras el equipo aportó criterio médico y cumplimiento normativo (Ley 1581).</p></div>
+      <div class="card"><h3>Reflexión</h3><p style="font-size:.93rem;color:var(--ink-soft)">La IA construye rápido lo que se le pide, y justamente por eso el trabajo del equipo se mueve: de escribir código a <b>decidir qué es aceptable</b>. Un prompt sin criterios de aceptación produce algo que «se ve» terminado; con ellos, produce algo que se puede probar. El criterio clínico, el cumplimiento de la Ley 1581 y la decisión de qué no afirmar siguen siendo humanos.</p></div>
     </div>
   </div>
 </section>
