@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "db:migrate": "node --env-file=.env.local db/migrate.mjs",
-    "test": "node --env-file=.env.local tests/roles.mjs && node --env-file=.env.local tests/alarmas.mjs && node --env-file=.env.local tests/fhir.mjs"
+    "test": "node --env-file=.env.local tests/roles.mjs && node --env-file=.env.local tests/alarmas.mjs && node --env-file=.env.local tests/fhir.mjs && node --env-file=.env.local tests/social.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
+    "jose": "^6.2.12",
     "web-push": "^3.6.7"
   }
 }

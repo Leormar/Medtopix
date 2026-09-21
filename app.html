@@ -371,6 +371,14 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .key-row code,.key-new code{font-family:monospace;background:var(--g100);border-radius:5px;padding:2px 6px;}
 .key-row button{margin-left:auto;background:none;border:1px solid #fca5a5;color:#b91c1c;border-radius:7px;padding:4px 10px;font:700 11px 'Plus Jakarta Sans',sans-serif;cursor:pointer;}
 .key-new{background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;word-break:break-all;}
+.soc{margin:4px 0 14px}
+.soc-lead{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;text-align:center}
+.soc-g{display:flex;justify-content:center;min-height:44px;margin-bottom:10px}
+.soc-apple{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;max-width:320px;height:44px;margin:0 auto 4px;background:#000;color:#fff;border:0;border-radius:22px;font:600 15px -apple-system,BlinkMacSystemFont,'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.soc-apple:hover{background:#1c1c1e}
+.soc-or{display:flex;align-items:center;gap:12px;margin:16px 0 4px;font-size:11px;color:var(--muted)}
+.soc-or::before,.soc-or::after{content:'';flex:1;height:1px;background:var(--border)}
+.t-note{background:var(--g100);border:1.5px solid var(--g300);border-radius:9px;padding:11px 14px;font-size:12px;color:var(--g800);margin-bottom:14px;line-height:1.5}
 .case-code{font-family:monospace;font-size:1.5rem;font-weight:800;letter-spacing:3px;color:var(--g700);background:var(--g100);border:1.5px dashed var(--g300);border-radius:10px;padding:12px 16px;text-align:center;user-select:all;}
 .link-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .link-row input{flex:1;min-width:160px;text-transform:uppercase;font-family:monospace;font-size:15px;letter-spacing:2px;}
@@ -555,13 +563,21 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <h4>2. Limitación de responsabilidad</h4>
       <p>MedTopix no asume responsabilidad por decisiones clínicas. Ante cualquier duda o efecto adverso, consulte a su médico tratante de inmediato.</p>
       <h4>3. Protección de datos — Ley 1581 de 2012 (Colombia)</h4>
-      <p>En cumplimiento de la Ley 1581 de 2012 (Habeas Data), el usuario autoriza el tratamiento de sus datos bajo estas condiciones: (a) Los datos de la cuenta, la ficha del paciente, los tratamientos, los registros de adherencia y las notas de seguimiento se almacenan en una base de datos en la nube (Neon Postgres, alojada fuera de Colombia) a través de una conexión cifrada; las contraseñas se guardan cifradas de forma irreversible. (b) Los datos de un paciente solo son visibles para el propio paciente, para el profesional que creó su ficha y para los profesionales o farmaceutas a quienes se les compartió el código del caso. MedTopix no vende datos a terceros. (c) El usuario puede solicitar la eliminación de sus datos en cualquier momento. (d) Solo se recolectan datos necesarios para el funcionamiento de la app.</p>
+      <p>En cumplimiento de la Ley 1581 de 2012 (Habeas Data), el usuario autoriza el tratamiento de sus datos bajo estas condiciones: (a) Los datos de la cuenta, la ficha del paciente, los tratamientos, los registros de adherencia y las notas de seguimiento se almacenan en una base de datos en la nube (Neon Postgres, alojada fuera de Colombia) a través de una conexión cifrada; las contraseñas se guardan cifradas de forma irreversible. (b) Los datos de un paciente solo son visibles para el propio paciente, para el profesional que creó su ficha y para los profesionales o farmaceutas a quienes se les compartió el código del caso. MedTopix no vende datos a terceros. Si el usuario ingresa con su cuenta de Google o de Apple, MedTopix recibe de ese proveedor únicamente su nombre y su correo verificado, para identificarlo; no recibe su contraseña ni accede a su correo, contactos u otros datos. (c) El usuario puede solicitar la eliminación de sus datos en cualquier momento. (d) Solo se recolectan datos necesarios para el funcionamiento de la app.</p>
       <h4>4. Uso de la información</h4>
       <p>La información registrada se usa exclusivamente para generar recordatorios y curvas de adherencia. No se realiza minería de datos comercial con información personal.</p>
       <h4>5. Aceptación</h4>
       <p>Al aceptar, el usuario declara haber leído y aceptado estas condiciones. La aceptación queda registrada con el tipo y número de documento del usuario.</p>
     </div>
     <div class="t-form">
+      <div id="soc-reg"><div class="soc" data-soc style="display:none">
+      <div class="soc-lead">Cree su cuenta con</div>
+      <div class="soc-g" data-soc-google></div>
+      <button type="button" class="soc-apple" data-soc-apple onclick="appleSignIn()" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.040.027-3.910 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.090 1.013 1.454 2.208 3.090 3.792 3.039 1.520-.065 2.090-.987 3.935-.987 1.831 0 2.350.987 3.960.948 1.637-.026 2.676-1.480 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.220-4.857-.026-3.040 2.480-4.494 2.597-4.559-1.429-2.090-3.623-2.324-4.390-2.376-2-.156-3.675 1.090-4.610 1.090zM15.530 3.830c.843-1.012 1.400-2.427 1.245-3.830-1.207.052-2.662.805-3.532 1.818-.780.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Continuar con Apple</span></button>
+      <div class="soc-or"><span>o cree su cuenta con correo</span></div>
+    </div>
+</div>
+      <div class="t-note" id="soc-note" style="display:none"></div>
       <div class="t-form-title"><svg class="ic" aria-hidden="true"><use href="#ic-clipboard"/></svg> Datos de quien acepta los términos</div>
       <div class="tg">
         <div class="fg" style="grid-column:span 2"><label class="fl">Tipo de cuenta</label>
@@ -588,8 +604,8 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
           </select>
         </div>
         <div class="fg"><label class="fl">Número de documento</label><input type="text" class="fi" id="tc-dn" placeholder="Ej: 1234567890"/></div>
-        <div class="fg"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="tc-e" placeholder="correo@gmail.com"/></div>
-        <div class="fg"><label class="fl">Contraseña</label>
+        <div class="fg" id="tc-e-wrap"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="tc-e" placeholder="correo@gmail.com"/></div>
+        <div class="fg" id="tc-p-wrap"><label class="fl">Contraseña</label>
 <div class="pw-wrap">
   <input type="password" class="fi" id="tc-p" placeholder="Mínimo 8 caracteres"/>
   <button type="button" class="pw-eye" onclick="togPw('tc-p',this)" title="Mostrar/ocultar"><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg></button>
@@ -610,7 +626,13 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <div class="lb-name">MedTopix</div>
     </div>
     <div class="lb-title">Iniciar sesión</div>
-    <div class="lb-sub">Ingresa con tu correo y contraseña</div>
+    <div class="lb-sub">Ingrese a su cuenta MedTopix</div>
+    <div class="soc" data-soc style="display:none">
+      <div class="soc-lead">Ingrese con su cuenta</div>
+      <div class="soc-g" data-soc-google></div>
+      <button type="button" class="soc-apple" data-soc-apple onclick="appleSignIn()" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.040.027-3.910 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.090 1.013 1.454 2.208 3.090 3.792 3.039 1.520-.065 2.090-.987 3.935-.987 1.831 0 2.350.987 3.960.948 1.637-.026 2.676-1.480 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.220-4.857-.026-3.040 2.480-4.494 2.597-4.559-1.429-2.090-3.623-2.324-4.390-2.376-2-.156-3.675 1.090-4.610 1.090zM15.530 3.830c.843-1.012 1.400-2.427 1.245-3.830-1.207.052-2.662.805-3.532 1.818-.780.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Continuar con Apple</span></button>
+      <div class="soc-or"><span>o con su correo y contraseña</span></div>
+    </div>
     <div class="lb-err" id="lb-err">Correo o contraseña incorrectos.</div>
     <div class="fg" style="margin-bottom:12px"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="li-e" placeholder="correo@gmail.com"/></div>
     <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label>
@@ -1012,12 +1034,71 @@ function goStart(){
   show('slo');
 }
 
-function goTerms(){ show('st'); }
+function goTerms(){ endSocialProfile(); show('st'); }
 
 // ── TERMS ─────────────────────────────────────────────────────
 function chkReady(){
   var ok = document.getElementById('tc-c1').checked && document.getElementById('tc-c2').checked;
   document.getElementById('btn-accept').disabled = !ok;
+}
+
+// ── INGRESO CON GOOGLE O APPLE ────────────────────────────────
+var socialCfg = {google:null, apple:null};
+var pendingSocial = null; // identidad ya verificada a la que le falta elegir tipo de cuenta y aceptar términos
+
+function loadScript(src){
+  return new Promise(function(ok, fail){ var s=document.createElement('script'); s.src=src; s.async=true; s.onload=ok; s.onerror=fail; document.head.appendChild(s); });
+}
+function initSocial(){
+  api('GET','/api/auth?action=config').then(function(cfg){
+    socialCfg = cfg;
+    if(!cfg.google && !cfg.apple) return;       // sin proveedores configurados el ingreso es solo por correo
+    document.querySelectorAll('[data-soc]').forEach(function(el){ el.style.display=''; });
+    if(cfg.google) loadScript('https://accounts.google.com/gsi/client').then(function(){
+      google.accounts.id.initialize({client_id:cfg.google, callback:function(r){ socialLogin('google', r.credential); }, ux_mode:'popup', auto_select:false});
+      document.querySelectorAll('[data-soc-google]').forEach(function(el){
+        google.accounts.id.renderButton(el, {theme:'outline', size:'large', shape:'pill', text:'continue_with', logo_alignment:'center', locale:'es', width:Math.min(320, el.offsetWidth||320)});
+      });
+    }).catch(function(){ document.querySelectorAll('[data-soc-google]').forEach(function(el){ el.style.display='none'; }); });
+    if(cfg.apple) loadScript('https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/es_ES/appleid.auth.js').then(function(){
+      AppleID.auth.init({clientId:cfg.apple, scope:'name email', redirectURI:location.origin+'/app', usePopup:true});
+      document.querySelectorAll('[data-soc-apple]').forEach(function(el){ el.style.display=''; });
+    }).catch(function(){});
+  }).catch(function(){});
+}
+function appleSignIn(){
+  if(!window.AppleID) return;
+  AppleID.auth.signIn().then(function(r){
+    var n = r.user && r.user.name ? ((r.user.name.firstName||'')+' '+(r.user.name.lastName||'')).trim() : '';
+    socialLogin('apple', r.authorization.id_token, n);
+  }).catch(function(e){ if(!e || e.error!=='popup_closed_by_user') toast('No se completó el ingreso con Apple.', true); });
+}
+function socialLogin(provider, credential, name){
+  api('POST','/api/auth?action='+provider,{credential:credential, name:name||''}).then(function(r){
+    if(r.needsProfile){ startSocialProfile(provider, r); return; }
+    return loadState().then(function(){ initApp(); show('sa'); });
+  }).catch(apiFail);
+}
+// Persona nueva: ya sabemos quién es; falta el tipo de cuenta y aceptar los términos, igual que con correo.
+function startSocialProfile(provider, r){
+  pendingSocial = {provider:provider, pending:r.pending};
+  show('st');
+  document.getElementById('tc-n').value = r.name || '';
+  document.getElementById('tc-e').value = r.email;
+  document.getElementById('tc-e').readOnly = true;
+  document.getElementById('tc-p-wrap').style.display = 'none';
+  document.getElementById('soc-reg').style.display = 'none';
+  var note = document.getElementById('soc-note');
+  note.textContent = 'Su cuenta de '+(provider==='google'?'Google':'Apple')+' ('+r.email+') ya está verificada. Para terminar, elija el tipo de cuenta y acepte los términos.';
+  note.style.display = '';
+  window.scrollTo(0,0);
+}
+function endSocialProfile(){
+  pendingSocial = null;
+  document.getElementById('tc-e').readOnly = false;
+  document.getElementById('tc-p-wrap').style.display = '';
+  document.getElementById('soc-reg').style.display = '';
+  document.getElementById('soc-note').style.display = 'none';
 }
 
 function roleChanged(){
@@ -1032,16 +1113,19 @@ function acceptTerms(){
   var e = document.getElementById('tc-e').value.trim();
   var p = document.getElementById('tc-p').value;
   var role = document.getElementById('tc-role').value;
-  if(!n||!dn||!e||!p){toast('Completa todos los campos.',true);return;}
-  if(p.length<8){toast('Contraseña mínimo 8 caracteres.',true);return;}
+  if(!n||!dn||!e||(!pendingSocial&&!p)){toast('Completa todos los campos.',true);return;}
+  if(!pendingSocial && p.length<8){toast('Contraseña mínimo 8 caracteres.',true);return;}
   var btn=document.getElementById('btn-accept'); btn.disabled=true;
-  api('POST','/api/auth?action=register',{
+  var url = pendingSocial ? '/api/auth?action='+pendingSocial.provider : '/api/auth?action=register';
+  api('POST',url,{
+    pending: pendingSocial ? pendingSocial.pending : undefined,
     name:n, email:e, password:p, role:role, terms:true,
     profession:document.getElementById('tc-prof').value,
     doctype:document.getElementById('tc-dt').value, docnum:dn,
     linkCode:document.getElementById('tc-code').value.trim()
   }).then(loadState).then(function(){
     document.getElementById('tc-p').value='';
+    endSocialProfile();
     initApp(); show('sa');
     toast('Cuenta creada. Bienvenido a MedTopix.');
   }).catch(apiFail).then(function(){chkReady();});
@@ -2153,6 +2237,7 @@ function togPw(id, btn){
   // Las versiones anteriores guardaban cuentas y contraseñas en el dispositivo; ya viven en el servidor.
   ['mt6_u','mt6_s','mt6_m','mt6_p','mt6_a'].forEach(function(k){localStorage.removeItem(k);});
 
+  initSocial();
   loadState().then(function(){ initApp(); show('sa'); })
     .catch(function(){ show(location.hash==='#login'?'slo':location.hash==='#registro'?'st':'sl'); });
 

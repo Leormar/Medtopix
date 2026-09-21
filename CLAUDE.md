@@ -22,6 +22,7 @@ Un cambio está terminado solo si:
 
 ## Seguridad y datos
 - Contraseñas solo con hash; sesión en cookie httpOnly firmada; secretos solo en variables de entorno, nunca en el código ni en el chat.
+- Ingreso por correo, Google o Apple: las tres vías terminan en la misma creación de cuenta (`createAccount` en `api/auth.js`). Los tokens de proveedor se verifican en el servidor (firma, emisor, destinatario, vigencia, correo verificado); nunca confiar en datos de identidad que mande el navegador.
 - Acceso siempre por rol **y** por caso: un usuario ve únicamente los pacientes que creó, su propia ficha o los casos donde está en el equipo tratante. Un recurso ajeno responde 404, no 403.
 - Todo texto que entra al servidor pasa por `clean()` (`api/_lib/shape.js`): la app pinta con `innerHTML`.
 - Datos de prueba solo con correos `…@test.medtopix.invalid`, y se borran al terminar. No correr `tests/alarmas.mjs` contra una base con pacientes reales.

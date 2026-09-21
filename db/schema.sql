@@ -162,3 +162,10 @@ create table if not exists login_attempts (
   at    timestamptz not null default now()
 );
 create index if not exists login_attempts_idx on login_attempts(email, at);
+
+-- Ingreso con Google o Apple: la cuenta se identifica por el `sub` del proveedor y puede no tener contraseña.
+alter table users alter column password_hash drop not null;
+alter table users add column if not exists google_sub text;
+alter table users add column if not exists apple_sub text;
+create unique index if not exists users_google_sub_idx on users(google_sub) where google_sub is not null;
+create unique index if not exists users_apple_sub_idx on users(apple_sub) where apple_sub is not null;
