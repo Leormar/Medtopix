@@ -1135,7 +1135,6 @@ function acceptTerms(){
     document.getElementById('tc-p').value='';
     endSocialProfile();
     initApp(); show('sa');
-    toast('Cuenta creada. Bienvenido a MedTopix.');
   }).catch(apiFail).then(function(){chkReady();});
 }
 
@@ -1174,6 +1173,7 @@ function initApp(){
   document.getElementById('un').textContent = curUser.name.split(' ')[0];
   curTab='alerts'; goTab('alerts');
   refreshAll(); renderRep();
+  toast(curUser.name.split(' ')[0]+': '+enteredAs(false).toLowerCase()+(pendingAccount?' (cuenta pendiente de verificación).':'.'));
   startAlarms();
   // Register service worker for background notifications
   registerSW();
@@ -2168,10 +2168,16 @@ var MODE = {
   profesional: {icon:'stethoscope', text:'Sigue la adherencia de sus pacientes y formula tratamientos.'},
   farmaceuta:  {icon:'pill',        text:'Verifica la adherencia de los casos que le comparten y deja notas.'}
 };
+// «Ha ingresado como profesional · Optómetra», «… como farmaceuta», «… como paciente»
+function enteredAs(html){
+  var prof = curUser.role==='profesional' && curUser.profession ? ' · '+roleLabel(curUser) : '';
+  var who = curUser.role==='profesional' ? 'profesional'+prof : curUser.role==='farmaceuta' ? 'farmaceuta' : 'paciente';
+  return 'Ha ingresado como '+(html?esc(who):who);
+}
 function renderMode(){
   var bar=document.getElementById('mode-bar'), box=document.getElementById('pending-box'); if(!bar||!curUser) return;
   var m=MODE[curUser.role]||MODE.paciente;
-  var label = curUser.role==='profesional' ? 'Modo profesional'+(curUser.profession?' · '+esc(roleLabel(curUser)):'') : curUser.role==='farmaceuta' ? 'Modo farmaceuta' : 'Modo paciente';
+  var label = enteredAs(true);
   var tag = pendingAccount ? '<span class="mode-tag wait">'+ic('hourglass')+' Pendiente de verificación</span>'
           : curUser.role==='paciente' ? '' : '<span class="mode-tag ok">'+ic('check')+' Cuenta verificada</span>';
   bar.innerHTML='<span class="mode-pill m-'+curUser.role+'">'+ic(m.icon)+' '+label+'</span><span>'+m.text+'</span>'+tag
