@@ -111,6 +111,8 @@ export default handler(async function (req, res) {
         if (hijackable) { setSession(res, rows[0].id); return res.json({ user: publicUser(rows[0]), passwordRemoved: true }); }
       }
     }
+    // un administrador queda verificado desde que entra con su proveedor, aunque su cuenta sea anterior a esta regla
+    if (rows.length && isAdmin(rows[0]) && !rows[0].verified_at) rows = await sql`update users set verified_at = now() where id = ${rows[0].id} returning *`;
     if (rows.length) { setSession(res, rows[0].id); return res.json({ user: publicUser(rows[0]) }); }
 
     if (!b.pending) return res.json({ needsProfile: true, pending: signPending(who), email: who.email, name: who.name });
