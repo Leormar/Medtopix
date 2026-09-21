@@ -180,7 +180,7 @@ textarea{resize:vertical;min-height:60px;}
 .btn-add{display:flex;align-items:center;gap:7px;padding:10px 22px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(46,138,78,0.35);transition:all 0.2s;}
 .btn-add:hover{transform:translateY(-2px);}
 .hint{font-size:11px;color:var(--muted);}
-.hint::before{content:'🔒';margin-right:4px;}
+.hint::before{content:none;}
 .age-d{background:var(--g100);border:1.5px solid var(--g200);border-radius:7px;padding:9px 11px;font-size:13px;font-weight:700;color:var(--g700);}
 
 /* PATIENT LIST */
@@ -331,7 +331,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .fst{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;}
 .fs{list-style:none;}
 .fs li{font-size:11px;color:rgba(255,255,255,0.4);padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05);line-height:1.5;}
-.fs li::before{content:'📄 ';font-size:10px;}
+.fs li::before{content:'– ';font-size:10px;}
 .fm{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.7;}
 .fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;}
 .fbl{display:flex;gap:14px;}
@@ -405,9 +405,66 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
   .hero-feats{grid-template-columns:1fr;}.tg{grid-template-columns:1fr;}
 }
 @media(hover:none){.abtn,.btn-add,.btn-dc,.btn-ec,.al-ok{min-height:44px;}}
+.ic{width:1.15em;height:1.15em;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;display:inline-block}
+.dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;margin-right:.35em;vertical-align:.05em}
+.toast .ic{margin-right:7px;color:var(--g300)}
+.toast.err .ic{color:#fecaca}
+.btn-exp2{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:var(--white);color:var(--g700);border:1.5px solid var(--g300);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s ease}
+.btn-exp2:hover{background:var(--g100);border-color:var(--g500)}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.3 12.3 2.5 2.5 4.9-5.2"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+<symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="ic-alert" viewBox="0 0 24 24"><path d="M12 3.6 2.7 19.6h18.6z"/><path d="M12 10v4.4M12 17.2v.2"/></symbol>
+<symbol id="ic-hourglass" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12"/><path d="M7.5 3v3.2a5 5 0 0 0 2.1 4.1L12 12l2.4-1.7a5 5 0 0 0 2.1-4.1V3M7.5 21v-3.2a5 5 0 0 1 2.1-4.1L12 12l2.4 1.7a5 5 0 0 1 2.1 4.1V21"/></symbol>
+<symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 9.5a6 6 0 0 1 12 0c0 5.5 2.3 7 2.3 7H3.7s2.3-1.5 2.3-7z"/><path d="M10 20a2.2 2.2 0 0 0 4 0"/></symbol>
+<symbol id="ic-bell-off" viewBox="0 0 24 24"><path d="M6 9.5a6 6 0 0 1 12 0c0 5.5 2.3 7 2.3 7H3.7s2.3-1.5 2.3-7z"/><path d="M10 20a2.2 2.2 0 0 0 4 0M3.5 3.5l17 17"/></symbol>
+<symbol id="ic-alarm" viewBox="0 0 24 24"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 1.5M5 3.5 2.5 6M19 3.5 21.5 6"/></symbol>
+<symbol id="ic-pill" viewBox="0 0 24 24"><rect x="2.5" y="8" width="19" height="8" rx="4" transform="rotate(-45 12 12)"/><path d="m9.2 9.2 5.6 5.6"/></symbol>
+<symbol id="ic-leaf" viewBox="0 0 24 24"><path d="M5 19C4 10 9.5 4.5 20 4.5 20.5 15 15 20.5 5 19z"/><path d="M5 19c3-5.5 6.5-8.5 11-10.5"/></symbol>
+<symbol id="ic-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></symbol>
+<symbol id="ic-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5.3a3.5 3.5 0 0 1 0 6.4M18.2 14.4a6.5 6.5 0 0 1 3.3 5.6"/></symbol>
+<symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="ic-eye-off" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></symbol>
+<symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="ic-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+<symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 4.5V3h6v1.5M9 11h6M9 15h4"/></symbol>
+<symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
+<symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4M4 3.5V7h3.5M4 13a8 8 0 0 0 14.3 4M20 20.5V17h-3.5"/></symbol>
+<symbol id="ic-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.7 10.7c.7.6 1.2 1.4 1.2 2.3h5c0-.9.5-1.7 1.2-2.3A6 6 0 0 0 12 3z"/></symbol>
+<symbol id="ic-cap" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c1.5 1.7 3.6 2.5 6 2.5s4.5-.8 6-2.5v-4.5M22 9v6"/></symbol>
+<symbol id="ic-cpu" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><path d="M10 10h4v4h-4zM9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+<symbol id="ic-terminal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7.5 10 3 2.5-3 2.5M13 15h4"/></symbol>
+<symbol id="ic-flask" viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v6.5L4.8 19a1.5 1.5 0 0 0 1.3 2.2h11.8a1.5 1.5 0 0 0 1.3-2.2L13.5 9.5V3M7.5 15h9"/></symbol>
+<symbol id="ic-book" viewBox="0 0 24 24"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="m7.5 15 3.5-4 3 2.5 4.5-6"/></symbol>
+<symbol id="ic-watch" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2.5"/><path d="M9 7l.6-4h4.8L15 7M9 17l.6 4h4.8l.6-4M12 10v2l1.2 1"/></symbol>
+<symbol id="ic-share" viewBox="0 0 24 24"><path d="M12 15V3.5M8 7l4-4 4 4M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></symbol>
+<symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="ic-stethoscope" viewBox="0 0 24 24"><path d="M6 3v6a4 4 0 0 0 8 0V3M4.5 3H6M14 3h1.5M10 13v2.5a4.5 4.5 0 0 0 9 0V14"/><circle cx="19" cy="12" r="2"/></symbol>
+<symbol id="ic-droplet" viewBox="0 0 24 24"><path d="M12 3.5s6 6.3 6 10.5a6 6 0 0 1-12 0c0-4.2 6-10.5 6-10.5z"/></symbol>
+<symbol id="ic-bone" viewBox="0 0 24 24"><path d="M9.3 17.6a2.3 2.3 0 1 1-3.2 1 2.3 2.3 0 1 1 .3-3.9l8.3-8.3a2.3 2.3 0 1 1 3.2-1 2.3 2.3 0 1 1-.3 3.9z"/></symbol>
+<symbol id="ic-ear" viewBox="0 0 24 24"><path d="M7 9.5a5.5 5.5 0 0 1 11 0c0 3-2.5 3.8-3.2 5.6-.6 1.5-.8 4.4-3.3 4.4A2.5 2.5 0 0 1 9 17"/><path d="M10 10a2.5 2.5 0 0 1 5 0c0 1.5-2 2-2 3.5"/></symbol>
+<symbol id="ic-venus" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M12 14v7M9 18h6"/></symbol>
+<symbol id="ic-brain" viewBox="0 0 24 24"><path d="M12 5a3 3 0 0 0-5.5-1.2A3 3 0 0 0 4 8.5a3.2 3.2 0 0 0 .5 5.2A3.2 3.2 0 0 0 8 18.5a2.8 2.8 0 0 0 4 .5zM12 5a3 3 0 0 1 5.500-1.2A3 3 0 0 1 20 8.5a3.2 3.2 0 0 1-.5 5.2 3.2 3.2 0 0 1-3.5 4.8 2.8 2.8 0 0 1-4 .5zM12 5v14"/></symbol>
+<symbol id="ic-heart" viewBox="0 0 24 24"><path d="M12 20s-7.500-4.600-7.500-10.200A4.300 4.300 0 0 1 12 7.300a4.300 4.300 0 0 1 7.500 2.500C19.500 15.400 12 20 12 20z"/></symbol>
+<symbol id="ic-gastro" viewBox="0 0 24 24"><path d="M9 3v4a4 4 0 0 0 4 4h1.500a4 4 0 0 1 0 8H12a6.500 6.500 0 0 1-6.500-6.500V11"/></symbol>
+<symbol id="ic-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 1 0-3-3M3 14.500h15a3 3 0 1 1-3 3M3 11.700h6"/></symbol>
+<symbol id="ic-patch" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="8" rx="2.500" transform="rotate(-30 12 12)"/><path d="M12 10.800v2.400M10.800 12h2.400"/></symbol>
+<symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></symbol>
+<symbol id="ic-phone" viewBox="0 0 24 24"><path d="M6.500 3h3L11 7.500 9 9a12 12 0 0 0 6 6l1.500-2 4.500 1.500v3A2 2 0 0 1 19 19.500 16 16 0 0 1 4.500 5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="ic-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.500 7V4.500h5V7M6.500 7l1 13h9l1-13M10 11v6M14 11v6"/></symbol>
+<symbol id="ic-building" viewBox="0 0 24 24"><rect x="5" y="3.500" width="14" height="17.500" rx="1.500"/><path d="M12 7v4M10 9h4M10 21v-4h4v4"/></symbol>
+<symbol id="ic-repeat" viewBox="0 0 24 24"><path d="m17 3 3 3-3 3M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3M20 13v2a3 3 0 0 1-3 3H4"/></symbol>
+<symbol id="ic-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.800 5.800 12.400 12.400"/></symbol>
+<symbol id="ic-edit" viewBox="0 0 24 24"><path d="M5 20h14M14.500 4.500l3 3L9 16l-4 1 1-4z"/></symbol>
+<symbol id="ic-undo" viewBox="0 0 24 24"><path d="M9 7 4.500 11.500 9 16"/><path d="M4.500 11.500H15a4.500 4.500 0 0 1 0 9h-3"/></symbol>
+</defs></svg>
+
 
 <!-- ALARM -->
 <div class="alo hidden" id="alo">
@@ -435,15 +492,15 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="al-d" id="al-d"></div>
     <div class="al-pt" id="al-pt"></div>
     <div class="al-acts">
-      <button class="al-ok" onclick="doAlarm('yes')">✅ Usó la medicación</button>
-      <button class="al-late" onclick="showLP()">🕐 La aplicó en otro horario</button>
+      <button class="al-ok" onclick="doAlarm('yes')"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Usó la medicación</button>
+      <button class="al-late" onclick="showLP()"><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> La aplicó en otro horario</button>
       <div class="lp" id="lp">
         <label>¿A qué hora la tomó?</label>
         <input type="time" id="lp-t"/>
         <button onclick="doAlarm('late')">Confirmar</button>
       </div>
-      <button class="al-no" onclick="doAlarm('no')">❌ No usó la medicación</button>
-      <button class="al-snz" onclick="snooze()">⏰ Posponer 10 minutos</button>
+      <button class="al-no" onclick="doAlarm('no')"><svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg> No usó la medicación</button>
+      <button class="al-snz" onclick="snooze()"><svg class="ic" aria-hidden="true"><use href="#ic-alarm"/></svg> Posponer 10 minutos</button>
     </div>
   </div>
 </div>
@@ -472,14 +529,14 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="hero-title">Med<span>Topix</span></div>
     <div class="hero-sub">Tu asistente clínico de adherencia a medicamentos tópicos. Recordatorios inteligentes y curva de cumplimiento personalizada.</div>
     <div class="hero-disc">
-      <strong>⚠️ Aviso importante:</strong> MedTopix es una herramienta de apoyo al tratamiento prescrito. <strong>No reemplaza al médico tratante ni a ningún profesional de la salud.</strong> Ante dudas, efectos adversos o síntomas nuevos, consulte a su médico inmediatamente.
+      <strong><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Aviso importante:</strong> MedTopix es una herramienta de apoyo al tratamiento prescrito. <strong>No reemplaza al médico tratante ni a ningún profesional de la salud.</strong> Ante dudas, efectos adversos o síntomas nuevos, consulte a su médico inmediatamente.
     </div>
     <button class="btn-start" id="btn-start-normal" onclick="goStart()">Iniciar sesión →</button>
     <button class="btn-start" style="background:transparent;border:1.5px solid rgba(255,255,255,.45);margin-top:10px" onclick="goTerms()">Crear cuenta</button>
     <div class="hero-feats">
-      <div class="feat"><div class="feat-ic">🔔</div><div class="feat-t">Alarmas automáticas</div><div class="feat-d">Alertas visuales y sonoras a la hora exacta de cada toma</div></div>
-      <div class="feat"><div class="feat-ic">📊</div><div class="feat-t">Curva de adherencia</div><div class="feat-d">14 días de cumplimiento por paciente en tiempo real</div></div>
-      <div class="feat"><div class="feat-ic">💊</div><div class="feat-t">Multi-especialidad</div><div class="feat-d">Dermatología, Oftalmología, ORL, Ginecología y más</div></div>
+      <div class="feat"><div class="feat-ic"><svg class="ic" aria-hidden="true"><use href="#ic-bell"/></svg></div><div class="feat-t">Alarmas automáticas</div><div class="feat-d">Alertas visuales y sonoras a la hora exacta de cada toma</div></div>
+      <div class="feat"><div class="feat-ic"><svg class="ic" aria-hidden="true"><use href="#ic-chart"/></svg></div><div class="feat-t">Curva de adherencia</div><div class="feat-d">14 días de cumplimiento por paciente en tiempo real</div></div>
+      <div class="feat"><div class="feat-ic"><svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg></div><div class="feat-t">Multi-especialidad</div><div class="feat-d">Dermatología, Oftalmología, ORL, Ginecología y más</div></div>
     </div>
   </div>
 </div>
@@ -505,7 +562,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <p>Al aceptar, el usuario declara haber leído y aceptado estas condiciones. La aceptación queda registrada con el tipo y número de documento del usuario.</p>
     </div>
     <div class="t-form">
-      <div class="t-form-title">📋 Datos de quien acepta los términos</div>
+      <div class="t-form-title"><svg class="ic" aria-hidden="true"><use href="#ic-clipboard"/></svg> Datos de quien acepta los términos</div>
       <div class="tg">
         <div class="fg" style="grid-column:span 2"><label class="fl">Tipo de cuenta</label>
           <select class="fi" id="tc-role" onchange="roleChanged()">
@@ -535,7 +592,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
         <div class="fg"><label class="fl">Contraseña</label>
 <div class="pw-wrap">
   <input type="password" class="fi" id="tc-p" placeholder="Mínimo 8 caracteres"/>
-  <button type="button" class="pw-eye" onclick="togPw('tc-p',this)" title="Mostrar/ocultar">👁️</button>
+  <button type="button" class="pw-eye" onclick="togPw('tc-p',this)" title="Mostrar/ocultar"><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg></button>
 </div></div>
       </div>
       <label class="t-chk"><input type="checkbox" id="tc-c1" onchange="chkReady()"/><span>He leído y acepto los Términos y Condiciones de MedTopix, incluyendo la política de datos conforme a la Ley 1581 de 2012.</span></label>
@@ -559,7 +616,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label>
 <div class="pw-wrap">
   <input type="password" class="fi" id="li-p" placeholder="Tu contraseña"/>
-  <button type="button" class="pw-eye" onclick="togPw('li-p',this)" title="Mostrar/ocultar">👁️</button>
+  <button type="button" class="pw-eye" onclick="togPw('li-p',this)" title="Mostrar/ocultar"><svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg></button>
 </div></div>
     <button class="btn-login" onclick="doLogin()">Entrar</button>
     <div class="lb-div" style="margin-top:16px">¿Primera vez en MedTopix?</div>
@@ -603,7 +660,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 </header>
 
 <div class="nb hidden" id="nb">
-  <div class="nb-pill">💊</div>
+  <div class="nb-pill"><svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg></div>
   <div class="nb-info">
     <div class="nb-lbl">Próximo recordatorio</div>
     <div class="nb-name" id="nb-n"></div>
@@ -650,11 +707,11 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <div class="fg"><label class="fl">Teléfono</label><input type="text" id="p-ph" placeholder="310 000 0000"/></div>
       <div class="fg" style="grid-column:span 2"><label class="fl">Observaciones</label><textarea id="p-ob" placeholder="Alergias, antecedentes..."></textarea></div>
     </div>
-    <div class="ff"><button class="btn-add" onclick="addPt()">➕ Registrar paciente</button><span class="hint">Se guarda en tu cuenta MedTopix</span></div>
+    <div class="ff"><button class="btn-add" onclick="addPt()"><svg class="ic" aria-hidden="true"><use href="#ic-plus"/></svg> Registrar paciente</button><span class="hint">Se guarda en tu cuenta MedTopix</span></div>
   </div>
   <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Pacientes y adherencia</div>
   <div style="margin-bottom:14px;">
-    <button onclick="exportPatients()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#9c27b0,#ba68c8);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar pacientes CSV</button>
+    <button onclick="exportPatients()" class="btn-exp2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar pacientes CSV</button>
   </div>
   <div class="pl" id="pl"></div>
 </div>
@@ -666,7 +723,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg></div><div><div class="fh-t">Nuevo recordatorio</div><div class="fh-s">Asigna un paciente y programa la hora de toma</div></div></div>
     <div class="fg2">
       <div class="fg" style="grid-column:span 2"><label class="fl">Medicamento o indicación nutricional</label><input type="text" id="f-n" placeholder="Ej: Tobramicina 0.3% colirio"/></div>
-      <div class="fg"><label class="fl">Tipo de tratamiento</label><select id="f-k"><option value="farmacologico">💊 Farmacológico</option><option value="nutricional">🥗 Nutricional</option></select></div>
+      <div class="fg"><label class="fl">Tipo de tratamiento</label><select id="f-k"><option value="farmacologico">Farmacológico</option><option value="nutricional">Nutricional</option></select></div>
       <div class="fg" id="f-es-wrap"><label class="fl">Avisar al equipo tratante</label><select id="f-es"><option value="streak">Si falla dos dosis seguidas</option><option value="always">En cada dosis sin cumplir (tratamiento crítico)</option><option value="never">No avisar</option></select></div>
       <div class="fg" id="f-pt-wrap"><label class="fl">Paciente asignado</label><select id="f-pt" onchange="preloadPt()"><option value="">— Sin asignar —</option></select></div>
       <div class="fg"><label class="fl">Especialidad</label>
@@ -683,7 +740,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       </div>
       <div class="fg" style="grid-column:span 2"><label class="fl">Notas / instrucciones</label><textarea id="f-nt" placeholder="Ej: Aplicar en zona afectada. No suspender sin indicación médica."></textarea></div>
     </div>
-    <div class="ff"><button class="btn-add" onclick="addMed()">➕ Agregar recordatorio</button><span class="hint">Se guarda en tu cuenta MedTopix</span></div>
+    <div class="ff"><button class="btn-add" onclick="addMed()"><svg class="ic" aria-hidden="true"><use href="#ic-plus"/></svg> Agregar recordatorio</button><span class="hint">Se guarda en tu cuenta MedTopix</span></div>
   </div>
   <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg></div>Medicamentos registrados</div>
   <div class="sf" id="sf"></div>
@@ -694,8 +751,8 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <div class="tp" id="tp-report">
   <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>Reporte de adherencia</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-    <button onclick="exportAdherence()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#16a34a,#5fc97e);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar adherencia CSV</button>
-    <button onclick="exportMeds()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar medicamentos CSV</button>
+    <button onclick="exportAdherence()" class="btn-exp2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar adherencia CSV</button>
+    <button onclick="exportMeds()" class="btn-exp2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar medicamentos CSV</button>
   </div>
   <div class="fc">
     <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div><div class="fh-t">Filtros</div><div class="fh-s">Filtra por paciente, fecha y estado</div></div></div>
@@ -705,10 +762,10 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <input type="date" id="rp-t2" onchange="renderRep()"/>
       <select id="rp-st" onchange="renderRep()">
         <option value="">Todos los estados</option>
-        <option value="yes">✅ Usó la medicación</option>
-        <option value="late">🕐 Otro horario</option>
-        <option value="no">❌ No usó</option>
-        <option value="none">⚠️ Sin respuesta</option>
+        <option value="yes">Usó la medicación</option>
+        <option value="late">Otro horario</option>
+        <option value="no">No usó</option>
+        <option value="none">Sin respuesta</option>
       </select>
     </div>
   </div>
@@ -718,8 +775,8 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <!-- PROCESO IA -->
 <div class="tp" id="tp-process">
   <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></div>Proceso de desarrollo con IA</div>
-  <div class="proc"><h3>📌 Descripción del ejercicio</h3><p>Se desarrolló <strong>MedTopix</strong> mediante prompts iterativos al modelo Claude (Anthropic), sin escribir código manualmente. Publicada en <strong>medtopix.vercel.app</strong>.</p></div>
-  <div class="proc"><h3>🔄 Iteraciones y prompts</h3>
+  <div class="proc"><h3><svg class="ic" aria-hidden="true"><use href="#ic-info"/></svg> Descripción del ejercicio</h3><p>Se desarrolló <strong>MedTopix</strong> mediante prompts iterativos al modelo Claude (Anthropic), sin escribir código manualmente. Publicada en <strong>medtopix.vercel.app</strong>.</p></div>
+  <div class="proc"><h3><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg> Iteraciones y prompts</h3>
     <div class="ibdg">1</div><p><strong>Guía interactiva</strong> — HTML con 10 categorías farmacológicas en 6 especialidades.</p>
     <div class="pbox">Para esta actividad debo hacer para medicamentos tópicos. Guía interactiva para múltiples especialidades médicas.</div>
     <div class="ibdg" style="margin-top:12px">2</div><p><strong>App de recordatorio</strong> — localStorage, hora, dosis, frecuencia.</p>
@@ -737,7 +794,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="ibdg" style="margin-top:12px">8</div><p><strong>Versión completa</strong> — Landing, T&C Ley 1581, login, edad por fecha nacimiento, dosis máxima, alarma animada, reporte, fuentes OMS.</p>
     <div class="pbox">Página de inicio, política datos Ley 1581, checklist T&C con documento, login email, fecha nacimiento, dosis máxima diaria con alerta, alarma animada reloj bailando, reporte, fuentes OMS.</div>
   </div>
-  <div class="proc"><h3>💡 Reflexión</h3><p>El proceso demostró que la ingeniería de prompts es una habilidad clínica y técnica simultáneamente. Cada iteración aportó funcionalidad validada clínicamente. La IA actuó como co-desarrollador mientras el equipo aportó criterio médico y cumplimiento normativo (Ley 1581).</p></div>
+  <div class="proc"><h3><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg> Reflexión</h3><p>El proceso demostró que la ingeniería de prompts es una habilidad clínica y técnica simultáneamente. Cada iteración aportó funcionalidad validada clínicamente. La IA actuó como co-desarrollador mientras el equipo aportó criterio médico y cumplimiento normativo (Ley 1581).</p></div>
 </div>
 
 <!-- EQUIPO -->
@@ -749,7 +806,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
         <svg viewBox="0 0 50 50" width="34" height="34" xmlns="http://www.w3.org/2000/svg"><circle cx="25" cy="25" r="24" fill="#1a4a2e"/><circle cx="25" cy="25" r="15" fill="#f0f7f2" stroke="#2d8a4e" stroke-width="1.5"/><line x1="25" y1="25" x2="25" y2="13" stroke="#1a4a2e" stroke-width="2.5" stroke-linecap="round"/><line x1="25" y1="25" x2="33" y2="29" stroke="#c97a20" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="25" r="2.5" fill="#1a4a2e"/></svg>
         <div><div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;color:var(--g800)">MedTopix</div><div style="font-size:10px;color:var(--muted)">Máster Salud Digital e IA · OBS · Mayo 2025</div></div>
       </div>
-      <div class="tbgs"><span class="tbg">🎓 OBS Business School</span><span class="tbg">👥 Grupo 5</span><span class="tbg">🤖 Claude</span><span class="tbg">🦞 OpenClaw</span></div>
+      <div class="tbgs"><span class="tbg"><svg class="ic" aria-hidden="true"><use href="#ic-cap"/></svg> OBS Business School</span><span class="tbg"><svg class="ic" aria-hidden="true"><use href="#ic-users"/></svg> Grupo 5</span><span class="tbg"><svg class="ic" aria-hidden="true"><use href="#ic-cpu"/></svg> Claude</span><span class="tbg"><svg class="ic" aria-hidden="true"><use href="#ic-terminal"/></svg> OpenClaw</span></div>
     </div>
     <div class="tmg">
       <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#2d8a4e,#5fc97e)">L</div><div><div class="tmn">Leonardo Orjuela Mariño</div><div class="tmr">Optometrista · Desarrollador</div></div></div>
@@ -757,7 +814,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#6a1b9a,#ba68c8)">L</div><div><div class="tmn">Lida Ximena Rodriguez Dueñas</div><div class="tmr">Integrante Grupo 5</div></div></div>
       <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#e65100,#ffa726)">M</div><div><div class="tmn">Marcelino Humberto Mejía Canales</div><div class="tmr">Integrante Grupo 5</div></div></div>
       <div class="tmcard"><div class="tmav" style="background:linear-gradient(135deg,#00695c,#4db6ac)">J</div><div><div class="tmn">Juan Carlos Estrada Vélez</div><div class="tmr">Integrante Grupo 5</div></div></div>
-      <div class="tmcard prof"><div class="tmav" style="background:linear-gradient(135deg,#1a4a2e,#3aaa63);font-size:16px">👨‍🏫</div><div><div class="tmn">Juan Ramon Segura Tur</div><div class="tmr" style="color:var(--g600);font-weight:700">Profesor · Máster Salud Digital e IA</div></div></div>
+      <div class="tmcard prof"><div class="tmav" style="background:linear-gradient(135deg,#1a4a2e,#3aaa63);font-size:16px"><svg class="ic" aria-hidden="true"><use href="#ic-cap"/></svg></div><div><div class="tmn">Juan Ramon Segura Tur</div><div class="tmr" style="color:var(--g600);font-weight:700">Profesor · Máster Salud Digital e IA</div></div></div>
     </div>
     <div style="margin-top:18px;padding:14px;background:var(--g100);border-radius:9px;border:1.5px solid var(--g200);font-size:12px;color:var(--muted);line-height:1.7">
       MedTopix fue desarrollada íntegramente mediante prompts iterativos a Claude (Anthropic). El agente de Telegram funciona en <strong>@medtopix_bot</strong> con OpenClaw 2026. Publicada en <strong>medtopix.vercel.app</strong>.
@@ -767,7 +824,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 
 <!-- SYNC -->
 <div class="tp" id="tp-sync">
-  <div class="st"><div class="si">👤</div>Mi cuenta y casos</div>
+  <div class="st"><div class="si"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg></div>Mi cuenta y casos</div>
   <div id="acct"></div>
 </div>
 
@@ -777,7 +834,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
   <div class="fi2">
     <div class="ft">
       <div>
-        <div class="fst">📚 Fuentes consultadas — OMS</div>
+        <div class="fst"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> Fuentes consultadas — OMS</div>
         <ul class="fs">
           <li>OMS. Adherencia a los tratamientos a largo plazo: pruebas para la acción. Ginebra: OMS; 2004.</li>
           <li>OMS. Guía de buenas prácticas de prescripción de medicamentos. Ginebra: OMS; 1994.</li>
@@ -788,7 +845,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
         </ul>
       </div>
       <div>
-        <div class="fst">🔬 Metodología de minería de datos</div>
+        <div class="fst"><svg class="ic" aria-hidden="true"><use href="#ic-flask"/></svg> Metodología de minería de datos</div>
         <div class="fm">MedTopix fue desarrollada aplicando minería de conocimiento clínico a partir de documentos oficiales de la OMS, el INVIMA y el Ministerio de Salud de Colombia. El proceso incluyó extracción de categorías farmacológicas tópicas por especialidad, identificación de mecanismos de acción e indicaciones, y validación clínica por un optometrista certificado. El código fue generado íntegramente con Claude (Anthropic) mediante prompts iterativos. El agente Telegram usa OpenClaw 2026 + Claude Haiku.</div>
       </div>
     </div>
@@ -800,13 +857,13 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 </footer>
 <!-- NOTIFICATION PERMISSION BANNER -->
 <div id="notif-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:var(--g800);border:1.5px solid var(--g500);border-radius:14px;padding:16px 20px;max-width:420px;width:92%;box-shadow:0 8px 32px rgba(13,40,24,0.4);align-items:center;gap:14px;flex-wrap:wrap;">
-  <div style="font-size:1.8rem">🔔</div>
+  <div style="font-size:1.8rem"><svg class="ic" aria-hidden="true"><use href="#ic-bell"/></svg></div>
   <div style="flex:1">
     <div style="font-size:13px;font-weight:700;color:#fff">Activar alertas en tu dispositivo</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Recibe notificaciones aunque la app esté en segundo plano. En iPhone con la app instalada, también en tu Apple Watch ⌚</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Recibe notificaciones aunque la app esté en segundo plano. En iPhone con la app instalada, también en tu Apple Watch <svg class="ic" aria-hidden="true"><use href="#ic-watch"/></svg></div>
   </div>
   <div style="display:flex;gap:8px;width:100%">
-    <button onclick="requestNotif()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✅ Activar alertas</button>
+    <button onclick="requestNotif()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Activar alertas</button>
     <button onclick="document.getElementById('notif-banner').style.display='none'" style="padding:10px 14px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;">Ahora no</button>
   </div>
 </div>
@@ -814,7 +871,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <!-- iOS INSTALL TIP -->
 <div id="install-tip" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:500;background:var(--g900);border:1.5px solid var(--g400);border-radius:14px;padding:16px 20px;max-width:380px;width:92%;box-shadow:0 8px 32px rgba(13,40,24,0.4);flex-direction:column;gap:10px;">
   <div style="display:flex;align-items:center;gap:10px">
-    <div style="font-size:1.5rem">⌚</div>
+    <div style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#ic-watch"/></svg></div>
     <div>
       <div style="font-size:13px;font-weight:700;color:#fff">Instala MedTopix en tu iPhone</div>
       <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Para recibir alertas en tu Apple Watch</div>
@@ -822,10 +879,10 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <button onclick="closeInstallTip()" style="margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;">✕</button>
   </div>
   <div style="background:rgba(255,255,255,0.06);border-radius:9px;padding:12px;font-size:12px;color:rgba(255,255,255,0.7);line-height:1.7">
-    1. Toca <strong style="color:var(--g400)">⬆️ Compartir</strong> en Safari<br>
+    1. Toca <strong style="color:var(--g400)"><svg class="ic" aria-hidden="true"><use href="#ic-share"/></svg> Compartir</strong> en Safari<br>
     2. Selecciona <strong style="color:var(--g400)">"Añadir a pantalla de inicio"</strong><br>
     3. Abre MedTopix desde tu pantalla de inicio<br>
-    4. Las alertas llegarán automáticamente a tu ⌚ Apple Watch
+    4. Las alertas llegarán automáticamente a tu <svg class="ic" aria-hidden="true"><use href="#ic-watch"/></svg> Apple Watch
   </div>
 </div>
 
@@ -836,25 +893,26 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────
 var SPECS = {
-  'General':           {color:'#546e7a', icon:'🩺'},
-  'Dermatología':      {color:'#e05252', icon:'🩹'},
-  'Oftalmología':      {color:'#2196f3', icon:'👁️'},
-  'Traumatología':     {color:'#ff7043', icon:'🦴'},
-  'ORL':               {color:'#f4b400', icon:'👂'},
-  'Ginecología':       {color:'#9c27b0', icon:'💜'},
-  'Neurología':        {color:'#ff6d00', icon:'🧠'},
-  'Cardiología':       {color:'#00838f', icon:'❤️'},
-  'Gastroenterología': {color:'#558b2f', icon:'🫁'}
+  'General':           {color:'#4b6358', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-stethoscope"/></svg>'},
+  'Dermatología':      {color:'#a8554d', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-droplet"/></svg>'},
+  'Oftalmología':      {color:'#2f6f9f', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg>'},
+  'Traumatología':     {color:'#a9673f', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-bone"/></svg>'},
+  'ORL':               {color:'#9a7d2c', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-ear"/></svg>'},
+  'Ginecología':       {color:'#7a5a90', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-venus"/></svg>'},
+  'Neurología':        {color:'#a5622f', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-brain"/></svg>'},
+  'Cardiología':       {color:'#2d7676', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-heart"/></svg>'},
+  'Gastroenterología': {color:'#5b7a3a', icon:'<svg class="ic" aria-hidden="true"><use href="#ic-gastro"/></svg>'}
 };
 var RICONS = {
-  'Tópica cutánea':'🩹','Colirio / ocular':'👁️','Ótica':'👂',
-  'Nasal':'👃','Vaginal':'💊','Transdérmica':'🔵','Oral':'💊','Inhalada':'💨'
+  'Tópica cutánea':'<svg class="ic" aria-hidden="true"><use href="#ic-droplet"/></svg>','Colirio / ocular':'<svg class="ic" aria-hidden="true"><use href="#ic-eye"/></svg>','Ótica':'<svg class="ic" aria-hidden="true"><use href="#ic-ear"/></svg>',
+  'Nasal':'<svg class="ic" aria-hidden="true"><use href="#ic-wind"/></svg>','Vaginal':'<svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg>','Transdérmica':'<svg class="ic" aria-hidden="true"><use href="#ic-patch"/></svg>','Oral':'<svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg>','Inhalada':'<svg class="ic" aria-hidden="true"><use href="#ic-wind"/></svg>'
 };
-var ADH_LABELS = {yes:'✅ Usó la medicación', late:'🕐 Otro horario', no:'❌ No usó', none:'⚠️ Sin respuesta'};
+var ADH_LABELS = {yes:'<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Usó la medicación', late:'<svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> Otro horario', no:'<svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg> No usó', none:'<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Sin respuesta'};
 var ADH_COLORS = {yes:'#16a34a', late:'#2563eb', no:'#dc2626'};
 // Horas del día en que toca cada tratamiento. La misma regla vive en api/_lib/doses.js.
 var EVERY = {'Cada 4 horas':4,'Cada 6 horas':6,'Cada 8 horas':8,'Cada 12 horas':12,'Una vez al día':24};
 function isPrn(med){ return !EVERY[med.freq]; }
+function freqShort(med){ var ev=EVERY[med.freq]; return !ev ? 'a demanda' : ev===24 ? '1 / día' : 'c / '+ev+' h'; }
 function doseTimes(med){
   var ev=EVERY[med.freq], p=(med.time||'').split(':');
   if(!ev||p.length!==2) return [med.time];
@@ -968,7 +1026,7 @@ function acceptTerms(){
   }).then(loadState).then(function(){
     document.getElementById('tc-p').value='';
     initApp(); show('sa');
-    toast('✅ Cuenta creada. Bienvenido a MedTopix.');
+    toast('Cuenta creada. Bienvenido a MedTopix.');
   }).catch(apiFail).then(function(){chkReady();});
 }
 
@@ -1055,7 +1113,7 @@ function syncPush(){
 }
 function testPush(){
   api('POST','/api/push?action=test',{}).then(function(r){
-    toast(r.sent>0 ? '🔔 Aviso de prueba enviado a '+r.sent+' dispositivo(s).' : 'Este usuario no tiene dispositivos con avisos activos.', r.sent===0);
+    toast(r.sent>0 ? 'Aviso de prueba enviado a '+r.sent+' dispositivo(s).' : 'Este usuario no tiene dispositivos con avisos activos.', r.sent===0);
   }).catch(apiFail);
 }
 
@@ -1080,7 +1138,7 @@ function requestNotif(){
   Notification.requestPermission().then(function(result){
     if(result!=='granted'){ toast('Sin permiso, las alarmas solo suenan con la app abierta.', true); renderAccount(); return; }
     syncPush().then(function(ok){
-      toast(ok ? '✅ Avisos activados en este dispositivo. Si usa reloj, también vibrará allí.' : 'No se pudo activar el aviso en este dispositivo.', !ok);
+      toast(ok ? 'Avisos activados en este dispositivo. Si usa reloj, también vibrará allí.' : 'No se pudo activar el aviso en este dispositivo.', !ok);
     });
   });
 }
@@ -1161,12 +1219,12 @@ function triggerAlarm(d){
   document.getElementById('al-med').textContent = med.name;
   document.getElementById('al-t').textContent = d.time;
   document.getElementById('al-d').textContent = (med.dose?'Dosis: '+med.dose+' · ':'')+med.route;
-  document.getElementById('al-pt').textContent = pt ? '👤 '+pt.name : '👤 Sin paciente asignado';
+  document.getElementById('al-pt').textContent = pt ? ''+pt.name : 'Sin paciente asignado';
   document.getElementById('lp').classList.remove('show');
   document.getElementById('alo').classList.remove('hidden');
   beep();
   // con push activo el servidor ya envía la notificación; así no llega dos veces al celular y al reloj
-  if(!pushOn) sendNotification('💊 Hora de tu medicamento', med.name+(pt?' — 👤 '+pt.name:'')+' | '+d.time+(med.dose?' · '+med.dose:''));
+  if(!pushOn) sendNotification('Hora de tu medicamento', med.name+(pt?' — '+pt.name:'')+' | '+d.time+(med.dose?' · '+med.dose:''));
 }
 
 function showLP(){ document.getElementById('lp').classList.toggle('show'); }
@@ -1190,7 +1248,7 @@ function snooze(){
   snoozed[curAlarm.key] = Date.now()+10*60*1000;
   document.getElementById('alo').classList.add('hidden');
   curAlarm = null;
-  toast('⏰ Pospuesto 10 minutos.');
+  toast('Pospuesto 10 minutos.');
 }
 
 function sendNotification(title, body){
@@ -1248,7 +1306,7 @@ function saveAdh(medId, patientId, status, scheduled, actual, medName){
   var today = todayStr();
   adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today && a.scheduledTime===scheduled);});
   adherence.push({medId:medId, patientId:patientId||null, date:today, status:status, scheduledTime:scheduled, actualTime:actual, ts:Date.now(), medName:medName});
-  var lbl = {yes:'✅ Usó la medicación registrado.', late:'🕐 Horario alternativo registrado.', no:'❌ No uso registrado.'};
+  var lbl = {yes:'Usó la medicación registrado.', late:'Horario alternativo registrado.', no:'No uso registrado.'};
   api('POST','/api/adherence',{medId:medId, date:today, status:status, scheduledTime:scheduled, actualTime:actual})
     .then(function(){toast(lbl[status]);}).catch(resync);
 }
@@ -1272,7 +1330,7 @@ function updateNext(){
   var hh=Math.floor(diff/3600000), mm=Math.floor((diff%3600000)/60000), ss=Math.floor((diff%60000)/1000);
   var pt=patients.find(function(p){return p.id===best.r.patientId;});
   document.getElementById('nb-n').textContent = best.r.name;
-  document.getElementById('nb-m').textContent = (pt?'👤 '+pt.name+' · ':'')+(best.r.dose?best.r.dose+' · ':'')+best.r.route;
+  document.getElementById('nb-m').textContent = (pt?''+pt.name+' · ':'')+(best.r.dose?best.r.dose+' · ':'')+best.r.route;
   document.getElementById('nb-cd').textContent = hh>0 ? hh+'h '+pad(mm)+'m' : pad(mm)+':'+pad(ss);
 }
 
@@ -1296,14 +1354,14 @@ function renderAlerts(){
   var list = document.getElementById('al'); if(!list) return;
   var sorted = todayDoses();
   if(!sorted.length){
-    list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🔕</div><div style="font-weight:600">Sin medicamentos. Ve a <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos.</div></div>';
+    list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px"><svg class="ic" aria-hidden="true"><use href="#ic-bell-off"/></svg></div><div style="font-weight:600">Sin medicamentos. Ve a <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos.</div></div>';
     return;
   }
   var today = todayStr();
   var html = '';
   sorted.forEach(function(d){
     var med = d.med, arg = med.id+",'"+d.time+"'";
-    var spec = SPECS[med.specialty]||{color:'#3aaa63',icon:'💊'};
+    var spec = SPECS[med.specialty]||{color:'#3aaa63',icon:'<svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg>'};
     var pt   = patients.find(function(p){return p.id===med.patientId;});
     var rec  = recFor(med.id, d.time, today);
     var st   = doseStatus(med, d.time);
@@ -1311,34 +1369,34 @@ function renderAlerts(){
     var mr   = maxReached(med);
 
     var stPill = '';
-    if(st==='pending') stPill='<span class="sp sp-p">⏳ Pendiente</span>';
-    else if(st==='done') stPill='<span class="sp sp-d">✅ Usó med.</span>';
-    else if(st==='late') stPill='<span class="sp sp-l">🕐 '+(rec?rec.actualTime:'')+'</span>';
-    else stPill='<span class="sp sp-o">'+(st==='no'?'❌ No usó':st==='none'?'⚠️ Sin respuesta':'⚠️ Vencido')+'</span>';
+    if(st==='pending') stPill='<span class="sp sp-p"><svg class="ic" aria-hidden="true"><use href="#ic-hourglass"/></svg> Pendiente</span>';
+    else if(st==='done') stPill='<span class="sp sp-d"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Usó med.</span>';
+    else if(st==='late') stPill='<span class="sp sp-l"><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> '+(rec?rec.actualTime:'')+'</span>';
+    else stPill='<span class="sp sp-o">'+(st==='no'?'<svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg> No usó':st==='none'?'<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Sin respuesta':'<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Vencido')+'</span>';
 
     var actionHtml = '';
     if(open && !mr){
       actionHtml = '<div class="abtns">'
-        +'<button class="abtn abtn-y" onclick="recManY('+arg+')">✅ Usó</button>'
-        +'<button class="abtn abtn-l" onclick="togLate(\''+d.key+'\')">🕐 Otro</button>'
-        +'<button class="abtn abtn-n" onclick="recManN('+arg+')">❌ No</button>'
+        +'<button class="abtn abtn-y" onclick="recManY('+arg+')"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Usó</button>'
+        +'<button class="abtn abtn-l" onclick="togLate(\''+d.key+'\')"><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> Otro</button>'
+        +'<button class="abtn abtn-n" onclick="recManN('+arg+')"><svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg> No</button>'
         +'</div>'
         +'<div class="late-in" id="li-'+d.key+'">'
         +'<input type="time" id="lt-'+d.key+'"/>'
         +'<button onclick="recManL('+arg+')">OK</button>'
         +'</div>';
     } else if(!open){
-      actionHtml = '<button class="abtn abtn-u" onclick="undoRec('+arg+')">↩ Deshacer</button>';
+      actionHtml = '<button class="abtn abtn-u" onclick="undoRec('+arg+')"><svg class="ic" aria-hidden="true"><use href="#ic-undo"/></svg> Deshacer</button>';
     } else {
-      actionHtml = '<span style="font-size:10px;color:var(--red);font-weight:700">🚫 Dosis máx.</span>';
+      actionHtml = '<span style="font-size:10px;color:var(--red);font-weight:700"><svg class="ic" aria-hidden="true"><use href="#ic-ban"/></svg> Dosis máx.</span>';
     }
 
-    var doseWarnHtml = (mr&&open) ? '<div class="dose-warn">⚠️ Dosis máxima: '+med.maxdose+'</div>' : '';
-    var ptHtml  = pt ? '<div class="apt">👤 '+pt.name+'</div>' : '';
+    var doseWarnHtml = (mr&&open) ? '<div class="dose-warn"><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Dosis máxima: '+med.maxdose+'</div>' : '';
+    var ptHtml  = pt ? '<div class="apt"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg> '+pt.name+'</div>' : '';
     var maxHtml = med.maxdose ? ' · Máx: '+med.maxdose : '';
 
     html += '<div class="ar">'
-      +'<div class="at"><div class="at-v">'+d.time+'</div><div class="at-f">'+med.freq.split(' ')[0]+'</div></div>'
+      +'<div class="at"><div class="at-v">'+d.time+'</div><div class="at-f">'+freqShort(med)+'</div></div>'
       +'<div class="abar" style="background:'+spec.color+'"></div>'
       +'<div class="ai">'
         +'<div class="an">'+spec.icon+' '+med.name+(med.kind==='nutricional'?'<span class="kind-n">Nutricional</span>':'')+'</div>'
@@ -1369,7 +1427,7 @@ function togLate(key){
 
 function recMan(medId, time, status, actual){
   var med = meds.find(function(m){return m.id===medId;}); if(!med) return;
-  if(maxReached(med)&&status!=='no'){toast('⚠️ Dosis máxima diaria alcanzada.',true);return;}
+  if(maxReached(med)&&status!=='no'){toast('Dosis máxima diaria alcanzada.',true);return;}
   saveAdh(medId, med.patientId, status, time, actual||time, med.name);
   renderAlerts(); updateStats();
 }
@@ -1378,7 +1436,7 @@ function undoRec(medId, time){
   var today = todayStr();
   adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today && a.scheduledTime===time);});
   renderAlerts(); updateStats();
-  api('DELETE','/api/adherence?medId='+medId+'&date='+today+'&scheduledTime='+encodeURIComponent(time)).then(function(){toast('↩ Registro deshecho.');}).catch(resync);
+  api('DELETE','/api/adherence?medId='+medId+'&date='+today+'&scheduledTime='+encodeURIComponent(time)).then(function(){toast('Registro deshecho.');}).catch(resync);
 }
 
 // ── PATIENTS ──────────────────────────────────────────────────
@@ -1395,7 +1453,7 @@ function addPt(){
     r.patient.age=ageFrom(r.patient.dob); r.patient.team=[];
     patients.unshift(r.patient);
     renderPatients(); refreshPtSel();
-    toast('✅ '+r.patient.name+' registrado. Código del caso: '+r.patient.linkCode);
+    toast(''+r.patient.name+' registrado. Código del caso: '+r.patient.linkCode);
     ['p-n','p-id','p-dx','p-ph','p-ob'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('p-dob').value='';
     document.getElementById('age-d').textContent='— años';
@@ -1405,12 +1463,12 @@ function addPt(){
 function delPt(id){
   var p = patients.find(function(x){return x.id===id;}); if(!p) return;
   var own = p.mine;
-  var msg = own ? '⚠️ ¿Eliminar la ficha de "'+p.name+'" con sus tratamientos, adherencia y notas?\n\nEsta acción no se puede deshacer.'
+  var msg = own ? '¿Eliminar la ficha de "'+p.name+'" con sus tratamientos, adherencia y notas?\n\nEsta acción no se puede deshacer.'
                 : '¿Dejar de seguir el caso de "'+p.name+'"? La ficha no se borra; podrás volver a vincularte con el código.';
   if(!confirm(msg)) return;
   var call = own ? api('DELETE','/api/patients?id='+id) : api('POST','/api/patients?action=unlink',{id:id});
   call.then(function(){
-    toast(own ? '🗑️ '+p.name+' eliminado.' : 'Dejaste de seguir el caso de '+p.name+'.');
+    toast(own ? ''+p.name+' eliminado.' : 'Dejaste de seguir el caso de '+p.name+'.');
     return loadState().then(refreshAll);
   }).catch(apiFail);
 }
@@ -1423,7 +1481,7 @@ function togAdh(id){
 function renderPatients(){
   var el = document.getElementById('pl'); if(!el) return;
   if(!patients.length){
-    el.innerHTML='<div class="empty"><div class="empty-c">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">'+(curUser&&curUser.role==='farmaceuta'?'Vincula un caso con su código en la pestaña Mi cuenta.':'Registra el primero arriba o vincula un caso con su código en Mi cuenta.')+'</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-c"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg></div><div class="empty-t">Sin pacientes</div><div class="empty-s">'+(curUser&&curUser.role==='farmaceuta'?'Vincula un caso con su código en la pestaña Mi cuenta.':'Registra el primero arriba o vincula un caso con su código en Mi cuenta.')+'</div></div>';
     return;
   }
   var html='';
@@ -1445,12 +1503,12 @@ function renderPatients(){
         +'</div>'
       +'</div>';
     }
-    var dobH=p.dob?'<div class="pd">🎂 '+p.dob+'</div>':'';
-    var phH=p.phone?'<div class="pd">📞 '+p.phone+'</div>':'';
-    var obH=p.obs?'<div class="pd" style="font-size:10px">📌 '+p.obs+'</div>':'';
-    var caseH='<div class="pt-case">🔗 Código del caso: <b>'+p.linkCode+'</b> · '+(p.hasAccount?'paciente con cuenta':'paciente sin cuenta aún')+'</div>'+teamHtml(p);
+    var dobH=p.dob?'<div class="pd"><svg class="ic" aria-hidden="true"><use href="#ic-calendar"/></svg> '+p.dob+'</div>':'';
+    var phH=p.phone?'<div class="pd"><svg class="ic" aria-hidden="true"><use href="#ic-phone"/></svg> '+p.phone+'</div>':'';
+    var obH=p.obs?'<div class="pd" style="font-size:10px"><svg class="ic" aria-hidden="true"><use href="#ic-info"/></svg> '+p.obs+'</div>':'';
+    var caseH='<div class="pt-case"><svg class="ic" aria-hidden="true"><use href="#ic-link"/></svg> Código del caso: <b>'+p.linkCode+'</b> · '+(p.hasAccount?'paciente con cuenta':'paciente sin cuenta aún')+'</div>'+teamHtml(p);
     var isPt=curUser&&curUser.role==='paciente';
-    var notesBtn=isPt?'':'<button class="btn-curve" onclick="togNotes('+p.id+')">📝 Notas</button>';
+    var notesBtn=isPt?'':'<button class="btn-curve" onclick="togNotes('+p.id+')"><svg class="ic" aria-hidden="true"><use href="#ic-edit"/></svg> Notas</button>';
     var delBtn=isPt?'':'<button class="btn-dpt" title="'+(p.mine?'Eliminar ficha':'Dejar de seguir el caso')+'" onclick="delPt('+p.id+')">✕</button>';
     html+='<div>'
       +'<div class="pc">'
@@ -1460,7 +1518,7 @@ function renderPatients(){
           +'<div class="pd">'+(p.age!=null?p.age+' años · ':'')+p.specialty+(p.diagnosis?' · '+p.diagnosis:'')+'</div>'
           +dobH+phH+obH+caseH+pctHtml
         +'</div>'
-        +'<div class="pm">💊 '+mc+'</div>'
+        +'<div class="pm"><svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg> '+mc+'</div>'
         +'<button class="btn-curve" onclick="togAdh('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Curva</button>'
         +'<button class="btn-curve" style="background:var(--g200);border-color:var(--g300)" onclick="setActivePt('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Ver todo</button>'
         +notesBtn+delBtn
@@ -1491,12 +1549,12 @@ function renderAdhPanel(ptId){
   });
   var pctColor=pct>=80?'#15803d':pct>=50?'#d97706':'#dc2626';
   var pctBg=pct>=80?'linear-gradient(90deg,#16a34a,#5fc97e)':pct>=50?'linear-gradient(90deg,#d97706,#fbbf24)':'linear-gradient(90deg,#dc2626,#f87171)';
-  var pctMsg=pct>=80?'🟢 Óptima (≥80%)':pct>=50?'🟡 Moderada (50–79%)':'🔴 Baja (<50%) — requiere seguimiento';
+  var pctMsg=pct>=80?'<span class="dot" style="background:#16a34a"></span> Óptima (≥80%)':pct>=50?'<span class="dot" style="background:#d97706"></span> Moderada (50–79%)':'<span class="dot" style="background:#dc2626"></span> Baja (<50%) — requiere seguimiento';
 
   var histHtml='';
   ptAdh.slice(-8).reverse().forEach(function(a){
     var cls=a.status==='yes'?'hr-y':a.status==='late'?'hr-l':'hr-n';
-    var icon=a.status==='yes'?'✅':a.status==='late'?'🕐':'❌';
+    var icon=a.status==='yes'?'<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>':a.status==='late'?'<svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>':'<svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg>';
     var late=a.status==='late'?' → '+a.actualTime:'';
     histHtml+='<div class="hr '+cls+'">'
       +'<div style="font-size:14px">'+icon+'</div>'
@@ -1509,11 +1567,11 @@ function renderAdhPanel(ptId){
   });
 
   el.innerHTML='<div style="padding:18px 20px">'
-    +'<div style="font-family:Fraunces,serif;font-size:.95rem;font-weight:900;color:var(--g800);margin-bottom:12px">📊 Curva de adherencia — '+pt.name+'</div>'
+    +'<div style="font-family:Fraunces,serif;font-size:.95rem;font-weight:900;color:var(--g800);margin-bottom:12px"><svg class="ic" aria-hidden="true"><use href="#ic-chart"/></svg> Curva de adherencia — '+pt.name+'</div>'
     +'<div class="adh-sum">'
-      +'<div class="adh-sc ok-c"><div class="adh-v">'+yC+'</div><div class="adh-l">✅ Usó</div></div>'
-      +'<div class="adh-sc lt-c"><div class="adh-v">'+lC+'</div><div class="adh-l">🕐 Otro horario</div></div>'
-      +'<div class="adh-sc no-c"><div class="adh-v">'+nC+'</div><div class="adh-l">❌ No usó</div></div>'
+      +'<div class="adh-sc ok-c"><div class="adh-v">'+yC+'</div><div class="adh-l"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Usó</div></div>'
+      +'<div class="adh-sc lt-c"><div class="adh-v">'+lC+'</div><div class="adh-l"><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> Otro horario</div></div>'
+      +'<div class="adh-sc no-c"><div class="adh-v">'+nC+'</div><div class="adh-l"><svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg> No usó</div></div>'
     +'</div>'
     +'<div class="pct-w">'
       +'<div class="pct-l"><span>Adherencia global</span><span style="color:'+pctColor+'">'+pct+'%</span></div>'
@@ -1615,7 +1673,7 @@ function preloadPt(){
       if(spSel.options[i].value===pt.specialty){spSel.selectedIndex=i;break;}
     }
   }
-  toast('👤 Paciente cargado: '+pt.name+(pt.diagnosis?' — '+pt.diagnosis:''));
+  toast('Paciente cargado: '+pt.name+(pt.diagnosis?' — '+pt.diagnosis:''));
 }
 
 // ── MEDICATIONS ───────────────────────────────────────────────
@@ -1637,7 +1695,7 @@ function addMed(){
   }).then(function(r){
     meds.unshift(r.med);
     renderCards(); renderAlerts(); updateStats(); renderSF();
-    toast('✅ '+r.med.name+' agregado.');
+    toast(''+r.med.name+' agregado.');
     ['f-n','f-d','f-t','f-nt','f-mx'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   }).catch(apiFail);
 }
@@ -1645,12 +1703,12 @@ function addMed(){
 function delMed(id){
   var m=meds.find(function(r){return r.id===id;});
   var nombre=m?m.name:'este medicamento';
-  if(!confirm('⚠️ ¿Estás seguro de que deseas eliminar "'+nombre+'"?\n\nEsta acción no se puede deshacer.')) return;
+  if(!confirm('¿Estás seguro de que deseas eliminar "'+nombre+'"?\n\nEsta acción no se puede deshacer.')) return;
   api('DELETE','/api/treatments?id='+id).then(function(){
     meds=meds.filter(function(r){return r.id!==id;});
     adherence=adherence.filter(function(a){return a.medId!==id;});
     renderCards(); renderAlerts(); updateStats(); renderSF();
-    toast('🗑️ '+nombre+' eliminado.');
+    toast(''+nombre+' eliminado.');
   }).catch(apiFail);
 }
 
@@ -1676,7 +1734,7 @@ function saveEdit(id){
   api('PUT','/api/treatments?id='+id,{name:newName, dose:newDose}).then(function(r){
     med.name=r.med.name; med.dose=r.med.dose;
     renderCards(); renderAlerts();
-    toast('✅ '+old+' actualizado correctamente.');
+    toast(''+old+' actualizado correctamente.');
   }).catch(apiFail);
 }
 
@@ -1688,7 +1746,7 @@ function renderSF(){
   var el=document.getElementById('sf'); if(!el) return;
   var html='';
   specs.forEach(function(s){
-    var cfg=SPECS[s]||{}, c=cfg.color||'#3aaa63', ic=cfg.icon||'💊';
+    var cfg=SPECS[s]||{}, c=cfg.color||'#3aaa63', ic=cfg.icon||'<svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg>';
     var lbl=s==='all'?'Todas':s;
     var active=curFilter===s?'active':'';
     html+='<button class="sfc '+active+'" style="--cc:'+c+'" onclick="setFilter(\''+s+'\')">'+ic+' '+lbl+'</button>';
@@ -1709,22 +1767,22 @@ function renderCards(){
   var today = todayStr();
   var grid = document.getElementById('cg'); if(!grid) return;
   if(!filtered.length){
-    grid.innerHTML='<div class="empty"><div class="empty-c">💊</div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Usa el formulario de arriba.</div></div>';
+    grid.innerHTML='<div class="empty"><div class="empty-c"><svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg></div><div class="empty-t">Sin medicamentos</div><div class="empty-s">Usa el formulario de arriba.</div></div>';
     return;
   }
   var html='';
   filtered.forEach(function(med,i){
-    var spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'🩺'};
+    var spec=SPECS[med.specialty]||{color:'#3aaa63',icon:'<svg class="ic" aria-hidden="true"><use href="#ic-stethoscope"/></svg>'};
     var stKey=getStatus(med), st=ST_MAP[stKey]||ST_MAP.pending;
     var pt=patients.find(function(p){return p.id===med.patientId;});
     var rec=adherence.find(function(a){return a.medId===med.id && a.date===today && a.status==='late';});
     var mr=maxReached(med);
     var stColor=stKey==='done'||stKey==='late'?'#16a34a':'#dc2626';
-    var ptH=pt?'<div class="cpt">👤 '+pt.name+'</div>':'';
-    var dmH=med.maxdose?'<div class="dmr">⚠️ Máx: '+med.maxdose+(mr?' — <strong>ALCANZADA</strong>':'')+'</div>':'';
-    var ltH=rec&&stKey==='late'?'<div style="font-size:11px;color:#2563eb;background:#eff6ff;border-radius:6px;padding:5px 9px;margin-bottom:8px">🕐 Tomado a las '+rec.actualTime+'</div>':'';
-    var ntH=med.notes?'<div class="cn2">📌 '+med.notes+'</div>':'';
-    var ri=RICONS[med.route]||'💊';
+    var ptH=pt?'<div class="cpt"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg> '+pt.name+'</div>':'';
+    var dmH=med.maxdose?'<div class="dmr"><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Máx: '+med.maxdose+(mr?' — <strong>ALCANZADA</strong>':'')+'</div>':'';
+    var ltH=rec&&stKey==='late'?'<div style="font-size:11px;color:#2563eb;background:#eff6ff;border-radius:6px;padding:5px 9px;margin-bottom:8px"><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> Tomado a las '+rec.actualTime+'</div>':'';
+    var ntH=med.notes?'<div class="cn2"><svg class="ic" aria-hidden="true"><use href="#ic-info"/></svg> '+med.notes+'</div>':'';
+    var ri=RICONS[med.route]||'<svg class="ic" aria-hidden="true"><use href="#ic-pill"/></svg>';
     html+='<div class="mc" style="animation-delay:'+(i*0.04)+'s">'
       +'<div class="ct" style="background:linear-gradient(160deg,'+spec.color+','+spec.color+'bb)">'
         +'<div class="cb2">'+spec.icon+' '+med.specialty+'</div>'
@@ -1734,7 +1792,7 @@ function renderCards(){
         +'<div class="cr">'+ri+' '+med.route+'</div>'
       +'</div>'
       +'<div class="cbd">'
-        +'<div class="tr"><span style="font-size:1.2rem">🕐</span><span class="tv">'+med.time+'</span><span class="tf">'+med.freq+'</span></div>'
+        +'<div class="tr"><span style="font-size:1.2rem"><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg></span><span class="tv">'+med.time+'</span><span class="tf">'+med.freq+'</span></div>'
         +dmH
         +'<div class="mr"><div><span class="ml2">Dosis</span><span class="mv">'+(med.dose||'—')+'</span></div><div><span class="ml2">Estado</span><span class="mv" style="color:'+stColor+'">'+st.lbl+'</span></div></div>'
         +ltH+ntH
@@ -1745,7 +1803,7 @@ function renderCards(){
         +'<div class="ei" id="ei-'+med.id+'">'
           +'<div class="ei-r"><input type="text" id="ein-'+med.id+'" placeholder="Nombre"/></div>'
           +'<div class="ei-r"><input type="text" id="eid-'+med.id+'" placeholder="Dosis"/></div>'
-          +'<div style="display:flex;gap:6px"><button class="btn-se" onclick="saveEdit('+med.id+')">✅</button><button class="btn-ce" onclick="togEdit('+med.id+')">Cancelar</button></div>'
+          +'<div style="display:flex;gap:6px"><button class="btn-se" onclick="saveEdit('+med.id+')"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg></button><button class="btn-ce" onclick="togEdit('+med.id+')">Cancelar</button></div>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -1770,7 +1828,7 @@ function renderRep(){
   var tbody=document.getElementById('rb'); if(!tbody) return;
   if(!data.length){tbody.innerHTML='<tr><td colspan="6" class="re">Sin registros para los filtros seleccionados.</td></tr>';return;}
   var clsMap={yes:'rs-y',late:'rs-l',no:'rs-n',none:'rs-n'};
-  var lblMap={yes:'✅ Usó',late:'🕐 Otro horario',no:'❌ No usó',none:'⚠️ Sin respuesta'};
+  var lblMap={yes:'<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Usó',late:'<svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg> Otro horario',no:'<svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg> No usó',none:'<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Sin respuesta'};
   var html='';
   data.forEach(function(a){
     var pt=patients.find(function(p){return p.id===a.patientId;});
@@ -1796,7 +1854,7 @@ function setActivePt(id){
   var ini=pt.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
   document.getElementById('pt-bar-av').textContent=ini;
   document.getElementById('pt-bar-name').textContent=pt.name;
-  var meta=(pt.age!=null?pt.age+' años · ':'')+pt.specialty+(pt.diagnosis?' · '+pt.diagnosis:'')+(pt.phone?' · 📞 '+pt.phone:'');
+  var meta=(pt.age!=null?pt.age+' años · ':'')+pt.specialty+(pt.diagnosis?' · '+pt.diagnosis:'')+(pt.phone?' · '+pt.phone:'');
   document.getElementById('pt-bar-meta').textContent=meta;
   document.getElementById('pt-bar').classList.add('show');
   // Pre-select patient in meds form
@@ -1815,7 +1873,7 @@ function setActivePt(id){
     }
     renderRep();
   }
-  toast('👤 Viendo: '+pt.name);
+  toast('Viendo: '+pt.name);
 }
 
 function clearPtContext(){
@@ -1829,29 +1887,30 @@ function clearPtContext(){
 // ── CUENTA, VÍNCULO DE CASOS Y NOTAS ─────────────────────────
 var ROLE_LBL={profesional:'Profesional de la salud',paciente:'Paciente',farmaceuta:'Farmaceuta'};
 var PROF_LBL={medico:'Médico/a',nutricionista:'Nutricionista',optometra:'Optómetra',enfermeria:'Enfermería',odontologo:'Odontólogo/a',psicologo:'Psicólogo/a',otro:'Otro profesional'};
+function ic(n){return '<svg class="ic" aria-hidden="true"><use href="#ic-'+n+'"/></svg>';}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function roleLabel(u){return u.role==='profesional'&&u.profession?(PROF_LBL[u.profession]||u.profession):(ROLE_LBL[u.role]||u.role);}
 
 function renderAccount(){
   var el=document.getElementById('acct'); if(!el||!curUser) return;
-  var html='<div class="sync-panel"><div class="sync-title">👤 '+esc(curUser.name)+'</div>'
+  var html='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg> '+esc(curUser.name)+'</div>'
     +'<div class="sync-sub">'+esc(curUser.e)+' · <strong>'+esc(roleLabel(curUser))+'</strong><br>'
     +'Tus datos están en tu cuenta MedTopix: inicia sesión desde cualquier dispositivo y los verás igual.</div></div>';
   if(curUser.role==='paciente'){
     var me=patients.find(function(p){return p.isSelf;});
     if(me){
-      html+='<div class="sync-panel"><div class="sync-title">🔗 Código de tu caso</div>'
+      html+='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-link"/></svg> Código de tu caso</div>'
         +'<div class="sync-sub">Compártelo con tu médico, nutricionista o farmaceuta para que sigan tu adherencia. Solo quien tenga el código puede sumarse a tu caso.</div>'
         +'<div class="case-code">'+esc(me.linkCode)+'</div>'+teamHtml(me)+'</div>';
     }
   } else {
-    html+='<div class="sync-panel"><div class="sync-title">🔗 Vincular un caso</div>'
+    html+='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-link"/></svg> Vincular un caso</div>'
       +'<div class="sync-sub">Pide al paciente (o al profesional que creó la ficha) el código del caso para sumarte a su seguimiento.</div>'
       +'<div class="link-row"><input type="text" id="lk-code" placeholder="Ej: ABCD-2345" maxlength="9" autocapitalize="characters"/>'
       +'<button class="btn-add" onclick="linkCase()">Vincular caso</button></div></div>';
   }
   html+=deviceHtml();
-  if(curUser.role!=='paciente') html+='<div class="sync-panel"><div class="sync-title">🏥 Integración con historia clínica</div>'
+  if(curUser.role!=='paciente') html+='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-building"/></svg> Integración con historia clínica</div>'
     +'<div class="sync-sub">Una llave permite que la historia clínica electrónica de su institución cree pacientes y tratamientos y consulte la adherencia por la API FHIR de MedTopix, con acceso a los mismos casos que usted ve. <a href="/integracion" target="_blank" rel="noopener" style="color:var(--g600);font-weight:700">Cómo se integra →</a></div>'
     +'<div class="link-row"><input type="text" id="key-name" placeholder="Nombre del sistema (ej: HCE de la clínica)" maxlength="80" style="text-transform:none;font-family:inherit;letter-spacing:0;font-size:13px"/>'
     +'<button class="btn-add" onclick="createKey()">Crear llave</button></div><div id="key-list"></div></div>';
@@ -1862,20 +1921,20 @@ function renderAccount(){
 function deviceHtml(){
   var body, st;
   if(!canNotify()){
-    st='<span class="dev-off">⚠️ Avisos no disponibles aquí</span>';
+    st='<span class="dev-off"><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Avisos no disponibles aquí</span>';
     body = isIOS() && !isStandalone()
       ? 'En iPhone los avisos con la app cerrada solo funcionan si instala MedTopix: toque <b>Compartir</b> y luego <b>Añadir a pantalla de inicio</b>, ábrala desde el ícono y active los avisos.'
       : 'Este navegador no admite avisos con la app cerrada. Las alarmas sonarán solo con MedTopix abierto.';
   } else if(Notification.permission==='denied'){
-    st='<span class="dev-off">⚠️ Avisos bloqueados</span>'; body='Los avisos están bloqueados para MedTopix en los ajustes del navegador o del sistema. Permítalos allí y vuelva a abrir la app.';
+    st='<span class="dev-off"><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Avisos bloqueados</span>'; body='Los avisos están bloqueados para MedTopix en los ajustes del navegador o del sistema. Permítalos allí y vuelva a abrir la app.';
   } else if(pushOn){
-    st='<span class="dev-ok">✅ Avisos activos en este dispositivo</span>'; body='El servidor avisa a la hora de cada dosis aunque la app esté cerrada, y repite a los 15 minutos si no hay respuesta. Si usa Apple Watch o un reloj Wear OS enlazado, el aviso también llega a la muñeca.';
+    st='<span class="dev-ok"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Avisos activos en este dispositivo</span>'; body='El servidor avisa a la hora de cada dosis aunque la app esté cerrada, y repite a los 15 minutos si no hay respuesta. Si usa Apple Watch o un reloj Wear OS enlazado, el aviso también llega a la muñeca.';
   } else {
-    st='<span class="dev-off">🔕 Avisos sin activar</span>'; body='Active los avisos para que la alarma llegue aunque MedTopix esté cerrado, en el celular y en el reloj enlazado.';
+    st='<span class="dev-off"><svg class="ic" aria-hidden="true"><use href="#ic-bell-off"/></svg> Avisos sin activar</span>'; body='Active los avisos para que la alarma llegue aunque MedTopix esté cerrado, en el celular y en el reloj enlazado.';
   }
   var btns = pushOn ? '<button class="btn-add" onclick="testPush()">Enviar aviso de prueba</button>'
     : (canNotify() && Notification.permission!=='denied' ? '<button class="btn-add" onclick="requestNotif()">Activar avisos</button>' : '');
-  return '<div class="sync-panel"><div class="sync-title">🔔 Avisos en este dispositivo</div><div class="sync-sub">'+body+'</div><div class="dev-row">'+st+btns+'</div></div>';
+  return '<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-bell"/></svg> Avisos en este dispositivo</div><div class="sync-sub">'+body+'</div><div class="dev-row">'+st+btns+'</div></div>';
 }
 
 function paintKeys(r){
@@ -1890,7 +1949,7 @@ function paintKeys(r){
 function loadKeys(){ api('GET','/api/keys').then(paintKeys).catch(function(){}); }
 function createKey(){
   var inp=document.getElementById('key-name'); if(!inp||!inp.value.trim()){toast('Póngale un nombre a la llave.',true);return;}
-  api('POST','/api/keys',{name:inp.value.trim()}).then(function(r){inp.value='';paintKeys(r);toast('✅ Llave creada.');}).catch(apiFail);
+  api('POST','/api/keys',{name:inp.value.trim()}).then(function(r){inp.value='';paintKeys(r);toast('Llave creada.');}).catch(apiFail);
 }
 function revokeKey(id){
   if(!confirm('¿Revocar esta llave? El sistema que la use dejará de tener acceso de inmediato.')) return;
@@ -1906,9 +1965,9 @@ function renderTeamAlerts(){
   api('GET','/api/alerts').then(function(r){
     var items=r.alerts.filter(function(a){return !a.read_at;});
     if(!items.length){ box.innerHTML=''; return; }
-    var html='<div class="ta-box"><div class="ta-head"><span>⚠️ Dosis sin cumplir en sus casos ('+items.length+')</span><button onclick="readAlerts()">Marcar todo como visto</button></div>';
+    var html='<div class="ta-box"><div class="ta-head"><span><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> Dosis sin cumplir en sus casos ('+items.length+')</span><button onclick="readAlerts()">Marcar todo como visto</button></div>';
     items.forEach(function(a){
-      html+='<div class="ta-item" onclick="openAlert('+a.id+','+a.patient_id+')"><span>'+(a.kind==='streak'?'🔁':'⏰')+'</span><div>'+a.message
+      html+='<div class="ta-item" onclick="openAlert('+a.id+','+a.patient_id+')"><span>'+(a.kind==='streak'?'<svg class="ic" aria-hidden="true"><use href="#ic-repeat"/></svg>':'<svg class="ic" aria-hidden="true"><use href="#ic-alarm"/></svg>')+'</span><div>'+a.message
         +'<small>'+new Date(a.created_at).toLocaleString('es-CO',{dateStyle:'medium',timeStyle:'short'})+' · toque para ver el caso</small></div></div>';
     });
     box.innerHTML=html+'</div>';
@@ -1924,13 +1983,13 @@ function openAlert(id, patientId){
 
 function teamHtml(p){
   if(!p.team||!p.team.length) return '<div class="pd" style="margin-top:8px">Aún nadie más sigue este caso.</div>';
-  return '<div class="pd" style="margin-top:8px">👥 Equipo tratante: '+p.team.map(function(t){return esc(t.name)+' ('+esc(roleLabel(t))+')';}).join(' · ')+'</div>';
+  return '<div class="pd" style="margin-top:8px"><svg class="ic" aria-hidden="true"><use href="#ic-users"/></svg> Equipo tratante: '+p.team.map(function(t){return esc(t.name)+' ('+esc(roleLabel(t))+')';}).join(' · ')+'</div>';
 }
 
 function linkCase(){
   var inp=document.getElementById('lk-code'); if(!inp||!inp.value.trim()){toast('Ingresa el código del caso.',true);return;}
   api('POST','/api/patients?action=link',{code:inp.value.trim()}).then(function(r){
-    toast('✅ Caso de '+r.patient.name+' vinculado.');
+    toast('Caso de '+r.patient.name+' vinculado.');
     return loadState().then(function(){refreshAll(); goTab('patients');});
   }).catch(apiFail);
 }
@@ -1955,7 +2014,7 @@ function loadNotes(id){
 }
 function addNote(id){
   var tx=document.getElementById('ntx-'+id); if(!tx||!tx.value.trim()){toast('Escribe la nota.',true);return;}
-  api('POST','/api/notes',{patientId:id,note:tx.value.trim()}).then(function(r){paintNotes(id,r.notes);toast('✅ Nota guardada.');}).catch(apiFail);
+  api('POST','/api/notes',{patientId:id,note:tx.value.trim()}).then(function(r){paintNotes(id,r.notes);toast('Nota guardada.');}).catch(apiFail);
 }
 
 function applyRoleUI(){
@@ -1992,7 +2051,7 @@ function exportCSV(rows, headers, filename){
   document.body.appendChild(a); a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast('✅ '+filename+' descargado.');
+  toast(''+filename+' descargado.');
 }
 
 function exportPatients(){
@@ -2052,7 +2111,7 @@ function exportMeds(){
 // ── TOAST ─────────────────────────────────────────────────────
 function toast(msg, err){
   var el=document.getElementById('toast');
-  el.textContent=msg;
+  el.innerHTML=ic(err?'alert':'check')+esc(msg);
   el.className='toast show'+(err?' err':'');
   setTimeout(function(){el.className='toast';},3200);
 }
@@ -2063,11 +2122,11 @@ function togPw(id, btn){
   if(!el) return;
   if(el.type==='password'){
     el.type='text';
-    btn.textContent='🙈';
+    btn.innerHTML=ic('eye-off');
     btn.title='Ocultar contraseña';
   } else {
     el.type='password';
-    btn.textContent='👁️';
+    btn.innerHTML=ic('eye');
     btn.title='Mostrar contraseña';
   }
 }

@@ -66,7 +66,7 @@ export default handler(async function (req, res) {
         } else {
           const who = t.self_managed ? '' : ' — ' + t.patient_name;
           await sendPush([t.notify_id], {
-            title: kind === 'remind1' ? '💊 Hora de su tratamiento' : '⏰ Aún sin confirmar',
+            title: kind === 'remind1' ? 'Hora de su tratamiento' : 'Aún sin confirmar su dosis',
             body: t.name + who + ' · ' + time + (t.dose ? ' · ' + t.dose : ''),
             tag: 'mt-dose-' + t.id + '-' + time, url: '/app#alerts',
             dose: { medId: t.id, date: day.date, scheduledTime: time }

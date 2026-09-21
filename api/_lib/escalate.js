@@ -36,6 +36,6 @@ export async function escalate(t, reason, scheduledTime) {
   for (const uid of ids) {
     await sql`insert into alerts (user_id, patient_id, treatment_id, kind, message) values (${uid}, ${p.id}, ${t.id}, ${kind}, ${message})`;
   }
-  await sendPush(ids, { title: '⚠️ MedTopix · dosis sin cumplir', body: message, tag: 'mt-alert-' + t.id, url: '/app#alertas' });
+  await sendPush(ids, { title: 'MedTopix · dosis sin cumplir', body: message, tag: 'mt-alert-' + t.id, url: '/app#alertas' });
   return ids.length;
 }

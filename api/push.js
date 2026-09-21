@@ -26,7 +26,7 @@ export default handler(async function (req, res) {
     return res.json({ ok: true });
   }
   if (action === 'test') {
-    const sent = await sendPush([u.id], { title: '🔔 MedTopix', body: 'Así le llegarán los avisos de sus dosis, también en el reloj.', tag: 'mt-test', url: '/app' });
+    const sent = await sendPush([u.id], { title: 'MedTopix', body: 'Así le llegarán los avisos de sus dosis, también en el reloj.', tag: 'mt-test', url: '/app' });
     return res.json({ ok: true, sent });
   }
   res.status(400).json({ error: 'Acción desconocida.' });

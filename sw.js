@@ -32,7 +32,7 @@ self.addEventListener('push', function (e) {
     data: { url: d.url || '/app', dose: d.dose || null }
   };
   // iOS ignora los botones; ahí el toque abre la app en Alertas
-  if (d.dose) options.actions = [{ action: 'yes', title: '✅ Usó' }, { action: 'no', title: '❌ No usó' }];
+  if (d.dose) options.actions = [{ action: 'yes', title: 'Usó la medicación' }, { action: 'no', title: 'No la usó' }];
   e.waitUntil(self.registration.showNotification(d.title || 'MedTopix', options).then(function () { return tellClients({ type: 'push' }); }));
 });
 
