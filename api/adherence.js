@@ -1,12 +1,12 @@
 import { sql, canAccessPatient } from './_lib/db.js';
-import { handler, requireUser } from './_lib/auth.js';
+import { handler, requireActive } from './_lib/auth.js';
 import { escalate } from './_lib/escalate.js';
 
 const STATUS = ['yes', 'late', 'no'];
 const hhmm = function (v) { return /^\d{2}:\d{2}$/.test(String(v || '')) ? v : null; };
 
 export default handler(async function (req, res) {
-  const u = await requireUser(req, res); if (!u) return;
+  const u = await requireActive(req, res); if (!u) return;
   const b = req.method === 'DELETE' ? req.query : (req.body || {});
   const medId = Number(b.medId);
   const date = String(b.date || '');

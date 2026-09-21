@@ -52,8 +52,25 @@ export function clearSession(res) {
   res.setHeader('Set-Cookie', COOKIE + '=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
 }
 
+// Administradores: quienes aprueban cuentas de profesionales y farmaceutas. Se definen por correo, fuera de la base.
+export function isAdminEmail(email) {
+  const list = String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map(function (e) { return e.trim(); }).filter(Boolean);
+  return list.includes(String(email || '').toLowerCase());
+}
+// El correo con contraseña no se comprueba por email, así que no basta para ser administrador:
+// la cuenta debe venir de Google o Apple, que sí verifican de quién es el correo.
+export function isAdmin(u) {
+  return !!u && isAdminEmail(u.email) && !!(u.google_sub || u.apple_sub);
+}
+
+// Un paciente está activo desde que se registra; un profesional o farmaceuta, desde que un administrador lo aprueba.
+export function isVerified(u) {
+  return !!u && (u.role === 'paciente' || !!u.verified_at || isAdmin(u));
+}
+
 export function publicUser(u) {
   return {
+    verified: isVerified(u), admin: isAdmin(u),
     id: u.id, e: u.email, name: u.name, role: u.role, profession: u.profession,
     specialty: u.specialty, doctype: u.doc_type, docnum: u.doc_num, phone: u.phone, at: u.created_at
   };
@@ -69,6 +86,15 @@ export async function requireUser(req, res) {
     if (rows.length) return rows[0];
   }
   res.status(401).json({ error: 'Sesión no válida. Inicia sesión de nuevo.' });
+  return null;
+}
+
+// Como requireUser, pero además exige cuenta verificada: es la puerta de todo lo que toca datos de pacientes.
+export async function requireActive(req, res) {
+  const u = await requireUser(req, res);
+  if (!u) return null;
+  if (isVerified(u)) return u;
+  res.status(403).json({ error: 'Su cuenta está pendiente de verificación por un administrador.', pending: true });
   return null;
 }
 
@@ -89,7 +115,7 @@ export async function requireApiKey(req, res) {
     const rows = await sql`
       select u.*, k.id as key_id from api_keys k join users u on u.id = k.user_id
       where k.key_hash = ${hashApiKey(m[1])} and k.revoked_at is null`;
-    if (rows.length) {
+    if (rows.length && isVerified(rows[0])) {
       await sql`update api_keys set last_used_at = now() where id = ${rows[0].key_id}`;
       return rows[0];
     }

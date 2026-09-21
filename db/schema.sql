@@ -169,3 +169,9 @@ alter table users add column if not exists google_sub text;
 alter table users add column if not exists apple_sub text;
 create unique index if not exists users_google_sub_idx on users(google_sub) where google_sub is not null;
 create unique index if not exists users_apple_sub_idx on users(apple_sub) where apple_sub is not null;
+
+-- Verificación de cuentas: profesionales y farmaceutas quedan pendientes hasta que un administrador los aprueba.
+-- Los pacientes no necesitan aprobación. Los administradores se definen por correo en la variable ADMIN_EMAILS.
+alter table users add column if not exists verified_at timestamptz;
+alter table users add column if not exists verified_by integer references users(id) on delete set null;
+update users set verified_at = created_at where role = 'paciente' and verified_at is null;

@@ -1,11 +1,14 @@
 import { sql } from './_lib/db.js';
-import { handler, requireUser, publicUser } from './_lib/auth.js';
+import { handler, requireUser, publicUser, isVerified } from './_lib/auth.js';
 import { patientOut, treatmentOut, adherenceOut } from './_lib/shape.js';
 
 // Carga inicial: todo lo que el usuario puede ver según su rol y los casos que sigue.
 export default handler(async function (req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido.' });
   const u = await requireUser(req, res); if (!u) return;
+
+  // cuenta pendiente: puede entrar y ver su estado, pero no recibe ningún dato de pacientes
+  if (!isVerified(u)) return res.json({ user: publicUser(u), pending: true, patients: [], meds: [], adherence: [], unreadAlerts: 0 });
 
   // la zona horaria del dispositivo fija a qué hora local suenan los avisos del servidor
   const tz = String(req.query.tz || '');

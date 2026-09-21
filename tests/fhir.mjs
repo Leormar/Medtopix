@@ -28,8 +28,8 @@ const isOO = function (r, code) { return r.body && r.body.resourceType === 'Oper
 
 const tag = Date.now();
 async function mkUser(n_, role) {
-  const rows = await sql`insert into users (email, password_hash, name, role, profession, tz, terms_accepted_at)
-    values (${n_ + tag + '@test.medtopix.invalid'}, ${hashPassword('clave-segura-1')}, ${'Prueba ' + n_}, ${role}, ${role === 'profesional' ? 'medico' : null}, ${role === 'paciente' ? 'America/Bogota' : null}, now()) returning id`;
+  const rows = await sql`insert into users (email, password_hash, name, role, profession, tz, terms_accepted_at, verified_at)
+    values (${n_ + tag + '@test.medtopix.invalid'}, ${hashPassword('clave-segura-1')}, ${'Prueba ' + n_}, ${role}, ${role === 'profesional' ? 'medico' : null}, ${role === 'paciente' ? 'America/Bogota' : null}, now(), now()) returning id`;
   const k = newApiKey();
   const kr = await sql`insert into api_keys (user_id, name, prefix, key_hash) values (${rows[0].id}, 'prueba', ${k.prefix}, ${k.hash}) returning id`;
   return { id: rows[0].id, key: k.key, keyId: kr[0].id };

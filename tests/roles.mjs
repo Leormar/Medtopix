@@ -22,7 +22,12 @@ function check(label, cond, extra) { if (!cond) fails++; console.log((cond ? 'PA
 
 const tag = Date.now();
 const mail = function (n) { return n + tag + '@test.medtopix.invalid'; };
-const reg = function (o) { return call('auth', 'POST', { action: 'register' }, Object.assign({ password: 'clave-segura-1', terms: true }, o)); };
+// los profesionales de prueba quedan aprobados de una vez; la verificación se prueba aparte en verificacion.mjs
+const reg = async function (o) {
+  const r = await call('auth', 'POST', { action: 'register' }, Object.assign({ password: 'clave-segura-1', terms: true }, o));
+  await sql`update users set verified_at = now() where email like '%@test.medtopix.invalid' and role <> 'paciente' and verified_at is null`;
+  return r;
+};
 
 let r = await reg({ email: mail('doc'), name: 'Dra Prueba', role: 'profesional', profession: 'medico' });
 check('registro profesional', r.status === 201 && r.cookie, r); const doc = r.cookie;

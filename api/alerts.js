@@ -1,9 +1,9 @@
 import { sql } from './_lib/db.js';
-import { handler, requireUser } from './_lib/auth.js';
+import { handler, requireActive } from './_lib/auth.js';
 
 // Bandeja de alertas del equipo tratante: dosis sin cumplir de los casos que sigue.
 export default handler(async function (req, res) {
-  const u = await requireUser(req, res); if (!u) return;
+  const u = await requireActive(req, res); if (!u) return;
 
   if (req.method === 'POST') {
     const id = Number((req.body || {}).id);

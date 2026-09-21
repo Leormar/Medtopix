@@ -1,10 +1,10 @@
 import { sql, canAccessPatient } from './_lib/db.js';
-import { handler, requireUser } from './_lib/auth.js';
+import { handler, requireActive } from './_lib/auth.js';
 import { clean } from './_lib/shape.js';
 
 // Notas de seguimiento del caso: las escribe y lee el equipo tratante, no el paciente.
 export default handler(async function (req, res) {
-  const u = await requireUser(req, res); if (!u) return;
+  const u = await requireActive(req, res); if (!u) return;
   if (u.role === 'paciente') return res.status(403).json({ error: 'Las notas de seguimiento son del equipo tratante.' });
 
   const patientId = Number(req.method === 'GET' ? req.query.patientId : (req.body || {}).patientId);

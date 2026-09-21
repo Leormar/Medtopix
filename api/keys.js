@@ -1,10 +1,10 @@
 import { sql } from './_lib/db.js';
-import { handler, requireUser, newApiKey } from './_lib/auth.js';
+import { handler, requireActive, newApiKey } from './_lib/auth.js';
 import { clean } from './_lib/shape.js';
 
 // Llaves para que una historia clínica electrónica use /api/fhir en nombre de este profesional.
 export default handler(async function (req, res) {
-  const u = await requireUser(req, res); if (!u) return;
+  const u = await requireActive(req, res); if (!u) return;
   if (u.role === 'paciente') return res.status(403).json({ error: 'Las llaves de integración son para profesionales y farmaceutas.' });
 
   let created = null;

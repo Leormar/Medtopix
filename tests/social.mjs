@@ -53,14 +53,16 @@ r = await call(auth, 'POST', { action: 'apple' }, { credential: await token('goo
 r = await call(auth, 'POST', { action: 'google' }, { pending: pending.slice(0, -2) + 'xx', role: 'paciente', terms: true, name: 'X' }); check('pase alterado -> 401', r.status === 401, r);
 r = await call(auth, 'POST', { action: 'apple' }, { pending, role: 'paciente', terms: true, name: 'X' }); check('pase de Google no sirve en Apple -> 401', r.status === 401, r);
 
+await sql`update users set verified_at = now() where email = ${g1.email}`; // la doctora queda aprobada para poder crear una ficha más abajo
+
 // vincular a una cuenta de correo existente
 r = await call(auth, 'POST', { action: 'register' }, { email: mail('luis'), password: 'clave-segura-1', name: 'Luis Correo', role: 'farmaceuta', terms: true });
 check('registro por correo sigue igual', r.status === 201, r);
 r = await call(auth, 'POST', { action: 'apple' }, { credential: await token('apple', { sub: 'a-' + tag, email: mail('luis') }) });
-check('Apple con el mismo correo: entra a la cuenta existente', r.status === 200 && r.cookie && r.body.user.role === 'farmaceuta', r);
+check('Apple con el mismo correo: entra a la cuenta existente y avisa que se retiró la contraseña', r.status === 200 && r.cookie && r.body.user.role === 'farmaceuta' && r.body.passwordRemoved === true, r);
 row = (await sql`select * from users where email = ${mail('luis')}`)[0];
-check('la cuenta conserva su contraseña y suma apple_sub', row.password_hash && row.apple_sub === 'a-' + tag, row);
-r = await call(auth, 'POST', { action: 'login' }, { email: mail('luis'), password: 'clave-segura-1' }); check('y sigue entrando con correo', r.status === 200, r);
+check('la contraseña previa se invalida (pudo ponerla otro) y suma apple_sub', row.password_hash === null && row.apple_sub === 'a-' + tag, row);
+r = await call(auth, 'POST', { action: 'login' }, { email: mail('luis'), password: 'clave-segura-1' }); check('la contraseña vieja ya no entra', r.status === 401, r);
 
 // paciente nuevo por Apple con código del caso
 r = await call(patients, 'POST', {}, { name: 'Paciente Social' }, doc); const code = r.body.patient.linkCode;

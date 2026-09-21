@@ -1,5 +1,5 @@
 import { sql, canAccessPatient } from './_lib/db.js';
-import { handler, requireUser } from './_lib/auth.js';
+import { handler, requireActive } from './_lib/auth.js';
 import { treatmentOut, clean } from './_lib/shape.js';
 
 const KINDS = ['farmacologico', 'nutricional'];
@@ -14,7 +14,7 @@ async function canModify(u, t) {
 }
 
 export default handler(async function (req, res) {
-  const u = await requireUser(req, res); if (!u) return;
+  const u = await requireActive(req, res); if (!u) return;
   const b = req.body || {};
 
   if (req.method === 'POST') {

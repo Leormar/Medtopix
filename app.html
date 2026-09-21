@@ -358,6 +358,19 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .sync-title{font-family:Fraunces,serif;font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:6px;}
 .sync-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
 .sync-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.mode-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:7px 22px;font-size:12px;font-weight:600;color:#e8f8ee;background:rgba(0,0,0,.22);border-top:1px solid rgba(255,255,255,.08)}
+.mode-bar b{font-weight:800;letter-spacing:.3px}
+.mode-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;font-weight:800;font-size:11px;letter-spacing:.6px;text-transform:uppercase;background:var(--mc,#2d8a4e);color:#fff}
+.mode-pill.m-paciente{--mc:#2f6f9f}.mode-pill.m-profesional{--mc:#2d8a4e}.mode-pill.m-farmaceuta{--mc:#a5622f}
+.mode-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+.mode-tag.ok{background:rgba(143,222,170,.18);color:#b9f3cc}.mode-tag.wait{background:#fdf1dd;color:#9a5b0e}.mode-tag.adm{background:rgba(240,184,98,.2);color:#f0b862}
+.pend-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:14px;padding:20px 22px;margin-bottom:18px;color:#7c2d12}
+.pend-box h3{font-family:Fraunces,serif;font-size:1.15rem;margin-bottom:8px;display:flex;align-items:center;gap:9px;color:#9a3412}
+.pend-box p{font-size:13px;line-height:1.6;margin-top:6px}
+.adm-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border);font-size:12px;flex-wrap:wrap}
+.adm-row .who{flex:1;min-width:200px}.adm-row .who b{display:block;font-size:13px;color:var(--ink)}.adm-row .who span{color:var(--muted)}
+.adm-row button{border-radius:7px;padding:6px 12px;font:700 11px 'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.adm-ok{background:var(--g600);color:#fff;border:1px solid var(--g600)}.adm-no{background:none;color:#b91c1c;border:1px solid #fca5a5}
 .ta-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:12px;padding:14px 16px;margin-bottom:18px;}
 .ta-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800;color:#9a3412;font-size:13px;margin-bottom:8px;}
 .ta-head button{background:none;border:1px solid #fdba74;border-radius:7px;padding:4px 10px;font:700 11px 'Plus Jakarta Sans',sans-serif;color:#9a3412;cursor:pointer;}
@@ -662,6 +675,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <button class="btn-out" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Salir</button>
     </div>
   </div>
+  <div class="mode-bar" id="mode-bar"></div>
   <div class="tabs">
     <button class="tb active" onclick="goTab('alerts')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Alertas</button>
     <button class="tb" id="tb-patients" onclick="goTab('patients')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Pacientes</button>
@@ -695,6 +709,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 
 <!-- ALERTAS -->
 <div class="tp active" id="tp-alerts">
+  <div id="pending-box"></div>
   <div id="team-alerts"></div>
   <div class="sr">
     <div class="sc" style="--cc:var(--g600)"><div class="sc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><div class="sc-v" id="s0">0</div><div class="sc-l">Total</div></div>
@@ -980,6 +995,7 @@ var curTab    = 'alerts';
 var curAlarm  = null;
 var pushOn    = false; // este dispositivo recibe los avisos del servidor
 var unreadAlerts = 0;
+var pendingAccount = false; // profesional o farmaceuta que aún espera la aprobación de un administrador
 var snoozed   = {};
 
 function api(method, path, body){
@@ -1002,7 +1018,7 @@ function ageFrom(dob){
   return age;
 }
 function applyState(s){
-  curUser=s.user; patients=s.patients; meds=s.meds; adherence=s.adherence; unreadAlerts=s.unreadAlerts||0;
+  curUser=s.user; patients=s.patients; meds=s.meds; adherence=s.adherence; unreadAlerts=s.unreadAlerts||0; pendingAccount=!!s.pending;
   patients.forEach(function(p){p.age=ageFrom(p.dob);});
 }
 function loadState(){
@@ -1010,7 +1026,7 @@ function loadState(){
   return api('GET','/api/state'+(tz?'?tz='+encodeURIComponent(tz):'')).then(applyState);
 }
 function refreshAll(){
-  applyRoleUI(); renderAlerts(); updateStats(); refreshPtSel(); renderAccount(); renderTeamAlerts();
+  applyRoleUI(); renderMode(); renderAlerts(); updateStats(); refreshPtSel(); renderAccount(); renderTeamAlerts();
   if(curTab==='patients') renderPatients();
   if(curTab==='meds'){renderSF(); renderCards();}
   if(curTab==='report') renderRep();
@@ -1076,7 +1092,7 @@ function appleSignIn(){
 function socialLogin(provider, credential, name){
   api('POST','/api/auth?action='+provider,{credential:credential, name:name||''}).then(function(r){
     if(r.needsProfile){ startSocialProfile(provider, r); return; }
-    return loadState().then(function(){ initApp(); show('sa'); });
+    return loadState().then(function(){ initApp(); show('sa'); if(r.passwordRemoved) toast('Por seguridad, desde ahora esta cuenta ingresa con '+(provider==='google'?'Google':'Apple')+'; la contraseña anterior quedó sin efecto.'); });
   }).catch(apiFail);
 }
 // Persona nueva: ya sabemos quién es; falta el tipo de cuenta y aceptar los términos, igual que con correo.
@@ -2004,19 +2020,21 @@ function renderAccount(){
         +'<div class="sync-sub">Compártelo con tu médico, nutricionista o farmaceuta para que sigan tu adherencia. Solo quien tenga el código puede sumarse a tu caso.</div>'
         +'<div class="case-code">'+esc(me.linkCode)+'</div>'+teamHtml(me)+'</div>';
     }
-  } else {
+  } else if(!pendingAccount){
     html+='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-link"/></svg> Vincular un caso</div>'
       +'<div class="sync-sub">Pide al paciente (o al profesional que creó la ficha) el código del caso para sumarte a su seguimiento.</div>'
       +'<div class="link-row"><input type="text" id="lk-code" placeholder="Ej: ABCD-2345" maxlength="9" autocapitalize="characters"/>'
       +'<button class="btn-add" onclick="linkCase()">Vincular caso</button></div></div>';
   }
   html+=deviceHtml();
-  if(curUser.role!=='paciente') html+='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-building"/></svg> Integración con historia clínica</div>'
+  if(curUser.admin) html+='<div class="sync-panel"><div class="sync-title">'+ic('lock')+' Verificación de cuentas</div><div class="sync-sub">Profesionales y farmaceutas que se registran quedan pendientes hasta que usted confirme que su correo corresponde a ese grupo. Al aprobar, la persona puede seguir casos; al retirar, pierde el acceso de inmediato (también sus llaves de integración).</div><div id="adm-list"></div></div>';
+  if(curUser.role!=='paciente' && !pendingAccount) html+='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-building"/></svg> Integración con historia clínica</div>'
     +'<div class="sync-sub">Una llave permite que la historia clínica electrónica de su institución cree pacientes y tratamientos y consulte la adherencia por la API FHIR de MedTopix, con acceso a los mismos casos que usted ve. <a href="/integracion" target="_blank" rel="noopener" style="color:var(--g600);font-weight:700">Cómo se integra →</a></div>'
     +'<div class="link-row"><input type="text" id="key-name" placeholder="Nombre del sistema (ej: HCE de la clínica)" maxlength="80" style="text-transform:none;font-family:inherit;letter-spacing:0;font-size:13px"/>'
     +'<button class="btn-add" onclick="createKey()">Crear llave</button></div><div id="key-list"></div></div>';
   el.innerHTML=html;
-  if(curUser.role!=='paciente') loadKeys();
+  if(curUser.role!=='paciente' && !pendingAccount) loadKeys();
+  if(curUser.admin) loadAdmin();
 }
 
 function deviceHtml(){
@@ -2036,6 +2054,24 @@ function deviceHtml(){
   var btns = pushOn ? '<button class="btn-add" onclick="testPush()">Enviar aviso de prueba</button>'
     : (canNotify() && Notification.permission!=='denied' ? '<button class="btn-add" onclick="requestNotif()">Activar avisos</button>' : '');
   return '<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-bell"/></svg> Avisos en este dispositivo</div><div class="sync-sub">'+body+'</div><div class="dev-row">'+st+btns+'</div></div>';
+}
+
+function paintAdmin(r){
+  var el=document.getElementById('adm-list'); if(!el) return;
+  if(!r.accounts.length){ el.innerHTML='<div class="pd" style="padding:8px 0">Aún no hay profesionales ni farmaceutas registrados.</div>'; return; }
+  var html='';
+  r.accounts.forEach(function(a){
+    var via=a.google?'Google':a.apple?'Apple':'correo y contraseña';
+    html+='<div class="adm-row"><div class="who"><b>'+a.name+'</b><span>'+esc(a.email)+' · '+esc(roleLabel(a))+(a.doc_num?' · '+esc(a.doc_type||'')+' '+a.doc_num:'')+' · ingresó con '+via+' · '+new Date(a.created_at).toLocaleDateString('es-CO')+'</span></div>'
+      +(a.verified_at ? '<span class="mode-tag ok" style="background:var(--g100);color:var(--g700)">'+ic('check')+' Verificada</span><button class="adm-no" onclick="adminSet('+a.id+',\'revoke\')">Retirar</button>'
+                      : '<span class="mode-tag wait">'+ic('hourglass')+' Pendiente</span><button class="adm-ok" onclick="adminSet('+a.id+',\'approve\')">Aprobar</button>')+'</div>';
+  });
+  el.innerHTML=html;
+}
+function loadAdmin(){ api('GET','/api/admin').then(paintAdmin).catch(function(){}); }
+function adminSet(id, action){
+  if(action==='revoke' && !confirm('¿Retirar la verificación? Esta persona dejará de ver sus casos de inmediato.')) return;
+  api('POST','/api/admin',{id:id, action:action}).then(function(r){ paintAdmin(r); toast(action==='approve'?'Cuenta aprobada.':'Verificación retirada.'); }).catch(apiFail);
 }
 
 function paintKeys(r){
@@ -2118,11 +2154,31 @@ function addNote(id){
   api('POST','/api/notes',{patientId:id,note:tx.value.trim()}).then(function(r){paintNotes(id,r.notes);toast('Nota guardada.');}).catch(apiFail);
 }
 
+// Franja bajo el encabezado: en qué modo está la sesión, según el grupo al que pertenece la cuenta.
+var MODE = {
+  paciente:    {icon:'user',        text:'Recibe sus recordatorios y registra cada dosis.'},
+  profesional: {icon:'stethoscope', text:'Sigue la adherencia de sus pacientes y formula tratamientos.'},
+  farmaceuta:  {icon:'pill',        text:'Verifica la adherencia de los casos que le comparten y deja notas.'}
+};
+function renderMode(){
+  var bar=document.getElementById('mode-bar'), box=document.getElementById('pending-box'); if(!bar||!curUser) return;
+  var m=MODE[curUser.role]||MODE.paciente;
+  var label = curUser.role==='profesional' ? 'Modo profesional'+(curUser.profession?' · '+esc(roleLabel(curUser)):'') : curUser.role==='farmaceuta' ? 'Modo farmaceuta' : 'Modo paciente';
+  var tag = pendingAccount ? '<span class="mode-tag wait">'+ic('hourglass')+' Pendiente de verificación</span>'
+          : curUser.role==='paciente' ? '' : '<span class="mode-tag ok">'+ic('check')+' Cuenta verificada</span>';
+  bar.innerHTML='<span class="mode-pill m-'+curUser.role+'">'+ic(m.icon)+' '+label+'</span><span>'+m.text+'</span>'+tag
+    +(curUser.admin?'<span class="mode-tag adm">'+ic('lock')+' Administrador</span>':'');
+  if(box) box.innerHTML = !pendingAccount ? '' :
+    '<div class="pend-box"><h3>'+ic('hourglass')+' Su cuenta está pendiente de verificación</h3>'
+    +'<p>Se registró como <b>'+esc(roleLabel(curUser))+'</b> con el correo <b>'+esc(curUser.e)+'</b>. Por seguridad de los pacientes, un administrador de MedTopix debe confirmar que ese correo corresponde a un '+(curUser.role==='farmaceuta'?'farmaceuta':'profesional de la salud')+' antes de que pueda ver o seguir casos.</p>'
+    +'<p>Mientras tanto no verá pacientes ni podrá vincular casos, formular tratamientos o crear llaves de integración. Cuando lo aprueben, vuelva a abrir MedTopix; si activó los avisos, le llegará una notificación.</p></div>';
+}
+
 function applyRoleUI(){
   var role=curUser?curUser.role:'';
   var ptForm=document.getElementById('pt-form'), medForm=document.getElementById('med-form'), ptTab=document.getElementById('tb-patients');
   // Cada formulario va precedido por su título de sección; se ocultan juntos.
-  [[ptForm, role==='profesional'], [medForm, role!=='farmaceuta']].forEach(function(x){
+  [[ptForm, role==='profesional' && !pendingAccount], [medForm, role!=='farmaceuta' && !pendingAccount]].forEach(function(x){
     if(!x[0]) return;
     x[0].style.display = x[1]?'':'none';
     var title=x[0].previousElementSibling; if(title) title.style.display = x[1]?'':'none';

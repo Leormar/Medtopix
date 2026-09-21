@@ -16,7 +16,11 @@ async function call(mod, method, query, body, cookie, headers) {
 let fails = 0;
 function check(label, cond, extra) { if (!cond) fails++; console.log((cond ? 'PASS ' : 'FAIL ') + label + (cond ? '' : '  -> ' + JSON.stringify(extra))); }
 const tag = Date.now(), mail = n => n + tag + '@test.medtopix.invalid';
-const reg = o => call('auth', 'POST', { action: 'register' }, Object.assign({ password: 'clave-segura-1', terms: true }, o));
+const reg = async o => {
+  const r = await call('auth', 'POST', { action: 'register' }, Object.assign({ password: 'clave-segura-1', terms: true }, o));
+  await sql`update users set verified_at = now() where email like '%@test.medtopix.invalid' and role <> 'paciente' and verified_at is null`;
+  return r;
+};
 const tick = () => call('cron', 'GET', {}, null, null, { authorization: 'Bearer ' + process.env.CRON_SECRET });
 function ago(min) { const c = localClock('America/Bogota', new Date(Date.now() - min * 60000)); return String(Math.floor(c.minute / 60)).padStart(2, '0') + ':' + String(c.minute % 60).padStart(2, '0'); }
 

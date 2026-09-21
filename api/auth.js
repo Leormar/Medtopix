@@ -1,6 +1,7 @@
 import { sql, newLinkCode } from './_lib/db.js';
 import { clean } from './_lib/shape.js';
 import { socialConfig, verifyIdToken, signPending, readPending } from './_lib/social.js';
+import { isAdminEmail, isAdmin } from './_lib/auth.js';
 import { handler, hashPassword, verifyPassword, setSession, clearSession, publicUser, requireUser } from './_lib/auth.js';
 
 const ROLES = ['profesional', 'paciente', 'farmaceuta'];
@@ -28,7 +29,9 @@ async function createAccount(b, id) {
             ${role === 'profesional' ? clean(b.profession, 60) : null}, ${clean(b.specialty, 80)},
             ${clean(b.doctype, 10)}, ${clean(b.docnum, 40)}, ${clean(b.phone, 40)}, now())
     returning *`;
-  const u = rows[0];
+  let u = rows[0];
+  // el paciente queda activo de una vez; profesional y farmaceuta esperan la aprobación de un administrador
+  if (role === 'paciente' || isAdmin(u)) u = (await sql`update users set verified_at = now() where id = ${u.id} returning *`)[0];
   if (role === 'paciente') {
     if (claim) await sql`update patients set user_id = ${u.id} where id = ${claim}`;
     else await sql`
@@ -73,6 +76,7 @@ export default handler(async function (req, res) {
     const password = String(b.password || '');
     if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email) || email.length > 200) return res.status(400).json({ error: 'Correo no válido.' });
     if (password.length < 8) return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres.' });
+    if (isAdminEmail(email)) return res.status(400).json({ error: 'Este correo es de administración: ingrese con Google.' });
     const exists = await sql`select 1 from users where email = ${email}`;
     if (exists.length) return res.status(409).json({ error: 'Ya existe una cuenta con ese correo.' });
     const out = await createAccount(b, { email, passwordHash: hashPassword(password) });
@@ -99,8 +103,12 @@ export default handler(async function (req, res) {
       rows = await sql`select * from users where email = ${who.email}`;
       if (rows.length) {
         if (rows[0][col] && rows[0][col] !== who.sub) return res.status(409).json({ error: 'Ese correo ya está vinculado a otra cuenta de ese proveedor.' });
-        if (action === 'google') await sql`update users set google_sub = ${who.sub} where id = ${rows[0].id}`;
-        else await sql`update users set apple_sub = ${who.sub} where id = ${rows[0].id}`;
+        // Si esa cuenta nunca tuvo un proveedor verificado, su contraseña pudo ponerla otra persona que registró
+        // el correo antes que su dueño: se invalida, y desde ahora la cuenta entra con el proveedor.
+        const hijackable = !rows[0].google_sub && !rows[0].apple_sub && rows[0].password_hash;
+        if (action === 'google') rows = await sql`update users set google_sub = ${who.sub}, password_hash = case when ${!!hijackable} then null else password_hash end where id = ${rows[0].id} returning *`;
+        else rows = await sql`update users set apple_sub = ${who.sub}, password_hash = case when ${!!hijackable} then null else password_hash end where id = ${rows[0].id} returning *`;
+        if (hijackable) { setSession(res, rows[0].id); return res.json({ user: publicUser(rows[0]), passwordRemoved: true }); }
       }
     }
     if (rows.length) { setSession(res, rows[0].id); return res.json({ user: publicUser(rows[0]) }); }
