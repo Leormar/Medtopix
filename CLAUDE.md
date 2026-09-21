@@ -3,7 +3,7 @@
 Estas condiciones aplican a TODO pedido sobre este repositorio. Si un pedido las contradice, dilo antes de actuar.
 
 ## Contexto
-- MedTopix es un **prototipo académico clínico** (Trabajo final de la Maestría en Salud Digital e IA, OBS Business School, Grupo 5): seguimiento de adherencia a tratamientos farmacológicos y nutricionales con tres roles (profesional de la salud, paciente, farmaceuta) sobre un mismo caso.
+- MedTopix es un **prototipo académico clínico** (Trabajo final de la Maestría en Salud Digital e IA, OBS Business School): seguimiento de adherencia a tratamientos farmacológicos y nutricionales con tres roles (profesional de la salud, paciente, farmaceuta) sobre un mismo caso.
 - Existe y está en línea, pero **no está validado con usuarios ni con pacientes**. Nada en la app, el sitio o el video puede afirmar lo contrario.
 - Usuarios en Colombia: español neutro, trato de «usted» en la app, hora local del paciente, datos de salud = datos sensibles (Ley 1581 de 2012).
 - Arquitectura: sin framework ni build. `index.html` (venta), `proyecto.html`, `integracion.html`, `app.html` (PWA de un solo archivo) + `sw.js`; funciones Vercel en `api/`; Postgres en Neon (`db/schema.sql`, idempotente); pruebas en `tests/`.
