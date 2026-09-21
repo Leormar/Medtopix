@@ -40,7 +40,7 @@ ul.k li::before{content:'';position:absolute;left:4px;top:28px;width:22px;height
 '''
 
 def foot(n, dark=False):
-    return f'<div class="foot"><div class="mk">{LOGO}<b>MedTopix</b></div><span>Máster Salud Digital e IA · OBS Business School · Grupo 5</span></div>'
+    return f'<div class="foot"><div class="mk">{LOGO}<b>MedTopix</b></div><span>Trabajo final de la Maestría en Salud Digital e IA · OBS Business School · Grupo 5</span></div>'
 
 def people_row():
     out = ''
