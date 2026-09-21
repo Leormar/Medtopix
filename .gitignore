@@ -4,3 +4,13 @@
 .claude
 skills-lock.json
 node_modules
+tools/video/venv
+tools/video/audio
+tools/video/html
+tools/video/png
+tools/video/seg
+tools/video/shots
+tools/video/prev
+tools/video/__pycache__
+tools/video/*.log
+tools/video/marks.json
