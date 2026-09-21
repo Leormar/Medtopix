@@ -55,6 +55,20 @@ r = await call(auth, 'POST', { action: 'apple' }, { pending, role: 'paciente', t
 
 await sql`update users set verified_at = now() where email = ${g1.email}`; // la doctora queda aprobada para poder crear una ficha más abajo
 
+// foto de perfil
+r = await call(auth, 'POST', { action: 'google' }, { credential: await token('google', Object.assign({ picture: 'https://lh3.googleusercontent.com/a/ABC-def_123=s96-c' }, g1)) });
+check('la foto de Google queda en el perfil', r.body.user.photo === 'https://lh3.googleusercontent.com/a/ABC-def_123=s96-c' && r.body.user.via === 'google', r.body.user);
+r = await call(auth, 'POST', { action: 'google' }, { credential: await token('google', Object.assign({ picture: 'https://evil.example/x.png' }, g1)) });
+check('una foto que no viene de Google se ignora', r.body.user.photo === 'https://lh3.googleusercontent.com/a/ABC-def_123=s96-c', r.body.user.photo);
+r = await call(auth, 'POST', { action: 'photo' }, { photo: 'data:image/jpeg;base64,/9j/4AAQSkZJRg==' }, doc); check('subir foto propia', r.status === 200 && r.body.user.photo.startsWith('data:image/jpeg'), r);
+r = await call(auth, 'POST', { action: 'google' }, { credential: await token('google', Object.assign({ picture: 'https://lh3.googleusercontent.com/a/OTRA' }, g1)) });
+check('la foto propia no la pisa la de Google', r.body.user.photo.startsWith('data:image/jpeg'), r.body.user.photo);
+r = await call(auth, 'POST', { action: 'photo' }, { photo: 'data:text/html;base64,PHNjcmlwdD4=' }, doc); check('un archivo que no es imagen -> 400', r.status === 400, r);
+r = await call(auth, 'POST', { action: 'photo' }, { photo: 'javascript:alert(1)' }, doc); check('una dirección tramposa -> 400', r.status === 400, r);
+r = await call(auth, 'POST', { action: 'photo' }, { photo: 'data:image/jpeg;base64,' + 'A'.repeat(120000) }, doc); check('foto demasiado grande -> 400', r.status === 400, r);
+r = await call(auth, 'POST', { action: 'photo' }, { photo: 'data:image/png;base64,AAAA' }); check('sin sesión -> 401', r.status === 401, r);
+r = await call(auth, 'POST', { action: 'photo' }, { photo: null }, doc); check('quitar la foto', r.status === 200 && r.body.user.photo === null, r);
+
 // vincular a una cuenta de correo existente
 r = await call(auth, 'POST', { action: 'register' }, { email: mail('luis'), password: 'clave-segura-1', name: 'Luis Correo', role: 'farmaceuta', terms: true });
 check('registro por correo sigue igual', r.status === 201, r);

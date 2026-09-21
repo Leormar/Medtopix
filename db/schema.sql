@@ -175,3 +175,6 @@ create unique index if not exists users_apple_sub_idx on users(apple_sub) where 
 alter table users add column if not exists verified_at timestamptz;
 alter table users add column if not exists verified_by integer references users(id) on delete set null;
 update users set verified_at = created_at where role = 'paciente' and verified_at is null;
+
+-- Foto de perfil: dirección de la foto de Google, o una imagen pequeña (256 px) subida por el usuario como data URL.
+alter table users add column if not exists photo text;

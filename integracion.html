@@ -104,6 +104,62 @@ footer{background:var(--g900);color:#9fc4ac;padding:40px 0;font-size:.88rem;bord
 footer a{color:var(--g200);text-decoration:none}footer a:hover{color:var(--goldf)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- ejemplo interactivo: historia clínica simulada ---------- */
+.demo{display:grid;gap:22px;margin-top:34px}
+@media(min-width:980px){.demo{grid-template-columns:1.15fr .85fr;align-items:start}}
+.demo>*{min-width:0}
+.hce{background:#fff;border:1px solid #cfd8e3;border-radius:14px;overflow:hidden;box-shadow:var(--shm);font-size:.9rem;color:#1f2d3d}
+.hce-bar{background:#33475b;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:600;font-size:.82rem;letter-spacing:.02em}
+.hce-bar span:last-child{font-weight:500;opacity:.75;font-size:.74rem}
+.hce-pt{display:flex;gap:12px;align-items:center;padding:14px 16px;background:#f4f7fa;border-bottom:1px solid #e1e7ee}
+.hce-av{width:40px;height:40px;border-radius:50%;background:#33475b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex:none}
+.hce-pt b{display:block;font-size:.98rem}.hce-pt small{color:#5b6b7d}
+.hce-body{padding:16px}
+.hce-body h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#5b6b7d;margin-bottom:10px}
+.hce-row{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
+@media(min-width:560px){.hce-row{grid-template-columns:1.4fr 1fr 1fr}}
+.hce label{display:block;font-size:.7rem;font-weight:700;color:#5b6b7d;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.hce select,.hce input{width:100%;padding:9px 10px;border:1px solid #cfd8e3;border-radius:7px;font:inherit;background:#fff;color:#1f2d3d}
+.hce-sign{background:#2f6fb0;color:#fff;border:0;border-radius:8px;padding:11px 20px;font:700 .9rem 'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.hce-sign:disabled{background:#9db4cc;cursor:default}
+.hce-mt{margin-top:16px;border:1.5px solid var(--g300);background:var(--g100);border-radius:10px;padding:13px 15px;display:none}
+.hce-mt.show{display:block;animation:pop .5s ease both}
+.hce-mt .mt-h{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--g800);font-size:.84rem;margin-bottom:6px}
+.hce-mt .mt-h i{width:20px;height:20px;border-radius:6px;background:var(--g800);display:inline-block}
+.adh-big{font-family:Fraunces,serif;font-weight:900;font-size:2rem;color:#a5622f;line-height:1}
+.adh-line{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.adh-line svg{flex:1;min-width:150px;height:46px}
+.adh-warn{margin-top:8px;font-size:.82rem;color:#9a3412;background:#fff7ed;border:1px solid #fdba74;border-radius:7px;padding:7px 10px}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.steps4{list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:st}
+.steps4 li{counter-increment:st;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:13px 14px;border:1.5px solid var(--border);border-radius:14px;background:#fff;opacity:.5;transition:all .4s ease}
+.steps4 li::before{content:counter(st);width:34px;height:34px;border-radius:50%;background:var(--g100);color:var(--g700);display:flex;align-items:center;justify-content:center;font-weight:800}
+.steps4 li.on{opacity:1;border-color:var(--goldf);box-shadow:var(--shm)}
+.steps4 li.on::before{background:var(--g800);color:var(--goldf)}
+.steps4 li.done{opacity:1}
+.steps4 li.done::before{content:'✓';background:var(--g600);color:#fff}
+.steps4 b{display:block;font-size:.95rem}.steps4 span{font-size:.86rem;color:var(--soft)}
+.steps4 .extra{display:none;margin-top:9px}
+.steps4 li.on .extra,.steps4 li.done .extra{display:block;animation:pop .5s ease both}
+.msg{font-size:.8rem;background:var(--g100);border-radius:8px;padding:8px 10px;color:var(--g800)}
+.msg+.msg{margin-top:6px}
+.rx{border:1px dashed #9db4cc;border-radius:8px;padding:10px 12px;display:flex;gap:12px;align-items:center;background:#fbfcfd;font-size:.8rem;color:#1f2d3d}
+.rx .qr{width:56px;height:56px;flex:none;background:conic-gradient(#0d2818 25%,#fff 0 50%,#0d2818 0 75%,#fff 0) 0 0/14px 14px;border:4px solid #fff;outline:1px solid #cfd8e3}
+.rx code{font:800 1rem ui-monospace,Menlo,monospace;letter-spacing:2px;color:var(--g800)}
+.phone{border:2px solid #0d2818;border-radius:16px;padding:10px 12px;background:#0d2818;color:#e8f8ee;font-size:.78rem;max-width:230px}
+.phone b{color:#fff;font-size:.84rem}.phone>span{color:#c2f0d1}.phone .pb{display:flex;gap:6px;margin-top:7px}
+.phone .pb span{flex:1;text-align:center;border-radius:6px;padding:5px 0;font-weight:700;font-size:.72rem;background:#1e6b3a}
+.phone .pb span+span{background:rgba(255,255,255,.14)}
+.demo-ctl{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.demo-ctl .btn{padding:10px 18px;font-size:.9rem}
+.demo-ctl small{color:var(--muted)}
+.tech{margin-top:6px;font-size:.78rem}
+.tech summary{cursor:pointer;color:var(--g600);font-weight:700}
+.tech pre{background:#0d2818;color:#dff3e6;border-radius:8px;padding:10px;overflow:auto;font-size:.72rem;margin-top:6px}
+.vidwrap{max-width:900px;margin:30px auto 0;border-radius:20px;overflow:hidden;box-shadow:var(--shm);background:#0d2818}
+.vidwrap video{display:block;width:100%}
+@media(prefers-reduced-motion:reduce){.hce-mt.show,.steps4 .extra{animation:none!important}}
 </style>
 </head>
 <body>
@@ -132,6 +188,68 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-bet
     <p class="fine">Prototipo académico en desarrollo · Trabajo final de la Maestría en Salud Digital e IA · OBS Business School · no validado ni certificado</p>
   </div>
 </header>
+
+<section id="ejemplo" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">Véalo con un ejemplo</div>
+    <h2>MedTopix aparece <em>cuando el médico formula</em></h2>
+    <p class="lead">El médico sigue trabajando en su historia clínica de siempre. No abre otra aplicación ni digita dos veces: al firmar la orden, la historia clínica y MedTopix se conectan solas.</p>
+    <div class="vidwrap"><video controls playsinline preload="metadata" poster="img/integracion-poster.jpg"><source src="video/integracion.mp4" type="video/mp4">Su navegador no reproduce video HTML5.</video></div>
+
+    <h3 style="margin-top:54px;font-size:1.35rem">Pruébelo usted: firme una orden en esta historia clínica simulada</h3>
+    <p style="color:var(--soft);margin-top:6px">Es una simulación con datos ficticios: nada se envía ni se guarda. Muestra lo que pasaría, paso a paso.</p>
+
+    <div class="demo">
+      <div class="hce" aria-label="Historia clínica simulada">
+        <div class="hce-bar"><span>Historia Clínica Electrónica · Consulta externa</span><span>simulación · datos ficticios</span></div>
+        <div class="hce-pt"><div class="hce-av">MG</div><div><b>María González Pérez</b><small>CC 00.000.000 · 68 años · Dx: glaucoma primario de ángulo abierto</small></div></div>
+        <div class="hce-body">
+          <h4>Ordenamiento · medicamentos</h4>
+          <div class="hce-row">
+            <div><label for="dm-med">Medicamento</label><select id="dm-med"><option>Timolol 0,5 % solución oftálmica</option><option>Latanoprost 0,005 % solución oftálmica</option><option>Dorzolamida 2 % solución oftálmica</option></select></div>
+            <div><label for="dm-dose">Dosis</label><input id="dm-dose" value="1 gota en cada ojo"></div>
+            <div><label for="dm-freq">Frecuencia</label><select id="dm-freq"><option>Cada 12 horas</option><option>Cada 8 horas</option><option>Una vez al día</option></select></div>
+          </div>
+          <button class="hce-sign" id="dm-sign" type="button">Firmar orden</button>
+
+          <div class="hce-mt" id="dm-enrolled">
+            <div class="mt-h"><i></i>MedTopix · seguimiento de adherencia activado</div>
+            <div>La paciente quedó inscrita. Código del caso <b id="dm-code1">—</b>, impreso en la fórmula.</div>
+          </div>
+          <div class="hce-mt" id="dm-adh">
+            <div class="mt-h"><i></i>MedTopix · adherencia de esta paciente <small style="font-weight:600;color:var(--muted)">(ejemplo)</small></div>
+            <div class="adh-line"><div><div class="adh-big">62 %</div><small>últimos 30 días · <span id="dm-med2"></span></small></div>
+              <svg viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 L25 9 L50 12 L75 10 L100 20 L125 30 L150 36 L175 28 L200 24" fill="none" stroke="#a5622f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M0 14h200" stroke="#2d8a4e" stroke-width="1" stroke-dasharray="4 4"/></svg></div>
+            <div class="adh-warn">Dos dosis seguidas sin cumplir la semana pasada. Antes de cambiar el medicamento, vale la pena preguntar qué está pasando en casa.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <ol class="steps4" id="dm-steps">
+          <li class="on"><div><b>El médico firma la orden</b><span>En su historia clínica, como siempre. Pulse «Firmar orden» a la izquierda.</span></div></li>
+          <li><div><b>La historia clínica le avisa a MedTopix</b><span>Envía dos mensajes por una conexión segura. Nadie digita dos veces.</span>
+            <div class="extra"><div class="msg"><b>1.</b> «Esta es la paciente»: nombre, documento, fecha de nacimiento.</div><div class="msg"><b>2.</b> «Este es su tratamiento»: <span id="dm-sum"></span>.</div>
+            <details class="tech"><summary>Ver el mensaje técnico</summary><pre id="dm-json"></pre></details></div></div></li>
+          <li><div><b>La fórmula sale con un código</b><span>La paciente lo escanea, activa MedTopix y empieza a recibir sus recordatorios.</span>
+            <div class="extra"><div class="rx"><div class="qr" aria-hidden="true"></div><div>Fórmula médica · código MedTopix<br><code id="dm-code2">—</code><br><small>QR de ejemplo</small></div></div>
+            <div class="phone" style="margin-top:10px"><b>08:00 · Hora de su tratamiento</b><br><span id="dm-med3"></span><div class="pb"><span>Usó</span><span>No usó</span></div></div></div></div></li>
+          <li><div><b>En el próximo control, la adherencia está ahí</b><span>Junto al medicamento, en la misma pantalla de ordenamiento.</span></div></li>
+        </ol>
+        <div class="demo-ctl">
+          <button class="btn gold" id="dm-next" type="button" style="display:none">Simular el control, 30 días después</button>
+          <button class="btn ghost" id="dm-reset" type="button" style="display:none;color:var(--g700);border-color:var(--g300)">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid3" style="margin-top:44px">
+      <div class="card"><h3>Para el médico</h3><p>Cero pasos nuevos al formular, y un dato que hoy no tiene: si el tratamiento falla o si no se está cumpliendo.</p></div>
+      <div class="card"><h3>Para la institución</h3><p>La adherencia queda en la historia clínica del paciente, no en una aplicación aparte que nadie consulta.</p></div>
+      <div class="card"><h3>Qué se necesita</h3><p>Una llave de integración creada en MedTopix y unas horas de un desarrollador del sistema de historia clínica. Es un prototipo: aún no se ha probado con una historia clínica real.</p></div>
+    </div>
+  </div>
+</section>
 
 <section>
   <div class="wrap">
@@ -270,5 +388,35 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-bet
   <span>© MedTopix · Trabajo final de la Maestría en Salud Digital e IA · OBS Business School · uso académico</span>
   <span><a href="/">Inicio</a> · <a href="/proyecto">El proyecto</a> · <a href="/app">La aplicación</a> · <a href="https://github.com/Leormar/Medtopix/blob/main/docs/api-hce.md">Guía de la API</a></span>
 </div></footer>
+<script>
+// Ejemplo interactivo: nada se envía ni se guarda; solo ilustra la secuencia al firmar una orden.
+(function(){
+  var $=function(id){return document.getElementById(id);}, steps=document.querySelectorAll('#dm-steps li'), timers=[];
+  function code(){var abc='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',o='';for(var i=0;i<8;i++)o+=abc[Math.floor(Math.random()*abc.length)];return o.slice(0,4)+'-'+o.slice(4);}
+  function step(n){steps.forEach(function(li,i){li.className=i<n?'done':i===n?'on':'';});}
+  function later(fn,ms){timers.push(setTimeout(fn,ms));}
+  function reset(){
+    timers.forEach(clearTimeout);timers=[];step(0);
+    $('dm-sign').disabled=false;$('dm-sign').textContent='Firmar orden';
+    ['dm-enrolled','dm-adh'].forEach(function(id){$(id).classList.remove('show');});
+    $('dm-next').style.display='none';$('dm-reset').style.display='none';
+    ['dm-med','dm-dose','dm-freq'].forEach(function(id){$(id).disabled=false;});
+  }
+  $('dm-sign').addEventListener('click',function(){
+    var med=$('dm-med').value,dose=$('dm-dose').value||'1 gota',freq=$('dm-freq').value,c=code();
+    ['dm-med','dm-dose','dm-freq'].forEach(function(id){$(id).disabled=true;});
+    this.disabled=true;this.textContent='Orden firmada';
+    $('dm-sum').textContent=med+', '+dose+', '+freq.toLowerCase();
+    $('dm-med2').textContent=med;$('dm-med3').textContent=med+' · '+dose;
+    $('dm-code1').textContent=c;$('dm-code2').textContent=c;
+    $('dm-json').textContent='POST /api/fhir/MedicationRequest\n'+JSON.stringify({resourceType:'MedicationRequest',subject:{reference:'Patient/123'},medicationCodeableConcept:{text:med},dosageInstruction:[{text:dose,timing:{repeat:{timeOfDay:['08:00:00']},code:{text:freq}}}]},null,1);
+    step(1);
+    later(function(){step(2);$('dm-enrolled').classList.add('show');},1700);
+    later(function(){$('dm-next').style.display='';$('dm-reset').style.display='';},3200);
+  });
+  $('dm-next').addEventListener('click',function(){step(3);$('dm-adh').classList.add('show');this.style.display='none';later(function(){step(4);},600);$('dm-adh').scrollIntoView({behavior:'smooth',block:'nearest'});});
+  $('dm-reset').addEventListener('click',reset);
+})();
+</script>
 </body>
 </html>

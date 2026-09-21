@@ -70,7 +70,8 @@ export function isVerified(u) {
 
 export function publicUser(u) {
   return {
-    verified: isVerified(u), admin: isAdmin(u),
+    verified: isVerified(u), admin: isAdmin(u), photo: u.photo || null,
+    via: u.google_sub ? 'google' : u.apple_sub ? 'apple' : 'correo',
     id: u.id, e: u.email, name: u.name, role: u.role, profession: u.profession,
     specialty: u.specialty, doctype: u.doc_type, docnum: u.doc_num, phone: u.phone, at: u.created_at
   };

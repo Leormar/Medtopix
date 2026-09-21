@@ -392,6 +392,19 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .soc-or{display:flex;align-items:center;gap:12px;margin:16px 0 4px;font-size:11px;color:var(--muted)}
 .soc-or::before,.soc-or::after{content:'';flex:1;height:1px;background:var(--border)}
 .t-note{background:var(--g100);border:1.5px solid var(--g300);border-radius:9px;padding:11px 14px;font-size:12px;color:var(--g800);margin-bottom:14px;line-height:1.5}
+.ua{overflow:hidden}.ua img,.prof-av img{width:100%;height:100%;object-fit:cover;display:block}
+.un{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.un b{font-weight:700;font-size:12px;white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.un small{font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;opacity:.75}
+@media(max-width:640px){.un b{max-width:110px}}
+.prof{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.prof-av{width:96px;height:96px;border-radius:50%;flex:none;overflow:hidden;background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff;display:flex;align-items:center;justify-content:center;font:800 2rem Fraunces,serif;border:3px solid #fff;box-shadow:0 0 0 2px var(--goldf),0 10px 24px -10px rgba(13,40,24,.5)}
+.prof-i{flex:1;min-width:220px}
+.prof-n{font-family:Fraunces,serif;font-weight:900;font-size:1.45rem;color:var(--g900);line-height:1.15}
+.prof-r{font-weight:700;color:var(--g600);font-size:13px;margin-top:3px}
+.prof-m{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.55}
+.prof-t{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.prof-b{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .case-code{font-family:monospace;font-size:1.5rem;font-weight:800;letter-spacing:3px;color:var(--g700);background:var(--g100);border:1.5px dashed var(--g300);border-radius:10px;padding:12px 16px;text-align:center;user-select:all;}
 .link-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .link-row input{flex:1;min-width:160px;text-transform:uppercase;font-family:monospace;font-size:15px;letter-spacing:2px;}
@@ -680,7 +693,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     </div>
     <div class="hdr-r">
       <span id="clock"></span>
-      <div class="uc"><div class="ua" id="ua">L</div><span class="un" id="un">Usuario</span></div>
+      <div class="uc" onclick="goTab('sync')" title="Ver mi perfil" style="cursor:pointer"><div class="ua" id="ua">L</div><span class="un"><b id="un">Usuario</b><small id="ur"></small></span></div>
       <button class="btn-out" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Salir</button>
     </div>
   </div>
@@ -1168,11 +1181,18 @@ function doLogout(){
 
 function initApp(){
   if(!curUser) return;
-  var ini = curUser.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
-  document.getElementById('ua').textContent = ini;
-  document.getElementById('un').textContent = curUser.name.split(' ')[0];
+  renderUserChip();
   curTab='alerts'; goTab('alerts');
   refreshAll(); renderRep();
+  // Enlace directo desde la historia clínica: /app#caso=123 abre ese paciente, si esta cuenta lo puede ver.
+  // Solo viaja el identificador interno del caso, nunca nombres ni documentos.
+  var deep=/^#caso=(\d+)$/.exec(location.hash);
+  if(deep){
+    var pid=parseInt(deep[1]);
+    if(patients.some(function(p){return p.id===pid;})) setActivePt(pid);
+    else if(!pendingAccount) setTimeout(function(){ toast('Ese caso no está entre los que usted sigue. Vincúlelo con su código en Mi cuenta.', true); }, 3600);
+    history.replaceState(null,'',location.pathname);
+  }
   toast(curUser.name.split(' ')[0]+': '+enteredAs(false).toLowerCase()+(pendingAccount?' (cuenta pendiente de verificación).':'.'));
   startAlarms();
   // Register service worker for background notifications
@@ -1253,7 +1273,8 @@ function requestNotif(){
 }
 
 var deferredInstall=null;
-window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferredInstall=e; showInstallTip(); });
+// la guía se abre sola solo en celulares; en computador queda el botón «Cómo instalar la app» de Mi cuenta
+window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferredInstall=e; if(window.matchMedia('(max-width: 900px)').matches) showInstallTip(); });
 window.addEventListener('appinstalled', function(){ deferredInstall=null; closeInstallTip(true); });
 
 // Guía de instalación: en iPhone Apple no ofrece botón de instalar, así que se explica desde la primera pantalla.
@@ -2015,11 +2036,53 @@ function ic(n){return '<svg class="ic" aria-hidden="true"><use href="#ic-'+n+'"/
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function roleLabel(u){return u.role==='profesional'&&u.profession?(PROF_LBL[u.profession]||u.profession):(ROLE_LBL[u.role]||u.role);}
 
+function initials(name){ return String(name||'?').trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+// Foto de perfil o, si no hay, las iniciales. La foto es de Google o una imagen pequeña que subió el usuario.
+function avatarHtml(u, cls){
+  var ok = u.photo && /^(https:\/\/lh\d\.googleusercontent\.com\/|data:image\/(jpeg|png|webp);base64,)/.test(u.photo);
+  return '<div class="'+cls+'">'+(ok ? '<img src="'+esc(u.photo)+'" alt="" referrerpolicy="no-referrer">' : esc(initials(u.name)))+'</div>';
+}
+function renderUserChip(){
+  var a=document.getElementById('ua'); if(!a||!curUser) return;
+  a.outerHTML = avatarHtml(curUser,'ua').replace('<div class="ua"','<div class="ua" id="ua"');
+  document.getElementById('un').textContent = curUser.name;
+  document.getElementById('ur').textContent = roleLabel(curUser);
+}
+function pickPhoto(){ document.getElementById('photo-file').click(); }
+function photoChosen(input){
+  var f=input.files&&input.files[0]; input.value=''; if(!f) return;
+  if(!/^image\//.test(f.type)){ toast('Elija un archivo de imagen.', true); return; }
+  var img=new Image(), url=URL.createObjectURL(f);
+  img.onload=function(){
+    // se recorta al centro y se reduce a 256 px en el dispositivo: al servidor solo llega esa miniatura
+    var s=Math.min(img.width,img.height), c=document.createElement('canvas'); c.width=c.height=256;
+    c.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,256,256);
+    URL.revokeObjectURL(url);
+    savePhoto(c.toDataURL('image/jpeg',0.85));
+  };
+  img.onerror=function(){ URL.revokeObjectURL(url); toast('No se pudo leer esa imagen.', true); };
+  img.src=url;
+}
+function savePhoto(data){
+  api('POST','/api/auth?action=photo',{photo:data}).then(function(r){
+    curUser=r.user; renderUserChip(); renderAccount(); toast(data?'Foto de perfil actualizada.':'Foto de perfil eliminada.');
+  }).catch(apiFail);
+}
+
 function renderAccount(){
   var el=document.getElementById('acct'); if(!el||!curUser) return;
-  var html='<div class="sync-panel"><div class="sync-title"><svg class="ic" aria-hidden="true"><use href="#ic-user"/></svg> '+esc(curUser.name)+'</div>'
-    +'<div class="sync-sub">'+esc(curUser.e)+' · <strong>'+esc(roleLabel(curUser))+'</strong><br>'
-    +'Tus datos están en tu cuenta MedTopix: inicia sesión desde cualquier dispositivo y los verás igual.</div></div>';
+  var via={google:'Ingresa con Google',apple:'Ingresa con Apple',correo:'Ingresa con correo y contraseña'}[curUser.via]||'';
+  var doc=curUser.docnum?esc((curUser.doctype||'')+' '+curUser.docnum):'';
+  var html='<div class="sync-panel prof"><input type="file" id="photo-file" accept="image/*" style="display:none" onchange="photoChosen(this)"/>'
+    +avatarHtml(curUser,'prof-av')
+    +'<div class="prof-i"><div class="prof-n">'+esc(curUser.name)+'</div>'
+    +'<div class="prof-r">'+esc(roleLabel(curUser))+(curUser.role==='profesional'?' · Profesional de la salud':'')+'</div>'
+    +'<div class="prof-m">'+esc(curUser.e)+(doc?' · '+doc:'')+'<br>'+via+' · cuenta desde '+new Date(curUser.at).toLocaleDateString('es-CO',{year:'numeric',month:'long'})+'</div>'
+    +'<div class="prof-t">'+(curUser.role==='paciente'?'':(pendingAccount?'<span class="mode-tag wait">'+ic('hourglass')+' Pendiente de verificación</span>':'<span class="mode-tag ok" style="background:var(--g100);color:var(--g700)">'+ic('check')+' Cuenta verificada</span>'))
+      +(curUser.admin?'<span class="mode-tag adm" style="background:var(--golds);color:#9a5b0e">'+ic('lock')+' Administrador</span>':'')+'</div>'
+    +'<div class="prof-b"><button class="btn-exp2" onclick="pickPhoto()">'+ic('user')+' '+(curUser.photo?'Cambiar foto':'Agregar foto')+'</button>'
+      +(curUser.photo&&/^data:/.test(curUser.photo)?'<button class="btn-exp2" onclick="savePhoto(null)">Quitar foto</button>':'')+'</div>'
+    +'</div></div>';
   if(curUser.role==='paciente'){
     var me=patients.find(function(p){return p.isSelf;});
     if(me){

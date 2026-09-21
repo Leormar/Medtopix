@@ -24,8 +24,8 @@ async function createAccount(b, id) {
     claim = found[0].id;
   }
   const rows = await sql`
-    insert into users (email, password_hash, google_sub, apple_sub, name, role, profession, specialty, doc_type, doc_num, phone, terms_accepted_at)
-    values (${id.email}, ${id.passwordHash}, ${id.google_sub || null}, ${id.apple_sub || null}, ${name}, ${role},
+    insert into users (email, password_hash, google_sub, apple_sub, photo, name, role, profession, specialty, doc_type, doc_num, phone, terms_accepted_at)
+    values (${id.email}, ${id.passwordHash}, ${id.google_sub || null}, ${id.apple_sub || null}, ${id.photo || null}, ${name}, ${role},
             ${role === 'profesional' ? clean(b.profession, 60) : null}, ${clean(b.specialty, 80)},
             ${clean(b.doctype, 10)}, ${clean(b.docnum, 40)}, ${clean(b.phone, 40)}, now())
     returning *`;
@@ -55,6 +55,17 @@ export default handler(async function (req, res) {
   const b = req.body || {};
 
   if (action === 'logout') { clearSession(res); return res.json({ ok: true }); }
+
+  // Foto de perfil propia: una imagen pequeña que el navegador ya redujo a 256 px. null la quita.
+  if (action === 'photo') {
+    const u = await requireUser(req, res); if (!u) return;
+    const photo = b.photo === null ? null : String(b.photo || '');
+    if (photo !== null && (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(photo) || photo.length > 90000)) {
+      return res.status(400).json({ error: 'La foto no es válida o es demasiado grande.' });
+    }
+    const rows = await sql`update users set photo = ${photo} where id = ${u.id} returning *`;
+    return res.json({ user: publicUser(rows[0]) });
+  }
 
   if (action === 'login') {
     const email = String(b.email || '').trim().toLowerCase();
@@ -113,10 +124,11 @@ export default handler(async function (req, res) {
     }
     // un administrador queda verificado desde que entra con su proveedor, aunque su cuenta sea anterior a esta regla
     if (rows.length && isAdmin(rows[0]) && !rows[0].verified_at) rows = await sql`update users set verified_at = now() where id = ${rows[0].id} returning *`;
+    if (rows.length && who.picture && (!rows[0].photo || /^https:/.test(rows[0].photo)) && rows[0].photo !== who.picture) rows = await sql`update users set photo = ${who.picture} where id = ${rows[0].id} returning *`;
     if (rows.length) { setSession(res, rows[0].id); return res.json({ user: publicUser(rows[0]) }); }
 
     if (!b.pending) return res.json({ needsProfile: true, pending: signPending(who), email: who.email, name: who.name });
-    const out = await createAccount(Object.assign({}, b, { name: b.name || who.name }), { email: who.email, passwordHash: null, [col]: who.sub });
+    const out = await createAccount(Object.assign({}, b, { name: b.name || who.name }), { email: who.email, passwordHash: null, [col]: who.sub, photo: who.picture || null });
     if (out.error) return res.status(out.status).json({ error: out.error });
     setSession(res, out.user.id);
     return res.status(201).json({ user: publicUser(out.user) });

@@ -280,3 +280,14 @@ curl -s "$BASE/Observation?patient=12&code=adherence" -H "Authorization: Bearer 
 - **No se exponen** las notas de seguimiento del equipo tratante, el equipo tratante ni los profesionales (`Practitioner`).
 - **No es una declaración de cumplimiento** de la Ley 2015 de 2020, la Resolución 866 de 2021 ni de ningún perfil nacional.
 - **Es un prototipo no validado:** sin acuerdos de nivel de servicio, sin auditoría de seguridad externa y sin pruebas con pacientes reales. No lo conecte a una historia clínica en producción con datos reales sin una revisión legal y de seguridad previa.
+
+
+## Enlace directo al caso
+
+Para poner en la historia clínica un botón «Ver en MedTopix» junto al paciente:
+
+    https://medtopix.vercel.app/app#caso=<id>
+
+`<id>` es el `id` del recurso `Patient` que devolvió la API. El profesional entra con su propia cuenta de MedTopix y la app abre
+ese caso **solo si esa cuenta lo sigue**; si no, se lo indica. En el enlace viaja únicamente ese identificador interno:
+nunca ponga nombres, documentos ni diagnósticos en la dirección.

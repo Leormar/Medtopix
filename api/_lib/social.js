@@ -23,7 +23,9 @@ export async function verifyIdToken(provider, token) {
   const { payload } = await jwtVerify(String(token || ''), keySets[provider], { issuer: p.issuer, audience: p.audience() });
   const verified = payload.email_verified === true || payload.email_verified === 'true';
   if (!payload.sub || !payload.email || !verified) throw new Error('El proveedor no entregó un correo verificado.');
-  return { provider, sub: String(payload.sub), email: String(payload.email).toLowerCase(), name: payload.name ? String(payload.name) : '' };
+  // Google incluye la foto de la cuenta; solo se acepta si viene de sus servidores de imágenes
+  const pic = /^https:\/\/lh\d\.googleusercontent\.com\/[\w\-\/=.]+$/.test(String(payload.picture || '')) ? String(payload.picture) : null;
+  return { provider, sub: String(payload.sub), email: String(payload.email).toLowerCase(), name: payload.name ? String(payload.name) : '', picture: pic };
 }
 
 // Entre "ya sé quién es" y "aceptó los términos" la identidad viaja en un pase firmado por el servidor, de 30 minutos.
