@@ -11,7 +11,6 @@
 <link rel="manifest" href="manifest.json"/>
 <!-- Apple touch icons -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a4a2e'/><circle cx='50' cy='50' r='30' fill='%23f0f7f2' stroke='%232d8a4e' stroke-width='2'/><line x1='50' y1='50' x2='50' y2='28' stroke='%231a4a2e' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='50' x2='65' y2='58' stroke='%23c97a20' stroke-width='2.5' stroke-linecap='round'/></svg>"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -358,6 +357,19 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 .sync-title{font-family:Fraunces,serif;font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:6px;}
 .sync-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
 .sync-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.case-code{font-family:monospace;font-size:1.5rem;font-weight:800;letter-spacing:3px;color:var(--g700);background:var(--g100);border:1.5px dashed var(--g300);border-radius:10px;padding:12px 16px;text-align:center;user-select:all;}
+.link-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.link-row input{flex:1;min-width:160px;text-transform:uppercase;font-family:monospace;font-size:15px;letter-spacing:2px;}
+.pt-case{font-size:10px;color:var(--muted);margin-top:4px;}
+.pt-case b{font-family:monospace;font-size:12px;color:var(--g700);letter-spacing:1px;user-select:all;}
+.ntsp{display:none;padding:12px 14px;background:var(--bg);border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;}
+.ntsp.open{display:block;}
+.nt-form{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.nt-form textarea{min-height:64px;}
+.nt{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-top:7px;}
+.nt-h{font-size:10px;font-weight:700;color:var(--g700);margin-bottom:3px;}
+.nt-b{font-size:12px;color:var(--ink);white-space:pre-wrap;line-height:1.5;}
+.kind-n{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9a5b0e;background:#fdf0dc;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle;}
 .btn-exp{padding:9px 18px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 .btn-imp{padding:9px 18px;background:var(--g100);border:1.5px solid var(--g300);color:var(--g700);border-radius:8px;font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 .sync-code{background:var(--g900);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:var(--g300);word-break:break-all;margin-top:12px;display:none;max-height:120px;overflow-y:auto;}
@@ -448,16 +460,8 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="hero-disc">
       <strong>⚠️ Aviso importante:</strong> MedTopix es una herramienta de apoyo al tratamiento prescrito. <strong>No reemplaza al médico tratante ni a ningún profesional de la salud.</strong> Ante dudas, efectos adversos o síntomas nuevos, consulte a su médico inmediatamente.
     </div>
-    <div id="qr-landing-msg" style="display:none;background:rgba(58,170,99,0.2);border:1.5px solid var(--g400);border-radius:12px;padding:14px 20px;max-width:400px;margin:0 auto 20px;text-align:center;">
-      <div style="font-size:1.5rem;margin-bottom:6px">✅</div>
-      <div style="font-size:14px;font-weight:700;color:var(--g300)">Datos listos para importar</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">Toca "Entrar con QR" para sincronizar</div>
-    </div>
-    <button class="btn-start" id="btn-start-qr" style="display:none;background:linear-gradient(135deg,#2563eb,#60a5fa)" onclick="goStart()">✅ Entrar con QR →</button>
-    <button class="btn-start" id="btn-start-normal" onclick="goStart()">Comenzar →</button>
-    <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.4)">
-      ¿Ya tienes cuenta? <a onclick="show('slo')" style="color:var(--g400);cursor:pointer;font-weight:700">Iniciar sesión</a>
-    </div>
+    <button class="btn-start" id="btn-start-normal" onclick="goStart()">Iniciar sesión →</button>
+    <button class="btn-start" style="background:transparent;border:1.5px solid rgba(255,255,255,.45);margin-top:10px" onclick="goTerms()">Crear cuenta</button>
     <div class="hero-feats">
       <div class="feat"><div class="feat-ic">🔔</div><div class="feat-t">Alarmas automáticas</div><div class="feat-d">Alertas visuales y sonoras a la hora exacta de cada toma</div></div>
       <div class="feat"><div class="feat-ic">📊</div><div class="feat-t">Curva de adherencia</div><div class="feat-d">14 días de cumplimiento por paciente en tiempo real</div></div>
@@ -480,7 +484,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <h4>2. Limitación de responsabilidad</h4>
       <p>MedTopix no asume responsabilidad por decisiones clínicas. Ante cualquier duda o efecto adverso, consulte a su médico tratante de inmediato.</p>
       <h4>3. Protección de datos — Ley 1581 de 2012 (Colombia)</h4>
-      <p>En cumplimiento de la Ley 1581 de 2012 (Habeas Data), el usuario autoriza el tratamiento de sus datos bajo estas condiciones: (a) Los datos se almacenan exclusivamente en el dispositivo del usuario. (b) MedTopix no transfiere ni vende datos a terceros. (c) El usuario puede solicitar la eliminación de sus datos en cualquier momento. (d) Solo se recolectan datos necesarios para el funcionamiento de la app.</p>
+      <p>En cumplimiento de la Ley 1581 de 2012 (Habeas Data), el usuario autoriza el tratamiento de sus datos bajo estas condiciones: (a) Los datos de la cuenta, la ficha del paciente, los tratamientos, los registros de adherencia y las notas de seguimiento se almacenan en una base de datos en la nube (Neon Postgres, alojada fuera de Colombia) a través de una conexión cifrada; las contraseñas se guardan cifradas de forma irreversible. (b) Los datos de un paciente solo son visibles para el propio paciente, para el profesional que creó su ficha y para los profesionales o farmaceutas a quienes se les compartió el código del caso. MedTopix no vende datos a terceros. (c) El usuario puede solicitar la eliminación de sus datos en cualquier momento. (d) Solo se recolectan datos necesarios para el funcionamiento de la app.</p>
       <h4>4. Uso de la información</h4>
       <p>La información registrada se usa exclusivamente para generar recordatorios y curvas de adherencia. No se realiza minería de datos comercial con información personal.</p>
       <h4>5. Aceptación</h4>
@@ -489,6 +493,20 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     <div class="t-form">
       <div class="t-form-title">📋 Datos de quien acepta los términos</div>
       <div class="tg">
+        <div class="fg" style="grid-column:span 2"><label class="fl">Tipo de cuenta</label>
+          <select class="fi" id="tc-role" onchange="roleChanged()">
+            <option value="paciente">Paciente — recibo recordatorios y registro mi adherencia</option>
+            <option value="profesional">Profesional de la salud — sigo la adherencia de mis pacientes</option>
+            <option value="farmaceuta">Farmaceuta — verifico la adherencia de los casos que me comparten</option>
+          </select>
+        </div>
+        <div class="fg" id="tc-prof-wrap" style="grid-column:span 2;display:none"><label class="fl">Profesión</label>
+          <select class="fi" id="tc-prof">
+            <option value="medico">Médico/a</option><option value="nutricionista">Nutricionista</option><option value="optometra">Optómetra</option>
+            <option value="enfermeria">Enfermería</option><option value="odontologo">Odontólogo/a</option><option value="psicologo">Psicólogo/a</option><option value="otro">Otro profesional</option>
+          </select>
+        </div>
+        <div class="fg" id="tc-code-wrap" style="grid-column:span 2"><label class="fl">Código del caso (opcional)</label><input type="text" class="fi" id="tc-code" placeholder="Si tu profesional ya creó tu ficha, escribe el código que te dio" maxlength="9"/></div>
         <div class="fg" style="grid-column:span 2"><label class="fl">Nombre completo</label><input type="text" class="fi" id="tc-n" placeholder="Nombre y apellidos"/></div>
         <div class="fg"><label class="fl">Tipo de documento</label>
           <select class="fi" id="tc-dt">
@@ -502,7 +520,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
         <div class="fg"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="tc-e" placeholder="correo@gmail.com"/></div>
         <div class="fg"><label class="fl">Contraseña</label>
 <div class="pw-wrap">
-  <input type="password" class="fi" id="tc-p" placeholder="Mínimo 6 caracteres"/>
+  <input type="password" class="fi" id="tc-p" placeholder="Mínimo 8 caracteres"/>
   <button type="button" class="pw-eye" onclick="togPw('tc-p',this)" title="Mostrar/ocultar">👁️</button>
 </div></div>
       </div>
@@ -522,7 +540,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
     </div>
     <div class="lb-title">Iniciar sesión</div>
     <div class="lb-sub">Ingresa con tu correo y contraseña</div>
-    <div class="lb-err" id="lb-err">Usuario no encontrado en este dispositivo.</div>
+    <div class="lb-err" id="lb-err">Correo o contraseña incorrectos.</div>
     <div class="fg" style="margin-bottom:12px"><label class="fl">Correo electrónico</label><input type="email" class="fi" id="li-e" placeholder="correo@gmail.com"/></div>
     <div class="fg" style="margin-bottom:4px"><label class="fl">Contraseña</label>
 <div class="pw-wrap">
@@ -530,19 +548,9 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
   <button type="button" class="pw-eye" onclick="togPw('li-p',this)" title="Mostrar/ocultar">👁️</button>
 </div></div>
     <button class="btn-login" onclick="doLogin()">Entrar</button>
-    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:11px;color:#92400e;margin:12px 0;line-height:1.5;">
-  <strong>📱 ¿Usas otro dispositivo?</strong><br>
-  Los datos se guardan localmente. Usa la pestaña <strong><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync</strong> para transferir tu cuenta entre dispositivos.
-</div>
-<div class="lb-div" style="margin-top:16px">¿Primera vez en este dispositivo?</div>
+    <div class="lb-div" style="margin-top:16px">¿Primera vez en MedTopix?</div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
       <button onclick="goTerms()" style="padding:10px;background:var(--g100);border:1.5px solid var(--g300);color:var(--g700);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Crear cuenta nueva</button>
-      <button onclick="showImportLogin()" style="padding:10px;background:#eff6ff;border:1.5px solid #bfdbfe;color:#1d4ed8;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Importar desde otro dispositivo</button>
-    </div>
-    <div id="import-login-box" style="display:none;margin-top:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Pega el codigo de exportacion</div>
-      <textarea id="import-login-txt" style="width:100%;min-height:70px;font-family:monospace;font-size:11px;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:8px;color:var(--ink);resize:vertical" placeholder="Pega aqui el codigo generado desde el otro dispositivo..."></textarea>
-      <button onclick="importFromLogin()" style="margin-top:8px;width:100%;padding:10px;background:linear-gradient(135deg,var(--g600),var(--g500));color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Importar y entrar</button>
     </div>
   </div>
 </div>
@@ -563,12 +571,12 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
   </div>
   <div class="tabs">
     <button class="tb active" onclick="goTab('alerts')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Alertas</button>
-    <button class="tb" onclick="goTab('patients')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Pacientes</button>
+    <button class="tb" id="tb-patients" onclick="goTab('patients')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Pacientes</button>
     <button class="tb" onclick="goTab('meds')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg> Medicamentos</button>
     <button class="tb" onclick="goTab('report')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Reporte</button>
     <button class="tb" onclick="goTab('process')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg> Proceso IA</button>
     <button class="tb" onclick="goTab('team')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Equipo</button>
-    <button class="tb" onclick="goTab('sync')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync</button>
+    <button class="tb" onclick="goTab('sync')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Mi cuenta</button>
   </div>
   <div class="pt-bar" id="pt-bar">
     <div class="pt-bar-av" id="pt-bar-av">?</div>
@@ -613,7 +621,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <!-- PACIENTES -->
 <div class="tp" id="tp-patients">
   <div class="st"><div class="si"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>Registrar paciente</div>
-  <div class="fc">
+  <div class="fc" id="pt-form">
     <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="fh-t">Datos del paciente</div><div class="fh-s">Registra al paciente antes de asignarle medicamentos</div></div></div>
     <div class="fg2">
       <div class="fg" style="grid-column:span 2"><label class="fl">Nombre completo</label><input type="text" id="p-n" placeholder="Ej: María González Pérez"/></div>
@@ -627,7 +635,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       <div class="fg"><label class="fl">Teléfono</label><input type="text" id="p-ph" placeholder="310 000 0000"/></div>
       <div class="fg" style="grid-column:span 2"><label class="fl">Observaciones</label><textarea id="p-ob" placeholder="Alergias, antecedentes..."></textarea></div>
     </div>
-    <div class="ff"><button class="btn-add" onclick="addPt()">➕ Registrar paciente</button><span class="hint">Datos guardados localmente</span></div>
+    <div class="ff"><button class="btn-add" onclick="addPt()">➕ Registrar paciente</button><span class="hint">Se guarda en tu cuenta MedTopix</span></div>
   </div>
   <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Pacientes y adherencia</div>
   <div style="margin-bottom:14px;">
@@ -639,11 +647,12 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 <!-- MEDICAMENTOS -->
 <div class="tp" id="tp-meds">
   <div class="st"><div class="si"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>Agregar medicamento</div>
-  <div class="fc">
+  <div class="fc" id="med-form">
     <div class="fh"><div class="fh-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg></div><div><div class="fh-t">Nuevo recordatorio</div><div class="fh-s">Asigna un paciente y programa la hora de toma</div></div></div>
     <div class="fg2">
-      <div class="fg" style="grid-column:span 2"><label class="fl">Nombre del medicamento</label><input type="text" id="f-n" placeholder="Ej: Tobramicina 0.3% colirio"/></div>
-      <div class="fg"><label class="fl">Paciente asignado</label><select id="f-pt" onchange="preloadPt()"><option value="">— Sin asignar —</option></select></div>
+      <div class="fg" style="grid-column:span 2"><label class="fl">Medicamento o indicación nutricional</label><input type="text" id="f-n" placeholder="Ej: Tobramicina 0.3% colirio"/></div>
+      <div class="fg"><label class="fl">Tipo de tratamiento</label><select id="f-k"><option value="farmacologico">💊 Farmacológico</option><option value="nutricional">🥗 Nutricional</option></select></div>
+      <div class="fg" id="f-pt-wrap"><label class="fl">Paciente asignado</label><select id="f-pt" onchange="preloadPt()"><option value="">— Sin asignar —</option></select></div>
       <div class="fg"><label class="fl">Especialidad</label>
         <select id="f-sp"><option>General</option><option>Dermatología</option><option>Oftalmología</option><option>Traumatología</option><option>ORL</option><option>Ginecología</option><option>Neurología</option><option>Cardiología</option><option>Gastroenterología</option></select>
       </div>
@@ -658,7 +667,7 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
       </div>
       <div class="fg" style="grid-column:span 2"><label class="fl">Notas / instrucciones</label><textarea id="f-nt" placeholder="Ej: Aplicar en zona afectada. No suspender sin indicación médica."></textarea></div>
     </div>
-    <div class="ff"><button class="btn-add" onclick="addMed()">➕ Agregar recordatorio</button><span class="hint">Datos guardados localmente</span></div>
+    <div class="ff"><button class="btn-add" onclick="addMed()">➕ Agregar recordatorio</button><span class="hint">Se guarda en tu cuenta MedTopix</span></div>
   </div>
   <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></svg></div>Medicamentos registrados</div>
   <div class="sf" id="sf"></div>
@@ -741,59 +750,8 @@ footer{background:var(--g900);color:rgba(255,255,255,0.4);padding:28px 22px;marg
 
 <!-- SYNC -->
 <div class="tp" id="tp-sync">
-  <div class="st"><div class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></div>Sincronizar entre dispositivos</div>
-
-  <div class="sync-panel">
-    <div class="sync-title">📤 Exportar mis datos</div>
-    <div class="sync-sub">Genera un código con tus datos (cuenta, pacientes, medicamentos) para usarlo en otro dispositivo. <strong>No compartas este código con nadie.</strong></div>
-    <div class="sync-btns">
-      <button class="btn-exp" onclick="genQR()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M17 17h3v3h-3z"/><path d="M14 20h3"/><path d="M20 14h-3"/></svg>
-        Generar QR para iPhone
-      </button>
-      <button class="btn-exp" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="exportData();copyCode()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-        Copiar código texto
-      </button>
-    </div>
-    <!-- QR Display -->
-    <div id="qr-wrap" style="display:none;margin-top:16px;text-align:center;background:var(--bg);border-radius:10px;padding:20px;border:1.5px solid var(--border)">
-      <div style="font-size:12px;font-weight:700;color:var(--g700);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Escanea con tu iPhone</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Abre la cámara o lector QR → escanea → se abre MedTopix con los datos listos</div>
-      <div id="qr-canvas" style="display:inline-block;background:#fff;padding:12px;border-radius:10px;box-shadow:0 2px 12px rgba(13,40,24,0.12)"></div>
-      <div style="margin-top:12px;font-size:11px;color:var(--muted)">El QR expira cuando cierres esta página</div>
-    </div>
-    <div class="sync-code" id="sync-code"></div>
-  </div>
-
-  <div class="sync-panel">
-    <div class="sync-title">📥 Importar datos en este dispositivo</div>
-    <div class="sync-sub">Pega el código que exportaste desde el otro dispositivo para sincronizar tu cuenta y datos.</div>
-    <div class="sync-btns">
-      <button class="btn-imp" onclick="toggleImport()">📥 Pegar código de importación</button>
-    </div>
-    <div class="sync-import-area" id="sync-import-area">
-      <textarea id="sync-import-txt" placeholder="Pega aquí el código exportado desde el otro dispositivo..."></textarea>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn-exp" onclick="importData()">✅ Importar y sincronizar</button>
-        <button class="btn-imp" onclick="toggleImport()">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="sync-panel" style="background:var(--g100);border-color:var(--g200)">
-    <div class="sync-title" style="color:var(--g700)">📱 ¿Cómo sincronizar con tu celular?</div>
-    <div style="font-size:12px;color:var(--muted);line-height:1.8">
-      <strong>En el Mac:</strong><br>
-      1. Haz clic en "Generar código de exportación"<br>
-      2. Copia el código<br><br>
-      <strong>En el celular:</strong><br>
-      3. Abre medtopix.vercel.app<br>
-      4. Ve a <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync → "Importar datos"<br>
-      5. Pega el código y haz clic en "Importar"<br><br>
-      <strong>⚠️ Nota:</strong> Los datos quedan guardados localmente en cada dispositivo. Para mantenerlos sincronizados repite el proceso cuando hagas cambios importantes.
-    </div>
-  </div>
+  <div class="st"><div class="si">👤</div>Mi cuenta y casos</div>
+  <div id="acct"></div>
 </div>
 
 </main>
@@ -880,20 +838,48 @@ var ADH_COLORS = {yes:'#16a34a', late:'#2563eb', no:'#dc2626'};
 var FREQ_COUNT  = {'Cada 4 horas':6,'Cada 6 horas':4,'Cada 8 horas':3,'Cada 12 horas':2,'Una vez al día':1,'Según necesidad':1};
 
 // ── STATE ─────────────────────────────────────────────────────
-var meds      = JSON.parse(localStorage.getItem('mt6_m') || '[]');
-var patients  = JSON.parse(localStorage.getItem('mt6_p') || '[]');
-var adherence = JSON.parse(localStorage.getItem('mt6_a') || '[]');
-var users     = JSON.parse(localStorage.getItem('mt6_u') || '[]');
+// Los datos viven en el servidor (/api); estos arreglos son la copia en memoria de lo que el usuario puede ver.
+var meds      = [];
+var patients  = [];
+var adherence = [];
 var curUser   = null;
 var curFilter = 'all';
 var curTab    = 'alerts';
 var curAlarm  = null;
 var snoozed   = {};
 
-function sM(){localStorage.setItem('mt6_m', JSON.stringify(meds));}
-function sP(){localStorage.setItem('mt6_p', JSON.stringify(patients));}
-function sA(){localStorage.setItem('mt6_a', JSON.stringify(adherence));}
-function sU(){localStorage.setItem('mt6_u', JSON.stringify(users));}
+function api(method, path, body){
+  var opt={method:method, credentials:'same-origin', headers:{}};
+  if(body){opt.headers['Content-Type']='application/json'; opt.body=JSON.stringify(body);}
+  return fetch(path,opt).then(function(r){
+    return r.json().catch(function(){return {};}).then(function(j){
+      if(r.status===401 && curUser){curUser=null; show('slo');}
+      if(!r.ok){var err=new Error(j.error||'No se pudo conectar con MedTopix.'); err.status=r.status; throw err;}
+      return j;
+    });
+  }, function(){ throw new Error('Sin conexión. Revisa tu internet e intenta de nuevo.'); });
+}
+function apiFail(err){ toast(err.message||'No se pudo conectar con MedTopix.',true); }
+function ageFrom(dob){
+  if(!dob) return null;
+  var p=dob.split('-'), today=new Date(), age=today.getFullYear()-parseInt(p[0]);
+  var mo=today.getMonth()+1-parseInt(p[1]);
+  if(mo<0||(mo===0&&today.getDate()<parseInt(p[2]))) age--;
+  return age;
+}
+function applyState(s){
+  curUser=s.user; patients=s.patients; meds=s.meds; adherence=s.adherence;
+  patients.forEach(function(p){p.age=ageFrom(p.dob);});
+}
+function loadState(){ return api('GET','/api/state').then(applyState); }
+function refreshAll(){
+  applyRoleUI(); renderAlerts(); updateStats(); refreshPtSel(); renderAccount();
+  if(curTab==='patients') renderPatients();
+  if(curTab==='meds'){renderSF(); renderCards();}
+  if(curTab==='report') renderRep();
+}
+// Resincroniza tras un fallo para que la pantalla no muestre algo que el servidor no guardó.
+function resync(err){ apiFail(err); return loadState().then(refreshAll).catch(function(){}); }
 
 // ── SCREENS ───────────────────────────────────────────────────
 function show(id){
@@ -907,44 +893,10 @@ function show(id){
 }
 
 function goStart(){
-  // Check pending QR sync first
-  var pendingSync = sessionStorage.getItem('mt6_qr');
-  if(pendingSync){
-    sessionStorage.removeItem('mt6_qr');
-    try{
-      var raw = atob(pendingSync);
-      var decoded = JSON.parse(decodeURIComponent(escape(raw)));
-      if(decoded.version==='mt6'){
-        // Import all data
-        if(decoded.users && decoded.users.length>0){
-          users = decoded.users; sU();
-          patients = decoded.patients||[]; sP();
-          meds = decoded.meds||[]; sM();
-          adherence = decoded.adherence||[]; sA();
-          // Auto-login as first user - NO password needed via QR
-          curUser = users[0];
-          localStorage.setItem('mt6_s', JSON.stringify(curUser));
-          initApp();
-          show('sa');
-          setTimeout(function(){
-            toast('✅ Bienvenido '+curUser.name+'. Sincronizado por QR.');
-          }, 800);
-          return;
-        }
-      }
-    } catch(e){
-      toast('Error en el QR. Usa importar manual.',true);
-    }
-  }
-  // Normal flow
-  var saved=localStorage.getItem('mt6_s');
-  if(saved){
-    try{curUser=JSON.parse(saved);initApp();show('sa');return;}
-    catch(e){localStorage.removeItem('mt6_s');}
-  }
-  if(users.length>0){ show('slo'); }
-  else { show('st'); }
+  if(curUser){ show('sa'); return; }
+  show('slo');
 }
+
 function goTerms(){ show('st'); }
 
 // ── TERMS ─────────────────────────────────────────────────────
@@ -953,24 +905,31 @@ function chkReady(){
   document.getElementById('btn-accept').disabled = !ok;
 }
 
+function roleChanged(){
+  var role=document.getElementById('tc-role').value;
+  document.getElementById('tc-prof-wrap').style.display = role==='profesional'?'':'none';
+  document.getElementById('tc-code-wrap').style.display = role==='paciente'?'':'none';
+}
+
 function acceptTerms(){
   var n = document.getElementById('tc-n').value.trim();
   var dn= document.getElementById('tc-dn').value.trim();
   var e = document.getElementById('tc-e').value.trim();
   var p = document.getElementById('tc-p').value;
+  var role = document.getElementById('tc-role').value;
   if(!n||!dn||!e||!p){toast('Completa todos los campos.',true);return;}
-  if(p.length<6){toast('Contraseña mínimo 6 caracteres.',true);return;}
-  if(users.find(function(u){return u.e===e;})){
-    toast('Ya tienes una cuenta en este dispositivo. Ve a Iniciar sesión.',true);
-    setTimeout(function(){show('slo');},1500);
-    return;
-  }
-  var u = {id:Date.now(),name:n,doctype:document.getElementById('tc-dt').value,docnum:dn,e:e,p:p,at:new Date().toISOString()};
-  users.push(u); sU();
-  curUser = u;
-  localStorage.setItem('mt6_s', JSON.stringify(u));
-  initApp(); show('sa');
-  toast('✅ Cuenta creada. Bienvenido a MedTopix.');
+  if(p.length<8){toast('Contraseña mínimo 8 caracteres.',true);return;}
+  var btn=document.getElementById('btn-accept'); btn.disabled=true;
+  api('POST','/api/auth?action=register',{
+    name:n, email:e, password:p, role:role, terms:true,
+    profession:document.getElementById('tc-prof').value,
+    doctype:document.getElementById('tc-dt').value, docnum:dn,
+    linkCode:document.getElementById('tc-code').value.trim()
+  }).then(loadState).then(function(){
+    document.getElementById('tc-p').value='';
+    initApp(); show('sa');
+    toast('✅ Cuenta creada. Bienvenido a MedTopix.');
+  }).catch(apiFail).then(function(){chkReady();});
 }
 
 // ── LOGIN ─────────────────────────────────────────────────────
@@ -978,53 +937,21 @@ function doLogin(){
   var e = document.getElementById('li-e').value.trim();
   var p = document.getElementById('li-p').value;
   if(!e||!p){toast('Ingresa correo y contraseña.',true);return;}
-  // Check local users first
-  var u = users.find(function(x){return x.e===e && x.p===p;});
-  if(!u){
-    // If no local users exist, create profile automatically (first time on this device)
-    if(users.length===0){
-      u={id:Date.now(),name:e.split('@')[0],e:e,p:p,doctype:'CC',docnum:'',at:new Date().toISOString()};
-      users.push(u); sU();
-      toast('✅ Perfil creado en este dispositivo.');
-    } else {
-      document.getElementById('lb-err').classList.add('show');
-      document.getElementById('lb-err').textContent='Usuario no encontrado en este dispositivo. Usa <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Sync para importar tu cuenta desde otro dispositivo, o crea una cuenta nueva.';
-      return;
-    }
-  }
-  document.getElementById('lb-err').classList.remove('show');
-  curUser = u;
-  localStorage.setItem('mt6_s', JSON.stringify(u));
-  initApp(); show('sa');
+  var box=document.getElementById('lb-err');
+  api('POST','/api/auth?action=login',{email:e,password:p}).then(loadState).then(function(){
+    box.classList.remove('show');
+    document.getElementById('li-p').value='';
+    initApp(); show('sa');
+  }).catch(function(err){ box.textContent=err.message; box.classList.add('show'); });
 }
 
-function showImportLogin(){
-  var box=document.getElementById('import-login-box');
-  if(box) box.style.display=box.style.display==='none'?'block':'none';
-}
 
-function importFromLogin(){
-  var txt=document.getElementById('import-login-txt');
-  if(!txt||!txt.value.trim()){toast('Pega el codigo primero.',true);return;}
-  try{
-    var decoded=JSON.parse(decodeURIComponent(escape(atob(txt.value.trim()))));
-    if(!decoded.version||decoded.version!=='mt6'){toast('Codigo invalido.',true);return;}
-    if(decoded.users)  {users=decoded.users;     sU();}
-    if(decoded.patients){patients=decoded.patients; sP();}
-    if(decoded.meds)   {meds=decoded.meds;        sM();}
-    if(decoded.adherence){adherence=decoded.adherence; sA();}
-    if(users.length>0){
-      curUser=users[0];
-      localStorage.setItem('mt6_s',JSON.stringify(curUser));
-      initApp(); show('sa');
-      toast('Bienvenido '+curUser.name+'. Datos importados correctamente.');
-    }
-  }catch(e){toast('Error al leer el codigo. Verificalo.',true);}
-}
+
+
 
 function doLogout(){
-  localStorage.removeItem('mt6_s');
-  curUser = null;
+  api('POST','/api/auth?action=logout').catch(function(){});
+  curUser = null; meds=[]; patients=[]; adherence=[]; snoozed={};
   show('sl');
 }
 
@@ -1033,7 +960,8 @@ function initApp(){
   var ini = curUser.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
   document.getElementById('ua').textContent = ini;
   document.getElementById('un').textContent = curUser.name.split(' ')[0];
-  renderAlerts(); refreshPtSel(); renderRep();
+  curTab='alerts'; goTab('alerts');
+  refreshAll(); renderRep();
   startAlarms();
   // Register service worker for background notifications
   registerSW();
@@ -1137,7 +1065,15 @@ function calcAge(){
 }
 
 // ── ALARM SYSTEM ──────────────────────────────────────────────
-function startAlarms(){ setInterval(checkAlarms, 15000); checkAlarms(); }
+var alarmTimer=null;
+function startAlarms(){ if(!alarmTimer) alarmTimer=setInterval(checkAlarms, 15000); checkAlarms(); }
+// La alarma suena en el dispositivo del paciente; al profesional solo le suena lo propio o lo de pacientes sin cuenta que él registró.
+function alarmApplies(med){
+  if(!curUser) return false;
+  if(curUser.role==='paciente' || !med.patientId) return true;
+  var p=patients.find(function(x){return x.id===med.patientId;});
+  return !!p && p.mine && !p.hasAccount && curUser.role==='profesional';
+}
 
 function checkAlarms(){
   if(curAlarm) return;
@@ -1146,6 +1082,7 @@ function checkAlarms(){
   var today = todayStr();
   for(var i=0; i<meds.length; i++){
     var med = meds[i];
+    if(!alarmApplies(med)) continue;
     if(snoozed[med.id] && snoozed[med.id]>Date.now()) continue;
     var already = adherence.some(function(a){return a.medId===med.id && a.date===today;});
     if(already) continue;
@@ -1227,7 +1164,8 @@ function beep(){
 }
 
 // ── UTILS ─────────────────────────────────────────────────────
-function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function dateStr(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function todayStr(){ return dateStr(new Date()); }
 
 function getStatus(med){
   var today = todayStr();
@@ -1249,9 +1187,9 @@ function saveAdh(medId, patientId, status, scheduled, actual, medName){
   var today = todayStr();
   adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today);});
   adherence.push({medId:medId, patientId:patientId||null, date:today, status:status, scheduledTime:scheduled, actualTime:actual, ts:Date.now(), medName:medName});
-  sA();
   var lbl = {yes:'✅ Usó la medicación registrado.', late:'🕐 Horario alternativo registrado.', no:'❌ No uso registrado.'};
-  toast(lbl[status]);
+  api('POST','/api/adherence',{medId:medId, date:today, status:status, scheduledTime:scheduled, actualTime:actual})
+    .then(function(){toast(lbl[status]);}).catch(resync);
 }
 
 // ── NEXT REMINDER ─────────────────────────────────────────────
@@ -1339,7 +1277,7 @@ function renderAlerts(){
       +'<div class="at"><div class="at-v">'+med.time+'</div><div class="at-f">'+med.freq.split(' ')[0]+'</div></div>'
       +'<div class="abar" style="background:'+spec.color+'"></div>'
       +'<div class="ai">'
-        +'<div class="an">'+spec.icon+' '+med.name+'</div>'
+        +'<div class="an">'+spec.icon+' '+med.name+(med.kind==='nutricional'?'<span class="kind-n">Nutricional</span>':'')+'</div>'
         +ptHtml
         +'<div class="am">'+(med.dose||'—')+' · '+med.route+maxHtml+'</div>'
         +doseWarnHtml
@@ -1370,41 +1308,42 @@ function recMan(medId, status, actual){
 function undoRec(medId){
   var today = todayStr();
   adherence = adherence.filter(function(a){return !(a.medId===medId && a.date===today);});
-  sA(); renderAlerts(); updateStats(); toast('↩ Registro deshecho.');
+  renderAlerts(); updateStats();
+  api('DELETE','/api/adherence?medId='+medId+'&date='+today).then(function(){toast('↩ Registro deshecho.');}).catch(resync);
 }
 
 // ── PATIENTS ──────────────────────────────────────────────────
 function addPt(){
   var n = document.getElementById('p-n').value.trim(); if(!n){toast('Ingresa el nombre.',true);return;}
-  var dob = document.getElementById('p-dob').value;
-  var age = null;
-  if(dob){
-    var today=new Date(), birth=new Date(dob);
-    age=today.getFullYear()-birth.getFullYear();
-    var mo=today.getMonth()-birth.getMonth();
-    if(mo<0||(mo===0&&today.getDate()<birth.getDate())) age--;
-  }
-  patients.unshift({
-    id:Date.now(), name:n, dob:dob, age:age,
+  api('POST','/api/patients',{
+    name:n, dob:document.getElementById('p-dob').value,
     idNum:document.getElementById('p-id').value.trim(),
     diagnosis:document.getElementById('p-dx').value.trim(),
     specialty:document.getElementById('p-sp').value,
     phone:document.getElementById('p-ph').value.trim(),
-    obs:document.getElementById('p-ob').value.trim(),
-    createdAt:new Date().toISOString()
-  });
-  sP(); renderPatients(); refreshPtSel();
-  toast('✅ '+n+' registrado.');
-  ['p-n','p-id','p-dx','p-ph','p-ob'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('p-dob').value='';
-  document.getElementById('age-d').textContent='— años';
+    obs:document.getElementById('p-ob').value.trim()
+  }).then(function(r){
+    r.patient.age=ageFrom(r.patient.dob); r.patient.team=[];
+    patients.unshift(r.patient);
+    renderPatients(); refreshPtSel();
+    toast('✅ '+r.patient.name+' registrado. Código del caso: '+r.patient.linkCode);
+    ['p-n','p-id','p-dx','p-ph','p-ob'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('p-dob').value='';
+    document.getElementById('age-d').textContent='— años';
+  }).catch(apiFail);
 }
 
 function delPt(id){
-  var p = patients.find(function(x){return x.id===id;});
-  patients = patients.filter(function(x){return x.id!==id;});
-  sP(); renderPatients(); refreshPtSel();
-  toast('🗑️ '+(p?p.name:'Paciente')+' eliminado.');
+  var p = patients.find(function(x){return x.id===id;}); if(!p) return;
+  var own = p.mine;
+  var msg = own ? '⚠️ ¿Eliminar la ficha de "'+p.name+'" con sus tratamientos, adherencia y notas?\n\nEsta acción no se puede deshacer.'
+                : '¿Dejar de seguir el caso de "'+p.name+'"? La ficha no se borra; podrás volver a vincularte con el código.';
+  if(!confirm(msg)) return;
+  var call = own ? api('DELETE','/api/patients?id='+id) : api('POST','/api/patients?action=unlink',{id:id});
+  call.then(function(){
+    toast(own ? '🗑️ '+p.name+' eliminado.' : 'Dejaste de seguir el caso de '+p.name+'.');
+    return loadState().then(refreshAll);
+  }).catch(apiFail);
 }
 
 function togAdh(id){
@@ -1415,7 +1354,7 @@ function togAdh(id){
 function renderPatients(){
   var el = document.getElementById('pl'); if(!el) return;
   if(!patients.length){
-    el.innerHTML='<div class="empty"><div class="empty-c">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">Registra el primero arriba.</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-c">👤</div><div class="empty-t">Sin pacientes</div><div class="empty-s">'+(curUser&&curUser.role==='farmaceuta'?'Vincula un caso con su código en la pestaña Mi cuenta.':'Registra el primero arriba o vincula un caso con su código en Mi cuenta.')+'</div></div>';
     return;
   }
   var html='';
@@ -1440,20 +1379,25 @@ function renderPatients(){
     var dobH=p.dob?'<div class="pd">🎂 '+p.dob+'</div>':'';
     var phH=p.phone?'<div class="pd">📞 '+p.phone+'</div>':'';
     var obH=p.obs?'<div class="pd" style="font-size:10px">📌 '+p.obs+'</div>':'';
+    var caseH='<div class="pt-case">🔗 Código del caso: <b>'+p.linkCode+'</b> · '+(p.hasAccount?'paciente con cuenta':'paciente sin cuenta aún')+'</div>'+teamHtml(p);
+    var isPt=curUser&&curUser.role==='paciente';
+    var notesBtn=isPt?'':'<button class="btn-curve" onclick="togNotes('+p.id+')">📝 Notas</button>';
+    var delBtn=isPt?'':'<button class="btn-dpt" title="'+(p.mine?'Eliminar ficha':'Dejar de seguir el caso')+'" onclick="delPt('+p.id+')">✕</button>';
     html+='<div>'
       +'<div class="pc">'
         +'<div class="pav">'+ini+'</div>'
         +'<div class="pi">'
           +'<div class="pn">'+p.name+'</div>'
           +'<div class="pd">'+(p.age!=null?p.age+' años · ':'')+p.specialty+(p.diagnosis?' · '+p.diagnosis:'')+'</div>'
-          +dobH+phH+obH+pctHtml
+          +dobH+phH+obH+caseH+pctHtml
         +'</div>'
         +'<div class="pm">💊 '+mc+'</div>'
         +'<button class="btn-curve" onclick="togAdh('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Curva</button>'
         +'<button class="btn-curve" style="background:var(--g200);border-color:var(--g300)" onclick="setActivePt('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Ver todo</button>'
-        +'<button class="btn-dpt" onclick="delPt('+p.id+')">✕</button>'
+        +notesBtn+delBtn
       +'</div>'
       +'<div class="adhp" id="adh-'+p.id+'"></div>'
+      +'<div class="ntsp" id="nts-'+p.id+'"></div>'
     +'</div>';
   });
   el.innerHTML=html;
@@ -1469,7 +1413,7 @@ function renderAdhPanel(ptId){
   var nC=ptAdh.filter(function(a){return a.status==='no';}).length;
   var tot=ptAdh.length, pct=Math.round((yC+lC)/tot*100);
   var days=[];
-  for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0]);}
+  for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(dateStr(d));}
   var dayData=days.map(function(d){
     var recs=ptAdh.filter(function(a){return a.date===d;});
     if(!recs.length) return {d:d,val:null};
@@ -1611,29 +1555,39 @@ function addMed(){
   var t=document.getElementById('f-t').value;
   if(!n){toast('Ingresa el nombre.',true);return;}
   if(!t){toast('Selecciona la hora.',true);return;}
-  var pid=parseInt(document.getElementById('f-pt').value)||null;
-  meds.unshift({
-    id:Date.now(), name:n, patientId:pid,
+  api('POST','/api/treatments',{
+    name:n, patientId:parseInt(document.getElementById('f-pt').value)||null,
+    kind:document.getElementById('f-k').value,
     specialty:document.getElementById('f-sp').value,
     dose:document.getElementById('f-d').value.trim(),
     time:t, freq:document.getElementById('f-fr').value,
     maxdose:document.getElementById('f-mx').value.trim(),
     route:document.getElementById('f-rv').value,
-    notes:document.getElementById('f-nt').value.trim(),
-    createdAt:new Date().toISOString()
-  });
-  sM(); renderCards(); renderAlerts(); updateStats(); renderSF();
-  toast('✅ '+n+' agregado.');
-  ['f-n','f-d','f-t','f-nt','f-mx'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    notes:document.getElementById('f-nt').value.trim()
+  }).then(function(r){
+    meds.unshift(r.med);
+    renderCards(); renderAlerts(); updateStats(); renderSF();
+    toast('✅ '+r.med.name+' agregado.');
+    ['f-n','f-d','f-t','f-nt','f-mx'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  }).catch(apiFail);
 }
 
 function delMed(id){
   var m=meds.find(function(r){return r.id===id;});
   var nombre=m?m.name:'este medicamento';
   if(!confirm('⚠️ ¿Estás seguro de que deseas eliminar "'+nombre+'"?\n\nEsta acción no se puede deshacer.')) return;
-  meds=meds.filter(function(r){return r.id!==id;});
-  sM(); renderCards(); renderAlerts(); updateStats(); renderSF();
-  toast('🗑️ '+nombre+' eliminado.');
+  api('DELETE','/api/treatments?id='+id).then(function(){
+    meds=meds.filter(function(r){return r.id!==id;});
+    adherence=adherence.filter(function(a){return a.medId!==id;});
+    renderCards(); renderAlerts(); updateStats(); renderSF();
+    toast('🗑️ '+nombre+' eliminado.');
+  }).catch(apiFail);
+}
+
+// Mismo criterio que el servidor: el farmaceuta solo consulta y el paciente solo cambia sus propios recordatorios.
+function canEditMed(med){
+  if(!curUser||curUser.role==='farmaceuta') return false;
+  return curUser.role==='profesional' || med.mine;
 }
 
 function togEdit(id){var el=document.getElementById('ei-'+id);if(el)el.classList.toggle('open');}
@@ -1648,10 +1602,12 @@ function saveEdit(id){
   if(newDose) msg+='\nDosis: '+newDose;
   msg+='\n\nEsto actualizará también el historial de adherencia.';
   if(!confirm(msg)) return;
-  var old=med.name; med.name=newName; med.dose=newDose;
-  adherence.forEach(function(a){if(a.medId===id) a.medName=med.name;});
-  sM(); sA(); renderCards(); renderAlerts();
-  toast('✅ '+old+' actualizado correctamente.');
+  var old=med.name;
+  api('PUT','/api/treatments?id='+id,{name:newName, dose:newDose}).then(function(r){
+    med.name=r.med.name; med.dose=r.med.dose;
+    renderCards(); renderAlerts();
+    toast('✅ '+old+' actualizado correctamente.');
+  }).catch(apiFail);
 }
 
 function setFilter(s){curFilter=s; renderSF(); renderCards();}
@@ -1703,7 +1659,7 @@ function renderCards(){
       +'<div class="ct" style="background:linear-gradient(160deg,'+spec.color+','+spec.color+'bb)">'
         +'<div class="cb2">'+spec.icon+' '+med.specialty+'</div>'
         +'<div class="csb '+st.cls+'">'+st.lbl+'</div>'
-        +'<div class="cn">'+med.name+'</div>'
+        +'<div class="cn">'+med.name+(med.kind==='nutricional'?'<span class="kind-n">Nutricional</span>':'')+'</div>'
         +ptH
         +'<div class="cr">'+ri+' '+med.route+'</div>'
       +'</div>'
@@ -1713,8 +1669,8 @@ function renderCards(){
         +'<div class="mr"><div><span class="ml2">Dosis</span><span class="mv">'+(med.dose||'—')+'</span></div><div><span class="ml2">Estado</span><span class="mv" style="color:'+stColor+'">'+st.lbl+'</span></div></div>'
         +ltH+ntH
         +'<div class="ca">'
-          +'<button class="btn-ec" onclick="togEdit('+med.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button>'
-          +'<button class="btn-dc" onclick="delMed('+med.id+')">✕</button>'
+          +(canEditMed(med)?'<button class="btn-ec" onclick="togEdit('+med.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button>'
+          +'<button class="btn-dc" onclick="delMed('+med.id+')">✕</button>':'')
         +'</div>'
         +'<div class="ei" id="ei-'+med.id+'">'
           +'<div class="ei-r"><input type="text" id="ein-'+med.id+'" placeholder="Nombre"/></div>'
@@ -1800,101 +1756,83 @@ function clearPtContext(){
   renderRep(); renderCards(); renderAlerts();
 }
 
-// ── SYNC / EXPORT / IMPORT ───────────────────────────────────
-function exportData(){
-  var data={
-    users:users,
-    patients:patients,
-    meds:meds,
-    adherence:adherence,
-    exportedAt:new Date().toISOString(),
-    version:'mt6'
-  };
-  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-  var el=document.getElementById('sync-code');
-  el.textContent=encoded;
-  el.classList.add('show');
-  toast('✅ Código generado. Cópialo y pégalo en el otro dispositivo.');
-}
+// ── CUENTA, VÍNCULO DE CASOS Y NOTAS ─────────────────────────
+var ROLE_LBL={profesional:'Profesional de la salud',paciente:'Paciente',farmaceuta:'Farmaceuta'};
+var PROF_LBL={medico:'Médico/a',nutricionista:'Nutricionista',optometra:'Optómetra',enfermeria:'Enfermería',odontologo:'Odontólogo/a',psicologo:'Psicólogo/a',otro:'Otro profesional'};
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function roleLabel(u){return u.role==='profesional'&&u.profession?(PROF_LBL[u.profession]||u.profession):(ROLE_LBL[u.role]||u.role);}
 
-function copyCode(){
-  var el=document.getElementById('sync-code');
-  if(!el.textContent){exportData();}
-  if(navigator.clipboard && el.textContent){
-    navigator.clipboard.writeText(el.textContent).then(function(){
-      toast('📋 Código copiado al portapapeles.');
-    });
-  } else {
-    toast('Selecciona el código manualmente y cópialo.',true);
-  }
-}
-
-function toggleImport(){
-  var el=document.getElementById('sync-import-area');
-  el.classList.toggle('show');
-}
-
-function importData(){
-  var txt=document.getElementById('sync-import-txt').value.trim();
-  if(!txt){toast('Pega el código primero.',true);return;}
-  try{
-    var decoded=JSON.parse(decodeURIComponent(escape(atob(txt))));
-    if(!decoded.version||decoded.version!=='mt6'){toast('Código inválido o de versión incorrecta.',true);return;}
-    if(!confirm('¿Importar datos desde el código?\n\nEsto REEMPLAZARÁ todos los datos actuales en este dispositivo.\n\nPacientes: '+(decoded.patients?decoded.patients.length:0)+'\nMedicamentos: '+(decoded.meds?decoded.meds.length:0)+'\nRegistros: '+(decoded.adherence?decoded.adherence.length:0))) return;
-    if(decoded.users)  {users=decoded.users;     sU();}
-    if(decoded.patients){patients=decoded.patients; sP();}
-    if(decoded.meds)   {meds=decoded.meds;        sM();}
-    if(decoded.adherence){adherence=decoded.adherence; sA();}
-    // Set session to first matching user or first user
-    if(curUser && users.find(function(u){return u.e===curUser.e;})){
-      localStorage.setItem('mt6_s',JSON.stringify(curUser));
-    } else if(users.length>0){
-      curUser=users[0];
-      localStorage.setItem('mt6_s',JSON.stringify(curUser));
+function renderAccount(){
+  var el=document.getElementById('acct'); if(!el||!curUser) return;
+  var html='<div class="sync-panel"><div class="sync-title">👤 '+esc(curUser.name)+'</div>'
+    +'<div class="sync-sub">'+esc(curUser.e)+' · <strong>'+esc(roleLabel(curUser))+'</strong><br>'
+    +'Tus datos están en tu cuenta MedTopix: inicia sesión desde cualquier dispositivo y los verás igual.</div></div>';
+  if(curUser.role==='paciente'){
+    var me=patients.find(function(p){return p.isSelf;});
+    if(me){
+      html+='<div class="sync-panel"><div class="sync-title">🔗 Código de tu caso</div>'
+        +'<div class="sync-sub">Compártelo con tu médico, nutricionista o farmaceuta para que sigan tu adherencia. Solo quien tenga el código puede sumarse a tu caso.</div>'
+        +'<div class="case-code">'+esc(me.linkCode)+'</div>'+teamHtml(me)+'</div>';
     }
-    document.getElementById('sync-import-area').classList.remove('show');
-    document.getElementById('sync-import-txt').value='';
-    initApp();
-    toast('✅ Datos importados correctamente. Bienvenido, '+( curUser?curUser.name:'usuario')+'.');
-  } catch(e){
-    toast('Error al leer el código. Verifica que esté completo.',true);
+  } else {
+    html+='<div class="sync-panel"><div class="sync-title">🔗 Vincular un caso</div>'
+      +'<div class="sync-sub">Pide al paciente (o al profesional que creó la ficha) el código del caso para sumarte a su seguimiento.</div>'
+      +'<div class="link-row"><input type="text" id="lk-code" placeholder="Ej: ABCD-2345" maxlength="9" autocapitalize="characters"/>'
+      +'<button class="btn-add" onclick="linkCase()">Vincular caso</button></div></div>';
   }
+  el.innerHTML=html;
+}
+
+function teamHtml(p){
+  if(!p.team||!p.team.length) return '<div class="pd" style="margin-top:8px">Aún nadie más sigue este caso.</div>';
+  return '<div class="pd" style="margin-top:8px">👥 Equipo tratante: '+p.team.map(function(t){return esc(t.name)+' ('+esc(roleLabel(t))+')';}).join(' · ')+'</div>';
+}
+
+function linkCase(){
+  var inp=document.getElementById('lk-code'); if(!inp||!inp.value.trim()){toast('Ingresa el código del caso.',true);return;}
+  api('POST','/api/patients?action=link',{code:inp.value.trim()}).then(function(r){
+    toast('✅ Caso de '+r.patient.name+' vinculado.');
+    return loadState().then(function(){refreshAll(); goTab('patients');});
+  }).catch(apiFail);
+}
+
+function togNotes(id){
+  var el=document.getElementById('nts-'+id); if(!el) return;
+  if(el.classList.toggle('open')) loadNotes(id);
+}
+function paintNotes(id,notes){
+  var el=document.getElementById('nts-'+id); if(!el) return;
+  var html='<div class="nt-form"><textarea id="ntx-'+id+'" placeholder="Nota de seguimiento: evolución, entrega de medicamento, ajustes, barreras de adherencia..."></textarea>'
+    +'<button class="btn-add" onclick="addNote('+id+')">Guardar nota</button></div>';
+  if(!notes.length) html+='<div class="pd" style="padding:8px 2px">Sin notas todavía.</div>';
+  notes.forEach(function(n){
+    html+='<div class="nt"><div class="nt-h">'+esc(n.author||'Usuario eliminado')+' · '+esc(roleLabel(n))+' · '
+      +new Date(n.created_at).toLocaleString('es-CO',{dateStyle:'medium',timeStyle:'short'})+'</div><div class="nt-b">'+esc(n.note)+'</div></div>';
+  });
+  el.innerHTML=html;
+}
+function loadNotes(id){
+  api('GET','/api/notes?patientId='+id).then(function(r){paintNotes(id,r.notes);}).catch(apiFail);
+}
+function addNote(id){
+  var tx=document.getElementById('ntx-'+id); if(!tx||!tx.value.trim()){toast('Escribe la nota.',true);return;}
+  api('POST','/api/notes',{patientId:id,note:tx.value.trim()}).then(function(r){paintNotes(id,r.notes);toast('✅ Nota guardada.');}).catch(apiFail);
+}
+
+function applyRoleUI(){
+  var role=curUser?curUser.role:'';
+  var ptForm=document.getElementById('pt-form'), medForm=document.getElementById('med-form'), ptTab=document.getElementById('tb-patients');
+  // Cada formulario va precedido por su título de sección; se ocultan juntos.
+  [[ptForm, role==='profesional'], [medForm, role!=='farmaceuta']].forEach(function(x){
+    if(!x[0]) return;
+    x[0].style.display = x[1]?'':'none';
+    var title=x[0].previousElementSibling; if(title) title.style.display = x[1]?'':'none';
+  });
+  if(ptTab) ptTab.lastChild.textContent = role==='paciente'?' Mi ficha':' Pacientes';
+  var fpt=document.getElementById('f-pt-wrap'); if(fpt) fpt.style.display = role==='paciente'?'none':'';
 }
 
 // ── EXPORT CSV ───────────────────────────────────────────────
-function genQR(){
-  // Generate the data first
-  var data={
-    users:users, patients:patients, meds:meds, adherence:adherence,
-    exportedAt:new Date().toISOString(), version:'mt6'
-  };
-  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-  
-  // Build URL that auto-imports on iPhone
-  var url = window.location.origin + window.location.pathname + '?sync=' + encoded;
-  
-  // Show QR
-  var wrap = document.getElementById('qr-wrap');
-  var canvas = document.getElementById('qr-canvas');
-  canvas.innerHTML = '';
-  wrap.style.display = 'block';
-  
-  try {
-    new QRCode(canvas, {
-      text: url,
-      width: 220,
-      height: 220,
-      colorDark: '#1a4a2e',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-    toast('✅ QR generado. Escanéalo con tu iPhone.');
-  } catch(e) {
-    // Fallback if QR fails - just show copy option
-    canvas.innerHTML = '<div style="padding:20px;font-size:12px;color:var(--red)">QR no disponible. Usa "Copiar código texto".</div>';
-    toast('Usa Copiar código texto en su lugar.', true);
-  }
-}
 
 function exportCSV(rows, headers, filename){
   var csv = headers.join(',') + '\n';
@@ -1996,40 +1934,24 @@ function togPw(id, btn){
 
 // ── INIT ──────────────────────────────────────────────────────
 (function(){
-  // Save sync param to sessionStorage immediately (before URL gets cleaned)
-  var urlParams = new URLSearchParams(window.location.search);
-  var syncParam = urlParams.get('sync');
-  if(syncParam){
-    sessionStorage.setItem('mt6_qr', syncParam);
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
+  // Las versiones anteriores guardaban cuentas y contraseñas en el dispositivo; ya viven en el servidor.
+  ['mt6_u','mt6_s','mt6_m','mt6_p','mt6_a'].forEach(function(k){localStorage.removeItem(k);});
 
-  // Normal session check
-  var saved=localStorage.getItem('mt6_s');
-  if(saved){
-    try{curUser=JSON.parse(saved);initApp();show('sa');}
-    catch(e){localStorage.removeItem('mt6_s');show('sl');}
-    return;
-  }
+  loadState().then(function(){ initApp(); show('sa'); })
+    .catch(function(){ show(location.hash==='#login'?'slo':location.hash==='#registro'?'st':'sl'); });
 
-  // Check if QR data pending - show special button
-  var pendingSync = sessionStorage.getItem('mt6_qr');
-  if(pendingSync){
-    show('sl');
-    var msg=document.getElementById('qr-landing-msg');
-    var btnQR=document.getElementById('btn-start-qr');
-    var btnNorm=document.getElementById('btn-start-normal');
-    if(msg) msg.style.display='block';
-    if(btnQR) btnQR.style.display='block';
-    if(btnNorm) btnNorm.style.display='none';
-    return;
-  }
-
-  show('sl');
   setInterval(function(){
+    if(!curUser) return;
     updateStats(); updateNext();
     if(curTab==='alerts') renderAlerts();
   }, 30000);
+  // El equipo tratante ve los registros que el paciente hace desde su propio dispositivo.
+  setInterval(function(){
+    if(!curUser || document.hidden || curAlarm) return;
+    var editing=document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+    if(editing) return;
+    loadState().then(refreshAll).catch(function(){});
+  }, 60000);
 })();
 </script>
 </body>

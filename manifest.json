@@ -2,7 +2,7 @@
   "name": "MedTopix · Recordatorio de Medicamentos Tópicos",
   "short_name": "MedTopix",
   "description": "Recordatorio y seguimiento de adherencia a medicamentos tópicos por especialidad médica",
-  "start_url": "/",
+  "start_url": "/app",
   "display": "standalone",
   "background_color": "#0d2818",
   "theme_color": "#1a4a2e",
@@ -29,14 +29,14 @@
       "name": "Ver alertas del día",
       "short_name": "Alertas",
       "description": "Ver el panel de alertas de hoy",
-      "url": "/#alerts",
+      "url": "/app#alerts",
       "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='80' font-size='80'>🔔</text></svg>", "sizes": "96x96"}]
     },
     {
       "name": "Mis pacientes",
       "short_name": "Pacientes",
       "description": "Ver y gestionar pacientes",
-      "url": "/#patients",
+      "url": "/app#patients",
       "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='80' font-size='80'>👤</text></svg>", "sizes": "96x96"}]
     }
   ]

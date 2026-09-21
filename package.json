@@ -1,0 +1,11 @@
+{
+  "name": "medtopix",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:migrate": "node --env-file=.env.local db/migrate.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  }
+}
